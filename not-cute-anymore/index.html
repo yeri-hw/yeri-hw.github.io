@@ -14,28 +14,43 @@
         }
 
         :root {
-            --cream: #faf8f5;
-            --warm-gray: #e8e4df;
             --text-dark: #2c2424;
-            --text-muted: #8a7d7d;
+            --text-muted: #6a5e5e;
             --accent: #c4a0a0;
         }
 
         body {
-            background: var(--cream);
             font-family: 'Inter', sans-serif;
             color: var(--text-dark);
             overflow-x: hidden;
+            min-height: 100vh;
         }
 
-        /* Grain overlay */
+        /* Blurred background from the image */
+        .bg-layer {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background: url('illit.jpg') center/cover no-repeat;
+            filter: blur(60px) saturate(1.2) brightness(1.1);
+            transform: scale(1.2);
+        }
+
+        .bg-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: rgba(250, 248, 245, 0.55);
+        }
+
+        /* Grain */
         body::after {
             content: '';
             position: fixed;
             inset: 0;
             pointer-events: none;
             z-index: 1000;
-            opacity: 0.03;
+            opacity: 0.025;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
         }
 
@@ -56,19 +71,16 @@
 
         .hero-image-wrap {
             position: relative;
-            width: min(75vw, 420px);
+            width: min(72vw, 400px);
         }
 
         .hero-image-wrap::before {
             content: '';
             position: absolute;
-            inset: -1px;
-            background: linear-gradient(135deg, var(--accent) 0%, transparent 60%);
+            inset: 0;
             border-radius: 16px;
-            opacity: 0.4;
+            box-shadow: 0 30px 80px rgba(100, 70, 70, 0.2);
             z-index: -1;
-            transform: translate(8px, 8px);
-            filter: blur(20px);
         }
 
         .hero-image {
@@ -130,68 +142,29 @@
             50% { opacity: 1; transform: translateX(-50%) scaleY(1.2); }
         }
 
-        /* Lyrics */
-        .lyrics-section {
-            padding: 10rem 2rem;
-            max-width: 680px;
-            margin: 0 auto;
-        }
-
-        .lyric-line {
-            font-family: 'Instrument Serif', serif;
-            font-size: clamp(1.4rem, 3vw, 2rem);
-            line-height: 2;
-            color: var(--text-dark);
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.6s ease, transform 0.6s ease;
-            position: relative;
-        }
-
-        .lyric-line.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .lyric-line.visible:nth-child(3n+1) {
-            color: var(--accent);
-        }
-
-        .divider {
-            width: 40px;
-            height: 1px;
-            background: var(--accent);
-            margin: 4rem auto;
-            opacity: 0;
-            transition: opacity 0.8s ease;
-        }
-
-        .divider.visible {
-            opacity: 1;
-        }
-
         /* Marquee */
         .marquee-section {
-            padding: 4rem 0;
+            padding: 3.5rem 0;
             overflow: hidden;
-            border-top: 1px solid var(--warm-gray);
-            border-bottom: 1px solid var(--warm-gray);
+            border-top: 1px solid rgba(196, 160, 160, 0.3);
+            border-bottom: 1px solid rgba(196, 160, 160, 0.3);
+            backdrop-filter: blur(4px);
         }
 
         .marquee-track {
             display: flex;
             gap: 3rem;
-            animation: marquee 20s linear infinite;
+            animation: marquee 22s linear infinite;
             width: max-content;
         }
 
         .marquee-track span {
             font-family: 'Instrument Serif', serif;
-            font-size: clamp(1.5rem, 4vw, 3rem);
+            font-size: clamp(1.4rem, 3.5vw, 2.5rem);
             font-style: italic;
             color: var(--text-muted);
             white-space: nowrap;
-            opacity: 0.5;
+            opacity: 0.6;
         }
 
         @keyframes marquee {
@@ -199,7 +172,7 @@
             to { transform: translateX(-50%); }
         }
 
-        /* Footer image */
+        /* Footer */
         .footer-section {
             padding: 8rem 2rem;
             display: flex;
@@ -209,14 +182,16 @@
         }
 
         .footer-image {
-            width: min(50vw, 280px);
+            width: min(50vw, 260px);
             border-radius: 8px;
-            filter: grayscale(0.2);
-            transition: filter 0.6s ease;
+            filter: grayscale(0.15);
+            transition: filter 0.6s ease, transform 0.6s ease;
+            box-shadow: 0 16px 48px rgba(100, 70, 70, 0.15);
         }
 
         .footer-image:hover {
             filter: grayscale(0);
+            transform: scale(1.02);
         }
 
         .footer-credit {
@@ -229,25 +204,28 @@
         /* Cursor glow */
         .glow {
             position: fixed;
-            width: 300px;
-            height: 300px;
+            width: 280px;
+            height: 280px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(196,160,160,0.08) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(196,160,160,0.1) 0%, transparent 70%);
             pointer-events: none;
             z-index: 999;
             transform: translate(-50%, -50%);
-            transition: left 0.3s ease, top 0.3s ease;
+            transition: left 0.4s ease, top 0.4s ease;
         }
 
         /* Mobile */
         @media (max-width: 600px) {
             .hero-image-wrap { width: 88vw; }
-            .lyrics-section { padding: 6rem 1.5rem; }
+            .bg-layer { filter: blur(40px) saturate(1.1) brightness(1.15); }
+            .bg-overlay { background: rgba(250, 248, 245, 0.6); }
         }
     </style>
 </head>
 <body>
 
+    <div class="bg-layer"></div>
+    <div class="bg-overlay"></div>
     <div class="glow" id="glow"></div>
 
     <!-- Hero -->
@@ -264,24 +242,6 @@
         <div class="scroll-line"></div>
     </section>
 
-    <!-- Lyrics -->
-    <section class="lyrics-section">
-        <p class="lyric-line">My bag's so brave</p>
-        <p class="lyric-line">No keyring, no hand mirror</p>
-        <p class="lyric-line">I'm too shy for jelly shoes on my date</p>
-        <div class="divider"></div>
-        <p class="lyric-line">I'll take a laid-back jellyfish</p>
-        <p class="lyric-line">'Cause I'm not cute anymore</p>
-        <p class="lyric-line">I don't like Cherry Coke</p>
-        <div class="divider"></div>
-        <p class="lyric-line">Matcha's got nothing on this</p>
-        <p class="lyric-line">Five minute perfection</p>
-        <p class="lyric-line">My makeup tutorial</p>
-        <div class="divider"></div>
-        <p class="lyric-line">I'm not an alien</p>
-        <p class="lyric-line">I'm just kind of easygoing</p>
-    </section>
-
     <!-- Marquee -->
     <section class="marquee-section">
         <div class="marquee-track">
@@ -289,13 +249,13 @@
             <span>&middot;</span>
             <span>I'm just kind of easygoing</span>
             <span>&middot;</span>
-            <span>Not Cute Anymore</span>
-            <span>&middot;</span>
-            <span>I'm just kind of easygoing</span>
+            <span>I'm not an alien</span>
             <span>&middot;</span>
             <span>Not Cute Anymore</span>
             <span>&middot;</span>
             <span>I'm just kind of easygoing</span>
+            <span>&middot;</span>
+            <span>I'm not an alien</span>
             <span>&middot;</span>
             <span>Not Cute Anymore</span>
             <span>&middot;</span>
@@ -311,17 +271,6 @@
     </section>
 
     <script>
-        // Scroll reveal
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, { threshold: 0.2 });
-
-        document.querySelectorAll('.lyric-line, .divider').forEach(el => observer.observe(el));
-
         // Cursor glow
         const glow = document.getElementById('glow');
         document.addEventListener('mousemove', (e) => {
@@ -329,12 +278,12 @@
             glow.style.top = e.clientY + 'px';
         });
 
-        // Parallax on hero image
+        // Subtle parallax on hero
         const heroImg = document.querySelector('.hero-image');
         window.addEventListener('scroll', () => {
             const y = window.scrollY;
             if (y < window.innerHeight) {
-                heroImg.style.transform = `translateY(${-y * 0.05}px)`;
+                heroImg.style.transform = `translateY(${-y * 0.04}px)`;
             }
         });
     </script>
