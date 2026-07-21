@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ILLIT - Not Cute Anymore</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400&display=swap');
 
         * {
             margin: 0;
@@ -13,111 +13,139 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --cream: #faf8f5;
+            --warm-gray: #e8e4df;
+            --text-dark: #2c2424;
+            --text-muted: #8a7d7d;
+            --accent: #c4a0a0;
+        }
+
         body {
+            background: var(--cream);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
             overflow-x: hidden;
-            background: #f5f0eb;
-            font-family: 'Playfair Display', serif;
-            cursor: default;
         }
 
-        /* Hero Section */
+        /* Grain overlay */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1000;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        }
+
+        /* Hero */
         .hero {
-            position: relative;
             height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            background: linear-gradient(180deg, #e8ddd4 0%, #f5f0eb 100%);
+            display: grid;
+            place-items: center;
+            position: relative;
         }
 
-        .hero::before {
+        .hero-inner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2.5rem;
+        }
+
+        .hero-image-wrap {
+            position: relative;
+            width: min(75vw, 420px);
+        }
+
+        .hero-image-wrap::before {
             content: '';
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(ellipse at center, rgba(219, 167, 167, 0.15) 0%, transparent 70%);
-            animation: auraPulse 8s ease-in-out infinite;
-        }
-
-        @keyframes auraPulse {
-            0%, 100% { transform: scale(1); opacity: 0.5; }
-            50% { transform: scale(1.1); opacity: 0.8; }
+            inset: -1px;
+            background: linear-gradient(135deg, var(--accent) 0%, transparent 60%);
+            border-radius: 16px;
+            opacity: 0.4;
+            z-index: -1;
+            transform: translate(8px, 8px);
+            filter: blur(20px);
         }
 
         .hero-image {
-            position: relative;
-            z-index: 2;
-            width: min(80vw, 500px);
-            animation: floatImage 6s ease-in-out infinite;
+            width: 100%;
             border-radius: 12px;
-            box-shadow: 0 30px 80px rgba(150, 100, 100, 0.3);
+            display: block;
+            animation: subtleFloat 8s ease-in-out infinite;
         }
 
-        @keyframes floatImage {
-            0%, 100% { transform: translateY(0) rotate(-1deg); }
-            50% { transform: translateY(-20px) rotate(1deg); }
+        @keyframes subtleFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
         }
 
-        .title-overlay {
-            position: absolute;
-            bottom: 8%;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 3;
+        .hero-text {
             text-align: center;
         }
 
-        .title-overlay h1 {
-            font-family: 'Caveat', cursive;
-            font-size: clamp(2rem, 6vw, 4rem);
-            color: #3a2a2a;
-            opacity: 0;
-            animation: fadeInUp 1.5s ease forwards 0.5s;
-            text-shadow: 0 2px 10px rgba(255,255,255,0.8);
-        }
-
-        .title-overlay .artist {
-            font-size: clamp(1rem, 2.5vw, 1.5rem);
-            color: #8a6a6a;
-            opacity: 0;
-            animation: fadeInUp 1.5s ease forwards 1s;
+        .hero-text h1 {
+            font-family: 'Instrument Serif', serif;
+            font-size: clamp(2.2rem, 6vw, 4.5rem);
+            font-weight: 400;
             font-style: italic;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            opacity: 0;
+            animation: revealText 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards 0.3s;
         }
 
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
+        .hero-text .artist {
+            font-size: 0.85rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-top: 0.75rem;
+            font-weight: 300;
+            opacity: 0;
+            animation: revealText 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards 0.6s;
+        }
+
+        @keyframes revealText {
+            from { opacity: 0; transform: translateY(12px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Floating Lyrics Section */
-        .lyrics-section {
-            position: relative;
-            min-height: 100vh;
-            padding: 5rem 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(180deg, #f5f0eb 0%, #ede4dc 50%, #f5f0eb 100%);
-            overflow: hidden;
+        .scroll-line {
+            position: absolute;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1px;
+            height: 48px;
+            background: linear-gradient(to bottom, transparent, var(--text-muted));
+            animation: scrollPulse 2.5s ease-in-out infinite;
         }
 
-        .lyrics-container {
-            max-width: 800px;
-            text-align: center;
+        @keyframes scrollPulse {
+            0%, 100% { opacity: 0.4; transform: translateX(-50%) scaleY(1); }
+            50% { opacity: 1; transform: translateX(-50%) scaleY(1.2); }
+        }
+
+        /* Lyrics */
+        .lyrics-section {
+            padding: 10rem 2rem;
+            max-width: 680px;
+            margin: 0 auto;
         }
 
         .lyric-line {
-            font-family: 'Caveat', cursive;
-            font-size: clamp(1.3rem, 3.5vw, 2.2rem);
-            color: #4a3535;
-            margin: 1.5rem 0;
+            font-family: 'Instrument Serif', serif;
+            font-size: clamp(1.4rem, 3vw, 2rem);
+            line-height: 2;
+            color: var(--text-dark);
             opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            line-height: 1.6;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            position: relative;
         }
 
         .lyric-line.visible {
@@ -125,236 +153,190 @@
             transform: translateY(0);
         }
 
-        .lyric-line:nth-child(even) {
-            color: #9a6b7b;
+        .lyric-line.visible:nth-child(3n+1) {
+            color: var(--accent);
         }
 
-        /* Floating Petals */
-        .petal {
-            position: fixed;
-            width: 12px;
-            height: 12px;
-            background: radial-gradient(ellipse at center, #f4b4c6 0%, #e8899a 100%);
-            border-radius: 50% 0 50% 50%;
+        .divider {
+            width: 40px;
+            height: 1px;
+            background: var(--accent);
+            margin: 4rem auto;
             opacity: 0;
-            pointer-events: none;
-            z-index: 100;
-            animation: petalFall linear infinite;
+            transition: opacity 0.8s ease;
         }
 
-        @keyframes petalFall {
-            0% {
-                opacity: 0;
-                transform: translateY(-10vh) rotate(0deg) translateX(0);
-            }
-            10% { opacity: 0.7; }
-            90% { opacity: 0.5; }
-            100% {
-                opacity: 0;
-                transform: translateY(110vh) rotate(720deg) translateX(100px);
-            }
+        .divider.visible {
+            opacity: 1;
         }
 
-        /* Spiral decoration */
-        .spiral {
-            position: absolute;
-            width: 80px;
-            height: 80px;
-            border: 3px solid rgba(219, 167, 167, 0.3);
-            border-radius: 50%;
-            border-top-color: transparent;
-            animation: spin 8s linear infinite;
+        /* Marquee */
+        .marquee-section {
+            padding: 4rem 0;
+            overflow: hidden;
+            border-top: 1px solid var(--warm-gray);
+            border-bottom: 1px solid var(--warm-gray);
         }
 
-        .spiral::after {
-            content: '';
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            right: 10px;
-            bottom: 10px;
-            border: 2px solid rgba(219, 167, 167, 0.2);
-            border-radius: 50%;
-            border-bottom-color: transparent;
-            animation: spin 5s linear infinite reverse;
+        .marquee-track {
+            display: flex;
+            gap: 3rem;
+            animation: marquee 20s linear infinite;
+            width: max-content;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .spiral-1 { top: 10%; left: 5%; }
-        .spiral-2 { top: 30%; right: 8%; width: 60px; height: 60px; }
-        .spiral-3 { bottom: 20%; left: 10%; width: 50px; height: 50px; }
-
-        /* Bottom section */
-        .bottom-section {
-            position: relative;
-            padding: 4rem 2rem;
-            text-align: center;
-            background: linear-gradient(180deg, #f5f0eb 0%, #e8ddd4 100%);
-        }
-
-        .bottom-image {
-            width: min(60vw, 350px);
-            border-radius: 12px;
-            box-shadow: 0 20px 60px rgba(150, 100, 100, 0.2);
-            animation: breathe 4s ease-in-out infinite;
-            filter: saturate(1.1);
-        }
-
-        @keyframes breathe {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-        }
-
-        .credit {
-            margin-top: 3rem;
-            font-size: 0.9rem;
-            color: #a08080;
+        .marquee-track span {
+            font-family: 'Instrument Serif', serif;
+            font-size: clamp(1.5rem, 4vw, 3rem);
             font-style: italic;
-            letter-spacing: 2px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            opacity: 0.5;
         }
 
-        /* Scroll indicator */
-        .scroll-indicator {
-            position: absolute;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10;
-            animation: bounce 2s ease-in-out infinite;
+        @keyframes marquee {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
         }
 
-        .scroll-indicator span {
-            display: block;
-            width: 2px;
-            height: 40px;
-            background: linear-gradient(to bottom, transparent, #8a6a6a);
-            margin: 0 auto 8px;
+        /* Footer image */
+        .footer-section {
+            padding: 8rem 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3rem;
         }
 
-        .scroll-indicator p {
+        .footer-image {
+            width: min(50vw, 280px);
+            border-radius: 8px;
+            filter: grayscale(0.2);
+            transition: filter 0.6s ease;
+        }
+
+        .footer-image:hover {
+            filter: grayscale(0);
+        }
+
+        .footer-credit {
             font-size: 0.75rem;
-            color: #8a6a6a;
-            letter-spacing: 3px;
+            letter-spacing: 0.15em;
             text-transform: uppercase;
+            color: var(--text-muted);
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateX(-50%) translateY(0); }
-            50% { transform: translateX(-50%) translateY(8px); }
+        /* Cursor glow */
+        .glow {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(196,160,160,0.08) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 999;
+            transform: translate(-50%, -50%);
+            transition: left 0.3s ease, top 0.3s ease;
         }
 
-        /* Responsive */
+        /* Mobile */
         @media (max-width: 600px) {
-            .hero-image {
-                width: 90vw;
-            }
-            .lyric-line {
-                margin: 1rem 0;
-            }
+            .hero-image-wrap { width: 88vw; }
+            .lyrics-section { padding: 6rem 1.5rem; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Floating Petals -->
-    <div id="petals"></div>
+    <div class="glow" id="glow"></div>
 
     <!-- Hero -->
     <section class="hero">
-        <img src="illit.jpg" alt="ILLIT - Not Cute Anymore" class="hero-image">
-        <div class="title-overlay">
-            <h1>Not Cute Anymore</h1>
-            <p class="artist">by ILLIT</p>
+        <div class="hero-inner">
+            <div class="hero-image-wrap">
+                <img src="illit.jpg" alt="ILLIT - Not Cute Anymore" class="hero-image">
+            </div>
+            <div class="hero-text">
+                <h1>Not Cute Anymore</h1>
+                <p class="artist">ILLIT</p>
+            </div>
         </div>
-        <div class="scroll-indicator">
-            <span></span>
-            <p>scroll</p>
-        </div>
+        <div class="scroll-line"></div>
     </section>
 
     <!-- Lyrics -->
     <section class="lyrics-section">
-        <div class="spiral spiral-1"></div>
-        <div class="spiral spiral-2"></div>
-        <div class="spiral spiral-3"></div>
-        <div class="lyrics-container">
-            <p class="lyric-line">My bag's so brave</p>
-            <p class="lyric-line">No keyring, no hand mirror</p>
-            <p class="lyric-line">I'm too shy for jelly shoes on my date</p>
-            <p class="lyric-line">I'll take a laid-back jellyfish</p>
-            <p class="lyric-line">'Cause I'm not cute anymore</p>
-            <p class="lyric-line">I don't like Cherry Coke</p>
-            <p class="lyric-line">Matcha's got nothing on this</p>
-            <p class="lyric-line">All these over a puppy</p>
-            <p class="lyric-line">Five minute perfection</p>
-            <p class="lyric-line">My makeup tutorial</p>
-            <p class="lyric-line">I'm not an alien</p>
-            <p class="lyric-line">I'm just kind of easygoing</p>
+        <p class="lyric-line">My bag's so brave</p>
+        <p class="lyric-line">No keyring, no hand mirror</p>
+        <p class="lyric-line">I'm too shy for jelly shoes on my date</p>
+        <div class="divider"></div>
+        <p class="lyric-line">I'll take a laid-back jellyfish</p>
+        <p class="lyric-line">'Cause I'm not cute anymore</p>
+        <p class="lyric-line">I don't like Cherry Coke</p>
+        <div class="divider"></div>
+        <p class="lyric-line">Matcha's got nothing on this</p>
+        <p class="lyric-line">Five minute perfection</p>
+        <p class="lyric-line">My makeup tutorial</p>
+        <div class="divider"></div>
+        <p class="lyric-line">I'm not an alien</p>
+        <p class="lyric-line">I'm just kind of easygoing</p>
+    </section>
+
+    <!-- Marquee -->
+    <section class="marquee-section">
+        <div class="marquee-track">
+            <span>Not Cute Anymore</span>
+            <span>&middot;</span>
+            <span>I'm just kind of easygoing</span>
+            <span>&middot;</span>
+            <span>Not Cute Anymore</span>
+            <span>&middot;</span>
+            <span>I'm just kind of easygoing</span>
+            <span>&middot;</span>
+            <span>Not Cute Anymore</span>
+            <span>&middot;</span>
+            <span>I'm just kind of easygoing</span>
+            <span>&middot;</span>
+            <span>Not Cute Anymore</span>
+            <span>&middot;</span>
+            <span>I'm just kind of easygoing</span>
+            <span>&middot;</span>
         </div>
     </section>
 
-    <!-- Bottom -->
-    <section class="bottom-section">
-        <img src="illit.jpg" alt="ILLIT" class="bottom-image">
-        <p class="credit">ILLIT &mdash; Not Cute Anymore</p>
+    <!-- Footer -->
+    <section class="footer-section">
+        <img src="illit.jpg" alt="ILLIT" class="footer-image">
+        <p class="footer-credit">ILLIT &mdash; Not Cute Anymore &mdash; 2025</p>
     </section>
 
     <script>
-        // Create floating petals
-        function createPetals() {
-            const container = document.getElementById('petals');
-            for (let i = 0; i < 15; i++) {
-                const petal = document.createElement('div');
-                petal.className = 'petal';
-                petal.style.left = Math.random() * 100 + 'vw';
-                petal.style.animationDuration = (8 + Math.random() * 7) + 's';
-                petal.style.animationDelay = (Math.random() * 10) + 's';
-                petal.style.width = (8 + Math.random() * 10) + 'px';
-                petal.style.height = petal.style.width;
-                container.appendChild(petal);
-            }
-        }
-
-        // Scroll reveal for lyrics
-        function revealLyrics() {
-            const lyrics = document.querySelectorAll('.lyric-line');
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach((entry, index) => {
-                    if (entry.isIntersecting) {
-                        setTimeout(() => {
-                            entry.target.classList.add('visible');
-                        }, index * 100);
-                    }
-                });
-            }, { threshold: 0.3 });
-
-            lyrics.forEach(line => observer.observe(line));
-        }
-
-        // Parallax effect on hero image
-        function parallaxHero() {
-            const hero = document.querySelector('.hero-image');
-            window.addEventListener('scroll', () => {
-                const scrolled = window.scrollY;
-                const rate = scrolled * 0.3;
-                hero.style.transform = `translateY(${-rate * 0.1}px) rotate(${-1 + scrolled * 0.005}deg)`;
+        // Scroll reveal
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
             });
-        }
+        }, { threshold: 0.2 });
 
-        // Mouse follow glow
+        document.querySelectorAll('.lyric-line, .divider').forEach(el => observer.observe(el));
+
+        // Cursor glow
+        const glow = document.getElementById('glow');
         document.addEventListener('mousemove', (e) => {
-            const glow = document.querySelector('.hero::before');
-            document.documentElement.style.setProperty('--mouse-x', e.clientX + 'px');
-            document.documentElement.style.setProperty('--mouse-y', e.clientY + 'px');
+            glow.style.left = e.clientX + 'px';
+            glow.style.top = e.clientY + 'px';
         });
 
-        // Init
-        createPetals();
-        revealLyrics();
-        parallaxHero();
+        // Parallax on hero image
+        const heroImg = document.querySelector('.hero-image');
+        window.addEventListener('scroll', () => {
+            const y = window.scrollY;
+            if (y < window.innerHeight) {
+                heroImg.style.transform = `translateY(${-y * 0.05}px)`;
+            }
+        });
     </script>
 </body>
 </html>
