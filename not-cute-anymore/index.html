@@ -66,22 +66,24 @@
             transition: transform 0.4s ease;
         }
 
-        /* Lavender-pink vintage filter on mood photos */
+        /* Polaroid style + lavender-pink filter */
         .photo {
-            border: 5px solid white;
-            box-shadow: 2px 3px 15px rgba(80, 60, 80, 0.1);
-            filter: saturate(0.55) brightness(1.08) contrast(0.88) hue-rotate(320deg) opacity(0.92);
+            border: 8px solid white;
+            border-bottom: 32px solid white;
+            box-shadow: 2px 4px 18px rgba(80, 60, 80, 0.12);
+            filter: saturate(0.5) brightness(1.1) contrast(0.85) hue-rotate(320deg) opacity(0.92);
         }
 
         .photo:hover {
             transform: scale(1.04) rotate(0deg) !important;
             z-index: 50;
-            filter: saturate(0.6) brightness(1.1) contrast(0.9) hue-rotate(320deg) opacity(0.95);
+            filter: saturate(0.55) brightness(1.12) contrast(0.88) hue-rotate(320deg) opacity(0.95);
         }
 
         /* No filter on main album image */
         .photo-main {
             filter: none;
+            border-bottom: 8px solid white;
         }
 
         .photo-main:hover {
@@ -106,7 +108,7 @@
         .el-jelly {
             top: 10vh;
             left: 3%;
-            width: min(22vw, 155px);
+            width: min(28vw, 200px);
             transform: rotate(3deg);
             z-index: 3;
         }
@@ -115,7 +117,7 @@
         .el-wave {
             top: 36vh;
             left: 2%;
-            width: min(26vw, 180px);
+            width: min(32vw, 220px);
             transform: rotate(1.5deg);
             z-index: 3;
         }
@@ -124,7 +126,7 @@
         .el-dessert {
             top: 56vh;
             right: 5%;
-            width: min(20vw, 148px);
+            width: min(26vw, 190px);
             transform: rotate(-4deg);
             z-index: 4;
         }
@@ -133,7 +135,7 @@
         .el-rose {
             top: 78vh;
             left: 7%;
-            width: min(19vw, 135px);
+            width: min(25vw, 180px);
             transform: rotate(-5deg);
             z-index: 4;
         }
@@ -142,7 +144,7 @@
         .el-sparkle {
             top: 108vh;
             right: 8%;
-            width: min(24vw, 165px);
+            width: min(30vw, 210px);
             transform: rotate(2.5deg);
             z-index: 3;
         }
@@ -151,7 +153,7 @@
         .el-cake {
             top: 135vh;
             left: 5%;
-            width: min(20vw, 140px);
+            width: min(26vw, 185px);
             transform: rotate(4deg);
             z-index: 4;
         }
@@ -161,7 +163,7 @@
             top: 155vh;
             left: 45%;
             transform: translateX(-30%) rotate(-2deg);
-            width: min(38vw, 260px);
+            width: min(44vw, 300px);
             z-index: 3;
         }
 
@@ -255,13 +257,13 @@
         @media (max-width: 700px) {
             .notebook-bg::after { left: 24px; }
             .el-main { width: 75vw; top: 4vh; }
-            .el-jelly { width: 30vw; }
-            .el-wave { width: 35vw; }
-            .el-dessert { width: 28vw; }
-            .el-rose { width: 28vw; }
-            .el-sparkle { width: 32vw; }
-            .el-cake { width: 28vw; }
-            .el-ocean { width: 55vw; }
+            .el-jelly { width: 36vw; }
+            .el-wave { width: 42vw; }
+            .el-dessert { width: 34vw; }
+            .el-rose { width: 34vw; }
+            .el-sparkle { width: 38vw; }
+            .el-cake { width: 34vw; }
+            .el-ocean { width: 60vw; }
             .scrap { max-width: 52vw; }
             .scrap-1 { right: 4%; }
             .scrap-2 { left: 5%; }
@@ -310,37 +312,37 @@
 
         <!-- Jellyfish -->
         <div class="element el-jelly fade-in">
-            <img src="https://images.unsplash.com/photo-1545671913-b89ac1b4ac10?w=300&q=80" alt="jellyfish" class="photo" style="object-fit:cover; width:100%; aspect-ratio:3/4;">
+            <img src="https://images.unsplash.com/photo-1501167786227-4cba60f6d58f?w=400&q=80" alt="jellyfish" class="photo" style="object-fit:cover; width:100%; aspect-ratio:3/4;">
         </div>
 
         <!-- Soft waves -->
         <div class="element el-wave fade-in">
-            <img src="https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=300&q=80" alt="gentle waves" class="photo" style="object-fit:cover; width:100%; aspect-ratio:4/3;">
+            <img src="https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=400&q=80" alt="gentle waves" class="photo" style="object-fit:cover; width:100%; aspect-ratio:4/3;">
         </div>
 
         <!-- Cherry dessert -->
         <div class="element el-dessert fade-in">
-            <img src="https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=300&q=80" alt="cherry cupcake" class="photo" style="object-fit:cover; width:100%; aspect-ratio:1;">
+            <img src="https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=400&q=80" alt="cherry cupcake" class="photo" style="object-fit:cover; width:100%; aspect-ratio:1;">
         </div>
 
-        <!-- Vintage roses -->
+        <!-- Vintage roses 1 -->
         <div class="element el-rose fade-in">
-            <img src="https://images.unsplash.com/photo-1455659817273-f96807779a8a?w=300&q=80" alt="vintage roses" class="photo" style="object-fit:cover; width:100%; aspect-ratio:4/5;">
+            <img src="https://images.unsplash.com/photo-1490750967868-88aa4f1bf071?w=400&q=80" alt="vintage roses" class="photo" style="object-fit:cover; width:100%; aspect-ratio:4/5;">
         </div>
 
         <!-- Water sparkle 윤슬 -->
         <div class="element el-sparkle fade-in">
-            <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300&q=80" alt="water sparkle" class="photo" style="object-fit:cover; width:100%; aspect-ratio:4/3;">
+            <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80" alt="water sparkle" class="photo" style="object-fit:cover; width:100%; aspect-ratio:4/3;">
         </div>
 
-        <!-- Soft cake -->
+        <!-- Vintage roses 2 -->
         <div class="element el-cake fade-in">
-            <img src="https://images.unsplash.com/photo-1558301211-0d8c8ddee6ec?w=300&q=80" alt="pastel dessert" class="photo" style="object-fit:cover; width:100%; aspect-ratio:1;">
+            <img src="https://images.unsplash.com/photo-1455659817273-f96807779a8a?w=400&q=80" alt="pink roses" class="photo" style="object-fit:cover; width:100%; aspect-ratio:1;">
         </div>
 
-        <!-- Dreamy ocean -->
+        <!-- Dreamy waves -->
         <div class="element el-ocean fade-in">
-            <img src="https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=300&q=80" alt="dreamy ocean" class="photo" style="object-fit:cover; width:100%; aspect-ratio:16/9;">
+            <img src="https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=400&q=80" alt="dreamy ocean" class="photo" style="object-fit:cover; width:100%; aspect-ratio:16/9;">
         </div>
 
         <!-- Lyric scraps -->
