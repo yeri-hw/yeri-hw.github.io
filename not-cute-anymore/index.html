@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ILLIT - Not Cute Anymore</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Special+Elite&family=Inter:wght@300;400&display=swap');
 
         * {
             margin: 0;
@@ -13,278 +13,373 @@
             box-sizing: border-box;
         }
 
-        :root {
-            --text-dark: #2c2424;
-            --text-muted: #6a5e5e;
-            --accent: #c4a0a0;
-        }
-
         body {
             font-family: 'Inter', sans-serif;
-            color: var(--text-dark);
+            background: #f4f1ec;
             overflow-x: hidden;
             min-height: 100vh;
         }
 
-        /* Blurred background from the image */
-        .bg-layer {
-            position: fixed;
-            inset: 0;
-            z-index: -2;
-            background: url('illit.jpg') center/cover no-repeat;
-            filter: blur(60px) saturate(1.2) brightness(1.1);
-            transform: scale(1.2);
-        }
-
-        .bg-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            background: rgba(250, 248, 245, 0.55);
-        }
-
-        /* Grain */
-        body::after {
+        /* Subtle paper texture */
+        body::before {
             content: '';
             position: fixed;
             inset: 0;
             pointer-events: none;
             z-index: 1000;
-            opacity: 0.025;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
         }
 
-        /* Hero */
-        .hero {
-            height: 100vh;
+        /* Collage Canvas */
+        .canvas {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+            position: relative;
+        }
+
+        /* Masking tape strips */
+        .tape {
+            position: absolute;
+            width: 80px;
+            height: 24px;
+            background: rgba(255, 248, 220, 0.7);
+            border: 1px solid rgba(200, 180, 140, 0.3);
+            z-index: 10;
+            opacity: 0.8;
+        }
+
+        .tape-1 { top: 6rem; left: 15%; transform: rotate(-8deg); }
+        .tape-2 { top: 28rem; right: 12%; transform: rotate(5deg); width: 60px; }
+        .tape-3 { bottom: 30%; left: 8%; transform: rotate(-3deg); width: 90px; }
+
+        /* Main photo - angled like pasted on a diary */
+        .photo-main {
+            width: min(70vw, 420px);
+            margin: 2rem auto;
+            transform: rotate(-2deg);
+            position: relative;
+            z-index: 2;
+        }
+
+        .photo-main img {
+            width: 100%;
+            display: block;
+            border: 6px solid white;
+            box-shadow: 2px 4px 20px rgba(80, 60, 60, 0.12);
+        }
+
+        /* Grid layout for collage */
+        .collage-grid {
             display: grid;
-            place-items: center;
-            position: relative;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: auto;
+            gap: 1.5rem;
+            margin-top: 4rem;
+            align-items: start;
         }
 
-        .hero-inner {
+        /* Lyric scraps - like torn paper pieces */
+        .scrap {
+            background: white;
+            padding: 1.2rem 1.5rem;
+            box-shadow: 1px 2px 8px rgba(80, 60, 60, 0.08);
+            position: relative;
+            transition: transform 0.4s ease;
+        }
+
+        .scrap:hover {
+            transform: scale(1.03) rotate(0deg) !important;
+        }
+
+        .scrap p {
+            font-family: 'Special Elite', cursive;
+            font-size: clamp(0.85rem, 1.8vw, 1.05rem);
+            color: #3a2e2e;
+            line-height: 1.7;
+        }
+
+        .scrap-1 { transform: rotate(-1.5deg); grid-column: 1 / 2; }
+        .scrap-2 { transform: rotate(1deg); grid-column: 2 / 3; margin-top: 2rem; }
+        .scrap-3 { transform: rotate(-0.5deg); grid-column: 3 / 4; margin-top: 0.5rem; }
+        .scrap-4 { transform: rotate(1.2deg); grid-column: 1 / 3; }
+        .scrap-5 { transform: rotate(-1deg); grid-column: 3 / 4; margin-top: -1rem; }
+
+        /* Spiral doodle - SVG recreation of the album's spiral */
+        .spiral-doodle {
+            position: absolute;
+            opacity: 0.12;
+            animation: slowSpin 30s linear infinite;
+        }
+
+        .spiral-doodle-1 {
+            width: 180px;
+            top: 8rem;
+            right: 5%;
+        }
+
+        .spiral-doodle-2 {
+            width: 120px;
+            bottom: 20%;
+            left: 3%;
+            animation-direction: reverse;
+        }
+
+        @keyframes slowSpin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Handwritten annotations */
+        .annotation {
+            font-family: 'Special Elite', cursive;
+            font-size: 0.8rem;
+            color: #b08080;
+            position: absolute;
+            transform: rotate(-4deg);
+            white-space: nowrap;
+        }
+
+        .annotation-1 { top: 4.5rem; right: 20%; }
+        .annotation-2 { bottom: 35%; left: 12%; transform: rotate(2deg); }
+
+        /* Photo strip at bottom */
+        .photo-strip {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2.5rem;
+            gap: 1rem;
+            margin-top: 5rem;
+            justify-content: center;
+            flex-wrap: wrap;
         }
 
-        .hero-image-wrap {
+        .photo-strip-item {
+            width: min(28vw, 160px);
             position: relative;
-            width: min(72vw, 400px);
+            transition: transform 0.4s ease;
         }
 
-        .hero-image-wrap::before {
+        .photo-strip-item:nth-child(1) { transform: rotate(2deg); }
+        .photo-strip-item:nth-child(2) { transform: rotate(-1.5deg); margin-top: 1rem; }
+        .photo-strip-item:nth-child(3) { transform: rotate(1deg); }
+
+        .photo-strip-item:hover {
+            transform: rotate(0deg) scale(1.05);
+        }
+
+        .photo-strip-item img {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            border: 4px solid white;
+            box-shadow: 1px 3px 12px rgba(80, 60, 60, 0.1);
+        }
+
+        .photo-strip-item .caption {
+            font-family: 'Special Elite', cursive;
+            font-size: 0.7rem;
+            color: #8a7070;
+            text-align: center;
+            margin-top: 0.4rem;
+        }
+
+        /* Bottom title - hand-drawn style */
+        .bottom-title {
+            text-align: center;
+            margin-top: 5rem;
+            padding-bottom: 4rem;
+        }
+
+        .bottom-title h2 {
+            font-family: 'Special Elite', cursive;
+            font-size: clamp(1.5rem, 4vw, 2.8rem);
+            color: #3a2e2e;
+            letter-spacing: 0.05em;
+            position: relative;
+            display: inline-block;
+        }
+
+        .bottom-title h2::after {
             content: '';
             position: absolute;
-            inset: 0;
-            border-radius: 16px;
-            box-shadow: 0 30px 80px rgba(100, 70, 70, 0.2);
-            z-index: -1;
-        }
-
-        .hero-image {
+            bottom: -4px;
+            left: 0;
             width: 100%;
-            border-radius: 12px;
-            display: block;
-            animation: subtleFloat 8s ease-in-out infinite;
+            height: 2px;
+            background: #c4a0a0;
+            transform: scaleX(0);
+            transform-origin: left;
+            animation: underline 2s ease forwards 1s;
         }
 
-        @keyframes subtleFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
+        @keyframes underline {
+            to { transform: scaleX(1); }
         }
 
-        .hero-text {
-            text-align: center;
-        }
-
-        .hero-text h1 {
-            font-family: 'Instrument Serif', serif;
-            font-size: clamp(2.2rem, 6vw, 4.5rem);
-            font-weight: 400;
-            font-style: italic;
-            letter-spacing: -0.02em;
-            line-height: 1.1;
-            opacity: 0;
-            animation: revealText 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards 0.3s;
-        }
-
-        .hero-text .artist {
-            font-size: 0.85rem;
+        .bottom-title .sub {
+            font-size: 0.75rem;
             letter-spacing: 0.2em;
             text-transform: uppercase;
-            color: var(--text-muted);
-            margin-top: 0.75rem;
+            color: #a08080;
+            margin-top: 0.8rem;
             font-weight: 300;
-            opacity: 0;
-            animation: revealText 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards 0.6s;
         }
 
-        @keyframes revealText {
-            from { opacity: 0; transform: translateY(12px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .scroll-line {
+        /* Sticker-like decorative dots */
+        .dot {
             position: absolute;
-            bottom: 3rem;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 1px;
-            height: 48px;
-            background: linear-gradient(to bottom, transparent, var(--text-muted));
-            animation: scrollPulse 2.5s ease-in-out infinite;
-        }
-
-        @keyframes scrollPulse {
-            0%, 100% { opacity: 0.4; transform: translateX(-50%) scaleY(1); }
-            50% { opacity: 1; transform: translateX(-50%) scaleY(1.2); }
-        }
-
-        /* Marquee */
-        .marquee-section {
-            padding: 3.5rem 0;
-            overflow: hidden;
-            border-top: 1px solid rgba(196, 160, 160, 0.3);
-            border-bottom: 1px solid rgba(196, 160, 160, 0.3);
-            backdrop-filter: blur(4px);
-        }
-
-        .marquee-track {
-            display: flex;
-            gap: 3rem;
-            animation: marquee 22s linear infinite;
-            width: max-content;
-        }
-
-        .marquee-track span {
-            font-family: 'Instrument Serif', serif;
-            font-size: clamp(1.4rem, 3.5vw, 2.5rem);
-            font-style: italic;
-            color: var(--text-muted);
-            white-space: nowrap;
-            opacity: 0.6;
-        }
-
-        @keyframes marquee {
-            from { transform: translateX(0); }
-            to { transform: translateX(-50%); }
-        }
-
-        /* Footer */
-        .footer-section {
-            padding: 8rem 2rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 3rem;
-        }
-
-        .footer-image {
-            width: min(50vw, 260px);
-            border-radius: 8px;
-            filter: grayscale(0.15);
-            transition: filter 0.6s ease, transform 0.6s ease;
-            box-shadow: 0 16px 48px rgba(100, 70, 70, 0.15);
-        }
-
-        .footer-image:hover {
-            filter: grayscale(0);
-            transform: scale(1.02);
-        }
-
-        .footer-credit {
-            font-size: 0.75rem;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            color: var(--text-muted);
-        }
-
-        /* Cursor glow */
-        .glow {
-            position: fixed;
-            width: 280px;
-            height: 280px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(196,160,160,0.1) 0%, transparent 70%);
-            pointer-events: none;
-            z-index: 999;
-            transform: translate(-50%, -50%);
-            transition: left 0.4s ease, top 0.4s ease;
+            opacity: 0.25;
         }
 
-        /* Mobile */
-        @media (max-width: 600px) {
-            .hero-image-wrap { width: 88vw; }
-            .bg-layer { filter: blur(40px) saturate(1.1) brightness(1.15); }
-            .bg-overlay { background: rgba(250, 248, 245, 0.6); }
+        .dot-1 {
+            width: 12px; height: 12px;
+            background: #e8b4b4;
+            top: 12rem; left: 22%;
+        }
+
+        .dot-2 {
+            width: 8px; height: 8px;
+            background: #b4d4b4;
+            top: 20rem; right: 18%;
+        }
+
+        .dot-3 {
+            width: 10px; height: 10px;
+            background: #c4b4d4;
+            bottom: 40%; left: 30%;
+        }
+
+        /* Scroll animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 700px) {
+            .collage-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            .scrap-1, .scrap-2, .scrap-3, .scrap-4, .scrap-5 {
+                grid-column: auto;
+                margin-top: 0;
+            }
+            .photo-main { width: 85vw; }
+            .canvas { padding: 2rem 1.2rem; }
+            .tape { display: none; }
+            .spiral-doodle { display: none; }
+            .annotation { display: none; }
         }
     </style>
 </head>
 <body>
 
-    <div class="bg-layer"></div>
-    <div class="bg-overlay"></div>
-    <div class="glow" id="glow"></div>
+    <div class="canvas">
 
-    <!-- Hero -->
-    <section class="hero">
-        <div class="hero-inner">
-            <div class="hero-image-wrap">
-                <img src="illit.jpg" alt="ILLIT - Not Cute Anymore" class="hero-image">
+        <!-- Decorative elements -->
+        <div class="tape tape-1"></div>
+        <div class="tape tape-2"></div>
+        <div class="tape tape-3"></div>
+
+        <div class="dot dot-1"></div>
+        <div class="dot dot-2"></div>
+        <div class="dot dot-3"></div>
+
+        <!-- Spiral doodles -->
+        <svg class="spiral-doodle spiral-doodle-1" viewBox="0 0 100 100" fill="none" stroke="#8a6060" stroke-width="1.5">
+            <path d="M50 50 C50 35, 65 35, 65 50 C65 65, 50 65, 50 50 C50 30, 70 30, 70 50 C70 70, 45 70, 45 50 C45 25, 75 25, 75 50 C75 75, 40 75, 40 50"/>
+        </svg>
+        <svg class="spiral-doodle spiral-doodle-2" viewBox="0 0 100 100" fill="none" stroke="#8a6060" stroke-width="1.5">
+            <path d="M50 50 C50 35, 65 35, 65 50 C65 65, 50 65, 50 50 C50 30, 70 30, 70 50 C70 70, 45 70, 45 50 C45 25, 75 25, 75 50 C75 75, 40 75, 40 50"/>
+        </svg>
+
+        <!-- Annotations -->
+        <span class="annotation annotation-1">by ILLIT ♡</span>
+        <span class="annotation annotation-2">~ easygoing ~</span>
+
+        <!-- Main photo -->
+        <div class="photo-main fade-in">
+            <img src="illit.jpg" alt="ILLIT - Not Cute Anymore">
+        </div>
+
+        <!-- Lyric scraps -->
+        <div class="collage-grid">
+            <div class="scrap scrap-1 fade-in">
+                <p>My bag's so brave<br>No keyring, no hand mirror</p>
             </div>
-            <div class="hero-text">
-                <h1>Not Cute Anymore</h1>
-                <p class="artist">ILLIT</p>
+            <div class="scrap scrap-2 fade-in">
+                <p>I'm too shy for<br>jelly shoes on my date</p>
+            </div>
+            <div class="scrap scrap-3 fade-in">
+                <p>Matcha's got nothing on this<br>Five minute perfection</p>
+            </div>
+            <div class="scrap scrap-4 fade-in">
+                <p>I'll take a laid-back jellyfish<br>'Cause I'm not cute anymore</p>
+            </div>
+            <div class="scrap scrap-5 fade-in">
+                <p>I'm not an alien<br>I'm just kind of easygoing</p>
             </div>
         </div>
-        <div class="scroll-line"></div>
-    </section>
 
-    <!-- Marquee -->
-    <section class="marquee-section">
-        <div class="marquee-track">
-            <span>Not Cute Anymore</span>
-            <span>&middot;</span>
-            <span>I'm just kind of easygoing</span>
-            <span>&middot;</span>
-            <span>I'm not an alien</span>
-            <span>&middot;</span>
-            <span>Not Cute Anymore</span>
-            <span>&middot;</span>
-            <span>I'm just kind of easygoing</span>
-            <span>&middot;</span>
-            <span>I'm not an alien</span>
-            <span>&middot;</span>
-            <span>Not Cute Anymore</span>
-            <span>&middot;</span>
-            <span>I'm just kind of easygoing</span>
-            <span>&middot;</span>
+        <!-- Photo strip -->
+        <div class="photo-strip">
+            <div class="photo-strip-item fade-in">
+                <img src="illit.jpg" alt="" style="object-position: top left;">
+                <p class="caption">cherry coke</p>
+            </div>
+            <div class="photo-strip-item fade-in">
+                <img src="illit.jpg" alt="" style="object-position: center;">
+                <p class="caption">laid-back</p>
+            </div>
+            <div class="photo-strip-item fade-in">
+                <img src="illit.jpg" alt="" style="object-position: bottom right;">
+                <p class="caption">jellyfish</p>
+            </div>
         </div>
-    </section>
 
-    <!-- Footer -->
-    <section class="footer-section">
-        <img src="illit.jpg" alt="ILLIT" class="footer-image">
-        <p class="footer-credit">ILLIT &mdash; Not Cute Anymore &mdash; 2025</p>
-    </section>
+        <!-- Bottom -->
+        <div class="bottom-title fade-in">
+            <h2>not cute anymore</h2>
+            <p class="sub">ILLIT &middot; 2025</p>
+        </div>
+
+    </div>
 
     <script>
-        // Cursor glow
-        const glow = document.getElementById('glow');
-        document.addEventListener('mousemove', (e) => {
-            glow.style.left = e.clientX + 'px';
-            glow.style.top = e.clientY + 'px';
-        });
+        // Scroll reveal
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, i) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, i * 80);
+                }
+            });
+        }, { threshold: 0.15 });
 
-        // Subtle parallax on hero
-        const heroImg = document.querySelector('.hero-image');
-        window.addEventListener('scroll', () => {
-            const y = window.scrollY;
-            if (y < window.innerHeight) {
-                heroImg.style.transform = `translateY(${-y * 0.04}px)`;
-            }
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // Subtle mouse parallax on decorative elements
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth - 0.5) * 2;
+            const y = (e.clientY / window.innerHeight - 0.5) * 2;
+
+            document.querySelectorAll('.spiral-doodle').forEach((el, i) => {
+                const factor = (i + 1) * 5;
+                el.style.transform = `translate(${x * factor}px, ${y * factor}px) rotate(${x * 10}deg)`;
+            });
+
+            document.querySelectorAll('.dot').forEach((el, i) => {
+                const factor = (i + 1) * 3;
+                el.style.transform = `translate(${x * factor}px, ${y * factor}px)`;
+            });
         });
     </script>
 </body>
