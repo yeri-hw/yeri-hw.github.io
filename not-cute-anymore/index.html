@@ -66,17 +66,26 @@
             transition: transform 0.4s ease;
         }
 
-        /* Vintage lavender filter on all photos */
+        /* Lavender-pink vintage filter on mood photos */
         .photo {
             border: 5px solid white;
             box-shadow: 2px 3px 15px rgba(80, 60, 80, 0.1);
-            filter: saturate(0.6) brightness(1.05) contrast(0.9) sepia(0.15) hue-rotate(10deg);
+            filter: saturate(0.55) brightness(1.08) contrast(0.88) hue-rotate(320deg) opacity(0.92);
         }
 
         .photo:hover {
             transform: scale(1.04) rotate(0deg) !important;
             z-index: 50;
-            filter: saturate(0.7) brightness(1.08) contrast(0.92) sepia(0.1) hue-rotate(10deg);
+            filter: saturate(0.6) brightness(1.1) contrast(0.9) hue-rotate(320deg) opacity(0.95);
+        }
+
+        /* No filter on main album image */
+        .photo-main {
+            filter: none;
+        }
+
+        .photo-main:hover {
+            filter: none;
         }
 
         /* Main album image */
@@ -296,7 +305,7 @@
 
         <!-- Main album art -->
         <div class="element el-main fade-in">
-            <img src="illit.jpg" alt="ILLIT - Not Cute Anymore" class="photo">
+            <img src="illit.jpg" alt="ILLIT - Not Cute Anymore" class="photo photo-main">
         </div>
 
         <!-- Jellyfish -->
