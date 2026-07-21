@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ILLIT - Not Cute Anymore</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Special+Elite&family=Inter:wght@300;400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=Caveat:wght@400;600&family=Inter:wght@300&display=swap');
 
         * {
             margin: 0;
@@ -14,371 +14,436 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background: #f4f1ec;
+            min-height: 200vh;
             overflow-x: hidden;
-            min-height: 100vh;
+            position: relative;
         }
 
-        /* Subtle paper texture */
-        body::before {
+        /* Lined notebook background */
+        .notebook-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -10;
+            background-color: #fdfbf7;
+            background-image:
+                linear-gradient(transparent 31px, #e8d8d0 31px, #e8d8d0 32px, transparent 32px);
+            background-size: 100% 32px;
+        }
+
+        /* Left margin line */
+        .notebook-bg::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 60px;
+            width: 1px;
+            height: 100%;
+            background: #e4b4b4;
+            opacity: 0.4;
+        }
+
+        /* Paper texture */
+        body::after {
             content: '';
             position: fixed;
             inset: 0;
             pointer-events: none;
-            z-index: 1000;
-            opacity: 0.03;
+            z-index: 999;
+            opacity: 0.02;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
         }
 
-        /* Collage Canvas */
-        .canvas {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 4rem 2rem;
+        /* Free-positioned collage elements */
+        .collage {
             position: relative;
-        }
-
-        /* Masking tape strips */
-        .tape {
-            position: absolute;
-            width: 80px;
-            height: 24px;
-            background: rgba(255, 248, 220, 0.7);
-            border: 1px solid rgba(200, 180, 140, 0.3);
-            z-index: 10;
-            opacity: 0.8;
-        }
-
-        .tape-1 { top: 6rem; left: 15%; transform: rotate(-8deg); }
-        .tape-2 { top: 28rem; right: 12%; transform: rotate(5deg); width: 60px; }
-        .tape-3 { bottom: 30%; left: 8%; transform: rotate(-3deg); width: 90px; }
-
-        /* Main photo - angled like pasted on a diary */
-        .photo-main {
-            width: min(70vw, 420px);
-            margin: 2rem auto;
-            transform: rotate(-2deg);
-            position: relative;
-            z-index: 2;
-        }
-
-        .photo-main img {
             width: 100%;
-            display: block;
-            border: 6px solid white;
-            box-shadow: 2px 4px 20px rgba(80, 60, 60, 0.12);
+            min-height: 200vh;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        /* Grid layout for collage */
-        .collage-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            grid-template-rows: auto;
-            gap: 1.5rem;
-            margin-top: 4rem;
-            align-items: start;
-        }
-
-        /* Lyric scraps - like torn paper pieces */
-        .scrap {
-            background: white;
-            padding: 1.2rem 1.5rem;
-            box-shadow: 1px 2px 8px rgba(80, 60, 60, 0.08);
-            position: relative;
+        .element {
+            position: absolute;
             transition: transform 0.4s ease;
         }
 
-        .scrap:hover {
-            transform: scale(1.03) rotate(0deg) !important;
+        /* Photos */
+        .photo {
+            border: 5px solid white;
+            box-shadow: 2px 3px 15px rgba(80, 60, 60, 0.12);
+        }
+
+        .photo:hover {
+            transform: scale(1.04) rotate(0deg) !important;
+            z-index: 50;
+        }
+
+        /* Main album image */
+        .el-main {
+            top: 5vh;
+            left: 50%;
+            transform: translateX(-50%) rotate(-3deg);
+            width: min(55vw, 380px);
+            z-index: 5;
+        }
+
+        .el-main img {
+            width: 100%;
+            display: block;
+        }
+
+        /* Vintage roses */
+        .el-rose-1 {
+            top: 8vh;
+            left: 4%;
+            width: min(22vw, 160px);
+            transform: rotate(4deg);
+            z-index: 3;
+        }
+
+        .el-rose-2 {
+            top: 55vh;
+            right: 5%;
+            width: min(20vw, 150px);
+            transform: rotate(-5deg);
+            z-index: 4;
+        }
+
+        /* Water sparkle (윤슬) */
+        .el-water {
+            top: 35vh;
+            left: 2%;
+            width: min(26vw, 180px);
+            transform: rotate(2deg);
+            z-index: 3;
+        }
+
+        .el-water-2 {
+            top: 110vh;
+            right: 8%;
+            width: min(24vw, 170px);
+            transform: rotate(-3deg);
+            z-index: 3;
+        }
+
+        /* Film / flower */
+        .el-film {
+            top: 75vh;
+            left: 8%;
+            width: min(18vw, 130px);
+            transform: rotate(-6deg);
+            z-index: 4;
+        }
+
+        .el-garden {
+            top: 140vh;
+            left: 50%;
+            transform: translateX(-40%) rotate(2deg);
+            width: min(40vw, 280px);
+            z-index: 3;
+        }
+
+        /* Scrap notes - torn paper feel */
+        .scrap {
+            background: white;
+            padding: 1rem 1.4rem;
+            box-shadow: 1px 2px 10px rgba(80,60,60,0.07);
+            max-width: 260px;
         }
 
         .scrap p {
-            font-family: 'Special Elite', cursive;
-            font-size: clamp(0.85rem, 1.8vw, 1.05rem);
+            font-family: 'Caveat', cursive;
+            font-size: 1.2rem;
             color: #3a2e2e;
-            line-height: 1.7;
+            line-height: 1.6;
         }
 
-        .scrap-1 { transform: rotate(-1.5deg); grid-column: 1 / 2; }
-        .scrap-2 { transform: rotate(1deg); grid-column: 2 / 3; margin-top: 2rem; }
-        .scrap-3 { transform: rotate(-0.5deg); grid-column: 3 / 4; margin-top: 0.5rem; }
-        .scrap-4 { transform: rotate(1.2deg); grid-column: 1 / 3; }
-        .scrap-5 { transform: rotate(-1deg); grid-column: 3 / 4; margin-top: -1rem; }
+        .scrap-1 {
+            top: 28vh;
+            right: 8%;
+            transform: rotate(2deg);
+            z-index: 6;
+        }
 
-        /* Spiral doodle - SVG recreation of the album's spiral */
-        .spiral-doodle {
+        .scrap-2 {
+            top: 50vh;
+            left: 12%;
+            transform: rotate(-2.5deg);
+            z-index: 6;
+        }
+
+        .scrap-3 {
+            top: 85vh;
+            right: 12%;
+            transform: rotate(1.5deg);
+            z-index: 6;
+        }
+
+        .scrap-4 {
+            top: 105vh;
+            left: 6%;
+            transform: rotate(-1deg);
+            z-index: 6;
+        }
+
+        .scrap-5 {
+            top: 130vh;
+            right: 15%;
+            transform: rotate(3deg);
+            z-index: 6;
+        }
+
+        /* Masking tape */
+        .tape {
             position: absolute;
-            opacity: 0.12;
-            animation: slowSpin 30s linear infinite;
+            height: 22px;
+            background: rgba(255, 245, 210, 0.75);
+            border-top: 1px solid rgba(210, 190, 140, 0.3);
+            border-bottom: 1px solid rgba(210, 190, 140, 0.3);
+            z-index: 20;
         }
 
-        .spiral-doodle-1 {
-            width: 180px;
-            top: 8rem;
-            right: 5%;
-        }
-
-        .spiral-doodle-2 {
-            width: 120px;
-            bottom: 20%;
-            left: 3%;
-            animation-direction: reverse;
-        }
-
-        @keyframes slowSpin {
-            to { transform: rotate(360deg); }
-        }
+        .tape-1 { top: 4.5vh; left: calc(50% - 40px); width: 80px; transform: rotate(-3deg); }
+        .tape-2 { top: 7.5vh; left: 3.5%; width: 60px; transform: rotate(6deg); }
+        .tape-3 { top: 34.5vh; left: 1.5%; width: 70px; transform: rotate(-2deg); }
+        .tape-4 { top: 55vh; right: 4.5%; width: 65px; transform: rotate(4deg); }
+        .tape-5 { top: 75vh; left: 7.5%; width: 55px; transform: rotate(-7deg); }
 
         /* Handwritten annotations */
-        .annotation {
+        .handwritten {
+            position: absolute;
+            font-family: 'Caveat', cursive;
+            color: #b08080;
+            z-index: 15;
+            pointer-events: none;
+        }
+
+        .hw-1 {
+            top: 22vh;
+            left: 15%;
+            font-size: 1.1rem;
+            transform: rotate(-5deg);
+        }
+
+        .hw-2 {
+            top: 68vh;
+            right: 20%;
+            font-size: 1.3rem;
+            transform: rotate(3deg);
+        }
+
+        .hw-3 {
+            top: 95vh;
+            left: 40%;
+            font-size: 1rem;
+            transform: rotate(-2deg);
+        }
+
+        .hw-4 {
+            top: 155vh;
+            left: 20%;
+            font-size: 1.4rem;
+            transform: rotate(1deg);
+        }
+
+        /* Spiral SVG doodle */
+        .doodle {
+            position: absolute;
+            opacity: 0.08;
+            pointer-events: none;
+        }
+
+        .doodle-1 {
+            width: 200px;
+            top: 15vh;
+            right: 2%;
+        }
+
+        .doodle-2 {
+            width: 140px;
+            top: 90vh;
+            left: 5%;
+        }
+
+        .doodle-3 {
+            width: 100px;
+            top: 150vh;
+            right: 20%;
+        }
+
+        /* Small decorative stickers */
+        .sticker {
+            position: absolute;
+            font-size: 1.5rem;
+            z-index: 15;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .sticker-1 { top: 18vh; right: 30%; }
+        .sticker-2 { top: 60vh; left: 35%; }
+        .sticker-3 { top: 120vh; right: 25%; }
+        .sticker-4 { top: 170vh; left: 45%; }
+
+        /* Bottom credit */
+        .credit {
+            position: absolute;
+            bottom: 4vh;
+            left: 50%;
+            transform: translateX(-50%);
             font-family: 'Special Elite', cursive;
             font-size: 0.8rem;
-            color: #b08080;
-            position: absolute;
-            transform: rotate(-4deg);
+            color: #a09090;
+            letter-spacing: 0.1em;
             white-space: nowrap;
         }
 
-        .annotation-1 { top: 4.5rem; right: 20%; }
-        .annotation-2 { bottom: 35%; left: 12%; transform: rotate(2deg); }
-
-        /* Photo strip at bottom */
-        .photo-strip {
-            display: flex;
-            gap: 1rem;
-            margin-top: 5rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .photo-strip-item {
-            width: min(28vw, 160px);
-            position: relative;
-            transition: transform 0.4s ease;
-        }
-
-        .photo-strip-item:nth-child(1) { transform: rotate(2deg); }
-        .photo-strip-item:nth-child(2) { transform: rotate(-1.5deg); margin-top: 1rem; }
-        .photo-strip-item:nth-child(3) { transform: rotate(1deg); }
-
-        .photo-strip-item:hover {
-            transform: rotate(0deg) scale(1.05);
-        }
-
-        .photo-strip-item img {
-            width: 100%;
-            aspect-ratio: 1;
-            object-fit: cover;
-            border: 4px solid white;
-            box-shadow: 1px 3px 12px rgba(80, 60, 60, 0.1);
-        }
-
-        .photo-strip-item .caption {
-            font-family: 'Special Elite', cursive;
-            font-size: 0.7rem;
-            color: #8a7070;
-            text-align: center;
-            margin-top: 0.4rem;
-        }
-
-        /* Bottom title - hand-drawn style */
-        .bottom-title {
-            text-align: center;
-            margin-top: 5rem;
-            padding-bottom: 4rem;
-        }
-
-        .bottom-title h2 {
-            font-family: 'Special Elite', cursive;
-            font-size: clamp(1.5rem, 4vw, 2.8rem);
-            color: #3a2e2e;
-            letter-spacing: 0.05em;
-            position: relative;
-            display: inline-block;
-        }
-
-        .bottom-title h2::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: #c4a0a0;
-            transform: scaleX(0);
-            transform-origin: left;
-            animation: underline 2s ease forwards 1s;
-        }
-
-        @keyframes underline {
-            to { transform: scaleX(1); }
-        }
-
-        .bottom-title .sub {
-            font-size: 0.75rem;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: #a08080;
-            margin-top: 0.8rem;
-            font-weight: 300;
-        }
-
-        /* Sticker-like decorative dots */
-        .dot {
-            position: absolute;
-            border-radius: 50%;
-            opacity: 0.25;
-        }
-
-        .dot-1 {
-            width: 12px; height: 12px;
-            background: #e8b4b4;
-            top: 12rem; left: 22%;
-        }
-
-        .dot-2 {
-            width: 8px; height: 8px;
-            background: #b4d4b4;
-            top: 20rem; right: 18%;
-        }
-
-        .dot-3 {
-            width: 10px; height: 10px;
-            background: #c4b4d4;
-            bottom: 40%; left: 30%;
-        }
-
-        /* Scroll animations */
+        /* Scroll fade in */
         .fade-in {
             opacity: 0;
-            transform: translateY(16px);
-            transition: opacity 0.7s ease, transform 0.7s ease;
+            transition: opacity 0.8s ease;
         }
-
         .fade-in.visible {
             opacity: 1;
-            transform: translateY(0);
         }
 
-        /* Responsive */
+        /* Mobile adjustments */
         @media (max-width: 700px) {
-            .collage-grid {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-            .scrap-1, .scrap-2, .scrap-3, .scrap-4, .scrap-5 {
-                grid-column: auto;
-                margin-top: 0;
-            }
-            .photo-main { width: 85vw; }
-            .canvas { padding: 2rem 1.2rem; }
-            .tape { display: none; }
-            .spiral-doodle { display: none; }
-            .annotation { display: none; }
+            .notebook-bg::after { left: 24px; }
+
+            .el-main { width: 75vw; top: 4vh; }
+            .el-rose-1 { width: 30vw; top: 6vh; left: 2%; }
+            .el-rose-2 { width: 28vw; }
+            .el-water { width: 35vw; top: 30vh; }
+            .el-water-2 { width: 32vw; }
+            .el-film { width: 28vw; }
+            .el-garden { width: 60vw; }
+
+            .scrap { max-width: 55vw; }
+            .scrap-1 { right: 4%; top: 25vh; }
+            .scrap-2 { left: 5%; }
+            .scrap-3 { right: 5%; }
+            .scrap-4 { left: 4%; }
+            .scrap-5 { right: 5%; }
+
+            .handwritten { font-size: 1rem !important; }
         }
     </style>
 </head>
 <body>
 
-    <div class="canvas">
+    <div class="notebook-bg"></div>
 
-        <!-- Decorative elements -->
+    <div class="collage">
+
+        <!-- Tapes -->
         <div class="tape tape-1"></div>
         <div class="tape tape-2"></div>
         <div class="tape tape-3"></div>
+        <div class="tape tape-4"></div>
+        <div class="tape tape-5"></div>
 
-        <div class="dot dot-1"></div>
-        <div class="dot dot-2"></div>
-        <div class="dot dot-3"></div>
+        <!-- Stickers -->
+        <span class="sticker sticker-1">🌸</span>
+        <span class="sticker sticker-2">☁️</span>
+        <span class="sticker sticker-3">🦋</span>
+        <span class="sticker sticker-4">✿</span>
 
         <!-- Spiral doodles -->
-        <svg class="spiral-doodle spiral-doodle-1" viewBox="0 0 100 100" fill="none" stroke="#8a6060" stroke-width="1.5">
-            <path d="M50 50 C50 35, 65 35, 65 50 C65 65, 50 65, 50 50 C50 30, 70 30, 70 50 C70 70, 45 70, 45 50 C45 25, 75 25, 75 50 C75 75, 40 75, 40 50"/>
+        <svg class="doodle doodle-1" viewBox="0 0 100 100" fill="none" stroke="#8a6060" stroke-width="1.2">
+            <path d="M50 50 C50 38,62 38,62 50 C62 62,50 62,50 50 C50 32,68 32,68 50 C68 68,44 68,44 50 C44 26,74 26,74 50 C74 74,38 74,38 50"/>
         </svg>
-        <svg class="spiral-doodle spiral-doodle-2" viewBox="0 0 100 100" fill="none" stroke="#8a6060" stroke-width="1.5">
-            <path d="M50 50 C50 35, 65 35, 65 50 C65 65, 50 65, 50 50 C50 30, 70 30, 70 50 C70 70, 45 70, 45 50 C45 25, 75 25, 75 50 C75 75, 40 75, 40 50"/>
+        <svg class="doodle doodle-2" viewBox="0 0 100 100" fill="none" stroke="#8a6060" stroke-width="1.2">
+            <path d="M50 50 C50 38,62 38,62 50 C62 62,50 62,50 50 C50 32,68 32,68 50 C68 68,44 68,44 50 C44 26,74 26,74 50 C74 74,38 74,38 50"/>
+        </svg>
+        <svg class="doodle doodle-3" viewBox="0 0 100 100" fill="none" stroke="#8a6060" stroke-width="1.2">
+            <path d="M50 50 C50 38,62 38,62 50 C62 62,50 62,50 50 C50 32,68 32,68 50 C68 68,44 68,44 50"/>
         </svg>
 
-        <!-- Annotations -->
-        <span class="annotation annotation-1">by ILLIT ♡</span>
-        <span class="annotation annotation-2">~ easygoing ~</span>
+        <!-- Handwritten text -->
+        <span class="handwritten hw-1">by ILLIT ♡</span>
+        <span class="handwritten hw-2">~ not cute anymore ~</span>
+        <span class="handwritten hw-3">I don't like Cherry Coke</span>
+        <span class="handwritten hw-4">easygoing ◡̈</span>
 
-        <!-- Main photo -->
-        <div class="photo-main fade-in">
-            <img src="illit.jpg" alt="ILLIT - Not Cute Anymore">
+        <!-- Main album art -->
+        <div class="element el-main fade-in">
+            <img src="illit.jpg" alt="ILLIT - Not Cute Anymore" class="photo">
+        </div>
+
+        <!-- Vintage roses -->
+        <div class="element el-rose-1 fade-in">
+            <img src="https://images.unsplash.com/photo-1490750967868-88aa4f1bf071?w=300&q=80" alt="vintage roses" class="photo" style="object-fit:cover; width:100%; aspect-ratio:4/5;">
+        </div>
+        <div class="element el-rose-2 fade-in">
+            <img src="https://images.unsplash.com/photo-1455659817273-f96807779a8a?w=300&q=80" alt="pink roses" class="photo" style="object-fit:cover; width:100%; aspect-ratio:3/4;">
+        </div>
+
+        <!-- Water sparkle 윤슬 -->
+        <div class="element el-water fade-in">
+            <img src="https://images.unsplash.com/photo-1505228395891-9a51e7e86bf6?w=300&q=80" alt="water sparkle" class="photo" style="object-fit:cover; width:100%; aspect-ratio:4/3;">
+        </div>
+        <div class="element el-water-2 fade-in">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&q=80" alt="ocean light" class="photo" style="object-fit:cover; width:100%; aspect-ratio:1;">
+        </div>
+
+        <!-- Film / dreamy -->
+        <div class="element el-film fade-in">
+            <img src="https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=300&q=80" alt="flower field" class="photo" style="object-fit:cover; width:100%; aspect-ratio:3/4;">
+        </div>
+
+        <!-- Garden -->
+        <div class="element el-garden fade-in">
+            <img src="https://images.unsplash.com/photo-1416339684178-3a239570f315?w=300&q=80" alt="dreamy garden" class="photo" style="object-fit:cover; width:100%; aspect-ratio:16/9;">
         </div>
 
         <!-- Lyric scraps -->
-        <div class="collage-grid">
-            <div class="scrap scrap-1 fade-in">
-                <p>My bag's so brave<br>No keyring, no hand mirror</p>
-            </div>
-            <div class="scrap scrap-2 fade-in">
-                <p>I'm too shy for<br>jelly shoes on my date</p>
-            </div>
-            <div class="scrap scrap-3 fade-in">
-                <p>Matcha's got nothing on this<br>Five minute perfection</p>
-            </div>
-            <div class="scrap scrap-4 fade-in">
-                <p>I'll take a laid-back jellyfish<br>'Cause I'm not cute anymore</p>
-            </div>
-            <div class="scrap scrap-5 fade-in">
-                <p>I'm not an alien<br>I'm just kind of easygoing</p>
-            </div>
+        <div class="element scrap scrap-1 fade-in">
+            <p>My bag's so brave<br>No keyring, no hand mirror</p>
         </div>
 
-        <!-- Photo strip -->
-        <div class="photo-strip">
-            <div class="photo-strip-item fade-in">
-                <img src="illit.jpg" alt="" style="object-position: top left;">
-                <p class="caption">cherry coke</p>
-            </div>
-            <div class="photo-strip-item fade-in">
-                <img src="illit.jpg" alt="" style="object-position: center;">
-                <p class="caption">laid-back</p>
-            </div>
-            <div class="photo-strip-item fade-in">
-                <img src="illit.jpg" alt="" style="object-position: bottom right;">
-                <p class="caption">jellyfish</p>
-            </div>
+        <div class="element scrap scrap-2 fade-in">
+            <p>I'm too shy for<br>jelly shoes on my date</p>
         </div>
 
-        <!-- Bottom -->
-        <div class="bottom-title fade-in">
-            <h2>not cute anymore</h2>
-            <p class="sub">ILLIT &middot; 2025</p>
+        <div class="element scrap scrap-3 fade-in">
+            <p>I'll take a laid-back jellyfish<br>'Cause I'm not cute anymore</p>
         </div>
+
+        <div class="element scrap scrap-4 fade-in">
+            <p>Matcha's got nothing on this<br>Five minute perfection<br>My makeup tutorial</p>
+        </div>
+
+        <div class="element scrap scrap-5 fade-in">
+            <p>I'm not an alien<br>I'm just kind of easygoing</p>
+        </div>
+
+        <!-- Credit -->
+        <p class="credit">ILLIT · Not Cute Anymore · 2025</p>
 
     </div>
 
     <script>
-        // Scroll reveal
+        // Scroll-based fade in
         const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry, i) => {
+            entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    setTimeout(() => {
-                        entry.target.classList.add('visible');
-                    }, i * 80);
+                    entry.target.classList.add('visible');
                 }
             });
-        }, { threshold: 0.15 });
+        }, { threshold: 0.1 });
 
         document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
-        // Subtle mouse parallax on decorative elements
-        document.addEventListener('mousemove', (e) => {
-            const x = (e.clientX / window.innerWidth - 0.5) * 2;
-            const y = (e.clientY / window.innerHeight - 0.5) * 2;
-
-            document.querySelectorAll('.spiral-doodle').forEach((el, i) => {
-                const factor = (i + 1) * 5;
-                el.style.transform = `translate(${x * factor}px, ${y * factor}px) rotate(${x * 10}deg)`;
-            });
-
-            document.querySelectorAll('.dot').forEach((el, i) => {
-                const factor = (i + 1) * 3;
-                el.style.transform = `translate(${x * factor}px, ${y * factor}px)`;
+        // Gentle parallax on scroll for photos
+        const elements = document.querySelectorAll('.element');
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            elements.forEach((el, i) => {
+                const speed = 0.02 + (i % 3) * 0.01;
+                const y = scrollY * speed;
+                const currentTransform = getComputedStyle(el).transform;
+                el.style.marginTop = `${-y}px`;
             });
         });
     </script>
