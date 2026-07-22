@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Find the Different Umbrella</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Special Elite', 'Courier New', monospace;
             background: #0a0a0a;
             color: white;
             min-height: 100vh;
@@ -29,8 +29,8 @@
 
         .text-pattern span {
             position: absolute;
-            font-family: 'Inter', sans-serif;
-            font-weight: 900;
+            font-family: 'Special Elite', 'Courier New', monospace;
+            font-weight: 700;
             font-size: 0.75rem;
             letter-spacing: 0.4em;
             color: rgba(255, 255, 255, 0.92);
@@ -115,7 +115,7 @@
         .screen-overlay h1 .accent { opacity: 0.5; }
         .screen-overlay .subtitle { font-size: clamp(0.85rem,2.5vw,1.2rem); font-weight: 300; color: rgba(255,255,255,0.5); text-align: center; max-width: 340px; line-height: 1.6; z-index: 10; position: relative; }
         .screen-overlay .score-big { font-size: 3rem; font-weight: 900; z-index: 10; position: relative; }
-        .start-btn { margin-top: 2rem; padding: 1rem 3.5rem; background: white; color: #0a0a0a; border: none; border-radius: 0; font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 900; cursor: pointer; transition: transform 0.2s, background 0.2s; letter-spacing: 0.15em; text-transform: uppercase; z-index: 10; position: relative; }
+        .start-btn { margin-top: 2rem; padding: 1rem 3.5rem; background: white; color: #0a0a0a; border: none; border-radius: 0; font-family: 'Special Elite', 'Courier New', monospace; font-size: 0.85rem; font-weight: 900; cursor: pointer; transition: transform 0.2s, background 0.2s; letter-spacing: 0.15em; text-transform: uppercase; z-index: 10; position: relative; }
         .start-btn:hover { transform: scale(1.05); background: #eee; }
 
         /* ─── Start Screen Umbrellas (polka dot grid) ─── */
@@ -146,13 +146,13 @@
             top: -100%;
             display: flex;
             flex-direction: column;
-            gap: 2rem;
+            gap: 3.5rem;
             animation: rainFall linear infinite;
         }
 
         .rain-col span {
-            font-family: 'Inter', sans-serif;
-            font-weight: 900;
+            font-family: 'Special Elite', 'Courier New', monospace;
+            font-weight: 700;
             font-size: 0.75rem;
             letter-spacing: 0.3em;
             color: rgba(255, 255, 255, 0.9);
@@ -526,6 +526,7 @@
         }
 
         function startGame() {
+            clearInterval(startColorInterval);
             score=0; round=0; lives=3; isPlaying=true;
             scoreEl.textContent='0'; roundEl.textContent='1';
             timerEl.classList.remove('urgent'); updateLives();
