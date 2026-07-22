@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Umbrella Puzzle</title>
+    <title>Find the Different Umbrella</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;700;900&display=swap');
 
         * {
             margin: 0;
@@ -14,476 +14,602 @@
         }
 
         body {
-            font-family: 'Quicksand', sans-serif;
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: white;
             min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+            user-select: none;
+        }
+
+        /* Background typography */
+        .bg-text {
+            position: fixed;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.04);
+            pointer-events: none;
+            z-index: 0;
+            white-space: nowrap;
+        }
+
+        .bg-text-1 {
+            top: 8%;
+            left: 5%;
+            font-size: clamp(2rem, 6vw, 5rem);
+        }
+
+        .bg-text-2 {
+            top: 35%;
+            right: 5%;
+            font-size: clamp(1.5rem, 4vw, 3.5rem);
+        }
+
+        .bg-text-3 {
+            bottom: 15%;
+            left: 8%;
+            font-size: clamp(2.5rem, 7vw, 6rem);
+        }
+
+        .bg-text-4 {
+            bottom: 40%;
+            right: 10%;
+            font-size: clamp(1rem, 3vw, 2.5rem);
+            font-weight: 300;
+        }
+
+        /* Game prompt text */
+        .prompt-text {
+            position: fixed;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.08);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .prompt-1 {
+            top: 18%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: clamp(1.8rem, 5vw, 4rem);
+        }
+
+        .prompt-2 {
+            bottom: 25%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: clamp(1rem, 2.5vw, 2rem);
+            font-weight: 300;
+            letter-spacing: 0.1em;
+        }
+
+        /* HUD */
+        .hud {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 1.2rem 2rem;
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            background: linear-gradient(180deg, #e8e0f0 0%, #f0e8f4 50%, #e4dce8 100%);
-            padding: 1.5rem;
-            gap: 1.5rem;
+            z-index: 100;
         }
 
-        /* Header */
-        .header {
-            text-align: center;
-        }
-
-        .header h1 {
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: #4a3a5a;
-            margin-bottom: 0.3rem;
-        }
-
-        .header p {
-            font-size: 0.85rem;
-            color: #8a7a9a;
-        }
-
-        /* Game info */
-        .game-info {
+        .hud-left {
             display: flex;
             gap: 2rem;
-            align-items: center;
+            align-items: baseline;
         }
 
-        .info-item {
-            text-align: center;
-        }
-
-        .info-item .label {
-            font-size: 0.7rem;
+        .hud-label {
+            font-size: 0.65rem;
+            font-weight: 300;
+            letter-spacing: 0.15em;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: #8a7a9a;
+            color: rgba(255,255,255,0.4);
         }
 
-        .info-item .value {
-            font-size: 1.3rem;
+        .hud-value {
+            font-size: 1.4rem;
             font-weight: 700;
-            color: #5a4a6a;
-        }
-
-        /* Canvas container */
-        .canvas-wrap {
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        canvas {
-            cursor: pointer;
-            border-radius: 50%;
-            box-shadow: 0 12px 40px rgba(80, 60, 100, 0.15);
-        }
-
-        /* Hint: target pattern */
-        .hint-wrap {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .hint-label {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: #8a7a9a;
-        }
-
-        canvas.hint {
-            box-shadow: 0 4px 16px rgba(80, 60, 100, 0.1);
-            cursor: default;
-        }
-
-        /* Controls */
-        .controls {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .btn {
-            padding: 0.6rem 1.5rem;
-            border: none;
-            border-radius: 2rem;
-            font-family: 'Quicksand', sans-serif;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(80, 60, 100, 0.2);
-        }
-
-        .btn-primary {
-            background: #7a5a9a;
             color: white;
         }
 
-        .btn-secondary {
-            background: white;
-            color: #5a4a6a;
-            border: 1px solid #d4c8e0;
+        .hud-timer {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: #8bb8e8;
+            font-variant-numeric: tabular-nums;
         }
 
-        /* Success overlay */
-        .success-overlay {
+        .hud-timer.urgent {
+            color: #e88b8b;
+            animation: pulse 0.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Game area */
+        .game-area {
             position: fixed;
             inset: 0;
-            background: rgba(100, 70, 130, 0.85);
-            display: none;
+            display: flex;
             align-items: center;
             justify-content: center;
-            flex-direction: column;
-            gap: 1.5rem;
-            z-index: 100;
-            animation: fadeIn 0.4s ease;
+            z-index: 10;
         }
 
-        .success-overlay.show {
-            display: flex;
+        .umbrella-grid {
+            display: grid;
+            gap: 1.2rem;
+            padding: 2rem;
         }
 
-        .success-overlay h2 {
-            font-size: 2rem;
-            color: white;
-        }
-
-        .success-overlay p {
-            color: rgba(255,255,255,0.8);
-            font-size: 1rem;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        /* Rotation animation hint */
-        .rotate-hint {
-            position: absolute;
-            bottom: -2rem;
-            font-size: 0.75rem;
-            color: #8a7a9a;
+        /* Umbrella (top view = circle with ribs) */
+        .umbrella {
+            position: relative;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.15s ease, opacity 0.3s ease;
             opacity: 0;
-            animation: hintPulse 3s ease-in-out infinite;
+            transform: scale(0.7);
         }
 
-        @keyframes hintPulse {
-            0%, 100% { opacity: 0; }
-            50% { opacity: 1; }
+        .umbrella.appear {
+            opacity: 1;
+            transform: scale(1);
         }
 
-        /* Layout */
-        .game-area {
+        .umbrella.disappear {
+            opacity: 0;
+            transform: scale(0.5);
+        }
+
+        .umbrella:hover {
+            transform: scale(1.08);
+        }
+
+        .umbrella:active {
+            transform: scale(0.95);
+        }
+
+        .umbrella svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* Feedback */
+        .feedback {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            font-weight: 900;
+            pointer-events: none;
+            z-index: 200;
+            opacity: 0;
+        }
+
+        .feedback.correct {
+            color: #8bb8e8;
+            animation: feedbackPop 0.6s ease forwards;
+        }
+
+        .feedback.wrong {
+            color: #e88b8b;
+            animation: feedbackPop 0.6s ease forwards;
+        }
+
+        .feedback.miss {
+            color: rgba(255,255,255,0.3);
+            animation: feedbackPop 0.8s ease forwards;
+        }
+
+        @keyframes feedbackPop {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+            30% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(1) translateY(-20px); }
+        }
+
+        /* Start / Game Over screen */
+        .screen-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 10, 10, 0.95);
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 3rem;
-            flex-wrap: wrap;
             justify-content: center;
+            gap: 1.5rem;
+            z-index: 500;
+            transition: opacity 0.4s ease;
         }
 
-        @media (max-width: 600px) {
-            .game-area { gap: 1.5rem; }
-            .header h1 { font-size: 1.3rem; }
+        .screen-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
         }
+
+        .screen-overlay h1 {
+            font-size: clamp(2rem, 6vw, 4rem);
+            font-weight: 900;
+            letter-spacing: -0.02em;
+        }
+
+        .screen-overlay h1 span {
+            color: #8bb8e8;
+        }
+
+        .screen-overlay p {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.9rem;
+            font-weight: 300;
+            max-width: 320px;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .screen-overlay .score-display {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #8bb8e8;
+        }
+
+        .start-btn {
+            margin-top: 1rem;
+            padding: 0.8rem 2.5rem;
+            background: #8bb8e8;
+            color: #0a0a0a;
+            border: none;
+            border-radius: 3rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        .start-btn:hover {
+            transform: scale(1.05);
+            background: #a8cef0;
+        }
+
+        /* Decorative circles in background */
+        .deco-circle {
+            position: fixed;
+            border-radius: 50%;
+            background: rgba(139, 184, 232, 0.06);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .deco-1 { width: 300px; height: 300px; top: -80px; right: -60px; }
+        .deco-2 { width: 180px; height: 180px; bottom: 10%; left: -40px; }
+        .deco-3 { width: 100px; height: 100px; top: 40%; right: 10%; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1>Umbrella Puzzle</h1>
-        <p>조각을 클릭해서 회전시켜 원래 우산 패턴을 완성하세요</p>
+    <!-- Background decorative -->
+    <div class="deco-circle deco-1"></div>
+    <div class="deco-circle deco-2"></div>
+    <div class="deco-circle deco-3"></div>
+
+    <!-- Background text -->
+    <div class="bg-text bg-text-1">find</div>
+    <div class="bg-text bg-text-2">different</div>
+    <div class="bg-text bg-text-3">umbrella</div>
+    <div class="bg-text bg-text-4">빠르게 찾아봐</div>
+
+    <div class="prompt-text prompt-1">다른 우산을 찾아</div>
+    <div class="prompt-text prompt-2">사라지기 전에</div>
+
+    <!-- HUD -->
+    <div class="hud">
+        <div class="hud-left">
+            <div>
+                <div class="hud-label">score</div>
+                <div class="hud-value" id="score">0</div>
+            </div>
+            <div>
+                <div class="hud-label">round</div>
+                <div class="hud-value" id="round">1</div>
+            </div>
+        </div>
+        <div class="hud-timer" id="timer">3.0</div>
     </div>
 
-    <div class="game-info">
-        <div class="info-item">
-            <div class="label">레벨</div>
-            <div class="value" id="level">1</div>
-        </div>
-        <div class="info-item">
-            <div class="label">클릭 수</div>
-            <div class="value" id="clicks">0</div>
-        </div>
-        <div class="info-item">
-            <div class="label">조각 수</div>
-            <div class="value" id="slices">4</div>
-        </div>
-    </div>
-
+    <!-- Game area -->
     <div class="game-area">
-        <div class="hint-wrap">
-            <span class="hint-label">완성 모습</span>
-            <canvas id="hintCanvas" class="hint" width="120" height="120"></canvas>
-        </div>
-
-        <div class="canvas-wrap">
-            <canvas id="gameCanvas" width="320" height="320"></canvas>
-            <span class="rotate-hint">클릭하면 조각이 회전해요</span>
-        </div>
+        <div class="umbrella-grid" id="grid"></div>
     </div>
 
-    <div class="controls">
-        <button class="btn btn-secondary" onclick="shufflePuzzle()">섞기</button>
-        <button class="btn btn-primary" onclick="nextLevel()">다음 레벨</button>
+    <!-- Feedback -->
+    <div class="feedback" id="feedback"></div>
+
+    <!-- Start screen -->
+    <div class="screen-overlay" id="startScreen">
+        <h1>Find the <span>Different</span></h1>
+        <p>우산들 중에서 하나만 다릅니다.<br>사라지기 전에 빠르게 찾아 클릭하세요!</p>
+        <button class="start-btn" onclick="startGame()">시작하기</button>
     </div>
 
-    <!-- Success -->
-    <div class="success-overlay" id="successOverlay">
-        <h2>완성!</h2>
-        <p id="successMsg">멋져요! 클릭 N번 만에 완성했어요.</p>
-        <button class="btn btn-primary" onclick="nextLevel()">다음 레벨</button>
+    <!-- Game Over screen -->
+    <div class="screen-overlay hidden" id="gameOverScreen">
+        <h1>Game <span>Over</span></h1>
+        <div class="score-display" id="finalScore">0점</div>
+        <p id="gameOverMsg">3번 놓치면 게임이 끝나요.</p>
+        <button class="start-btn" onclick="startGame()">다시 하기</button>
     </div>
 
     <script>
-        const gameCanvas = document.getElementById('gameCanvas');
-        const gameCtx = gameCanvas.getContext('2d');
-        const hintCanvas = document.getElementById('hintCanvas');
-        const hintCtx = hintCanvas.getContext('2d');
+        const grid = document.getElementById('grid');
+        const scoreEl = document.getElementById('score');
+        const roundEl = document.getElementById('round');
+        const timerEl = document.getElementById('timer');
+        const feedback = document.getElementById('feedback');
+        const startScreen = document.getElementById('startScreen');
+        const gameOverScreen = document.getElementById('gameOverScreen');
 
-        let currentLevel = 1;
-        let numSlices = 4;
-        let clicks = 0;
-        let sliceRotations = []; // how many positions each slice has been rotated
-        let targetColors = [];
-        let solved = false;
+        let score = 0;
+        let round = 0;
+        let lives = 3;
+        let timeLeft = 0;
+        let timerInterval = null;
+        let roundTimeout = null;
+        let isPlaying = false;
+        let differentIndex = -1;
 
-        // Color palettes per level theme
-        const palettes = [
-            ['#e8a0b0', '#f0c8d4', '#d488a0', '#f4dce4'], // pink
-            ['#a0c8e8', '#c8e0f4', '#88b0d4', '#dceaf4', '#6898b8'], // blue
-            ['#c8b0e0', '#e0d0f0', '#a888c8', '#f0e8f8', '#8a68a8', '#d4c0e8'], // purple
-            ['#b0d8b0', '#d0ecd0', '#88c088', '#e4f4e4', '#68a868', '#c0e4c0', '#4a8a4a'], // green
-            ['#e8c888', '#f4e0b0', '#d4a868', '#f8ecd0', '#c09048', '#ecdcb8', '#a87828', '#f0d898'], // gold
-        ];
+        // Umbrella color - base is pastel blue like the reference
+        const baseHue = 210;
 
-        // Umbrella rib (spoke) style
-        const ribColor = 'rgba(60, 40, 60, 0.3)';
-        const centerColor = '#5a4a5a';
-        const rimColor = 'rgba(60, 40, 60, 0.15)';
+        function createUmbrellaSVG(ribs, color, ribOffset, hasDot) {
+            const size = 100;
+            const cx = 50, cy = 50, r = 46;
+            let paths = '';
 
-        function getColors(level) {
-            const paletteIndex = (level - 1) % palettes.length;
-            const palette = palettes[paletteIndex];
-            const colors = [];
-            for (let i = 0; i < numSlices; i++) {
-                colors.push(palette[i % palette.length]);
-            }
-            return colors;
-        }
+            // Main circle
+            paths += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}" />`;
 
-        function initLevel(level) {
-            currentLevel = level;
-            numSlices = Math.min(3 + level, 10); // 4, 5, 6... up to 10
-            clicks = 0;
-            solved = false;
-            targetColors = getColors(level);
-            sliceRotations = new Array(numSlices).fill(0);
-
-            document.getElementById('level').textContent = level;
-            document.getElementById('clicks').textContent = 0;
-            document.getElementById('slices').textContent = numSlices;
-            document.getElementById('successOverlay').classList.remove('show');
-
-            drawUmbrella(hintCtx, 60, 60, 55, targetColors, new Array(numSlices).fill(0), numSlices, true);
-            shufflePuzzle();
-        }
-
-        function shufflePuzzle() {
-            clicks = 0;
-            solved = false;
-            document.getElementById('clicks').textContent = 0;
-            document.getElementById('successOverlay').classList.remove('show');
-
-            // Random rotations, ensure at least one is not 0
-            let allZero = true;
-            for (let i = 0; i < numSlices; i++) {
-                sliceRotations[i] = Math.floor(Math.random() * numSlices);
-                if (sliceRotations[i] !== 0) allZero = false;
-            }
-            if (allZero) {
-                sliceRotations[0] = 1 + Math.floor(Math.random() * (numSlices - 1));
+            // Ribs (spokes)
+            for (let i = 0; i < ribs; i++) {
+                const angle = (i * 360 / ribs + ribOffset) * Math.PI / 180;
+                const x2 = cx + Math.cos(angle) * r;
+                const y2 = cy + Math.sin(angle) * r;
+                paths += `<line x1="${cx}" y1="${cy}" x2="${x2}" y2="${y2}" stroke="rgba(0,0,0,0.15)" stroke-width="1.5"/>`;
             }
 
-            drawGame();
-        }
-
-        function drawUmbrella(ctx, cx, cy, radius, colors, rotations, slices, isHint) {
-            const size = isHint ? 120 : 320;
-            ctx.clearRect(0, 0, size, size);
-
-            const anglePerSlice = (Math.PI * 2) / slices;
-
-            // Draw slices
-            for (let i = 0; i < slices; i++) {
-                // The color index for this visual position considers rotation
-                const colorIndex = (i - rotations[i] + slices * 10) % slices;
-                const startAngle = i * anglePerSlice - Math.PI / 2;
-                const endAngle = startAngle + anglePerSlice;
-
-                ctx.beginPath();
-                ctx.moveTo(cx, cy);
-                ctx.arc(cx, cy, radius, startAngle, endAngle);
-                ctx.closePath();
-                ctx.fillStyle = colors[colorIndex];
-                ctx.fill();
-
-                // Rib line
-                ctx.beginPath();
-                ctx.moveTo(cx, cy);
-                ctx.lineTo(
-                    cx + Math.cos(startAngle) * radius,
-                    cy + Math.sin(startAngle) * radius
-                );
-                ctx.strokeStyle = ribColor;
-                ctx.lineWidth = isHint ? 1 : 2;
-                ctx.stroke();
+            // Center dot
+            if (hasDot) {
+                paths += `<circle cx="${cx}" cy="${cy}" r="5" fill="rgba(0,0,0,0.2)" />`;
+            } else {
+                paths += `<circle cx="${cx}" cy="${cy}" r="3.5" fill="rgba(0,0,0,0.15)" />`;
             }
 
             // Outer rim
-            ctx.beginPath();
-            ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-            ctx.strokeStyle = rimColor;
-            ctx.lineWidth = isHint ? 2 : 4;
-            ctx.stroke();
+            paths += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(0,0,0,0.08)" stroke-width="2"/>`;
 
-            // Scalloped edge (umbrella curves)
-            ctx.beginPath();
-            for (let i = 0; i < slices; i++) {
-                const startAngle = i * anglePerSlice - Math.PI / 2;
-                const midAngle = startAngle + anglePerSlice / 2;
-                const endAngle = startAngle + anglePerSlice;
-
-                const x1 = cx + Math.cos(startAngle) * radius;
-                const y1 = cy + Math.sin(startAngle) * radius;
-                const x2 = cx + Math.cos(endAngle) * radius;
-                const y2 = cy + Math.sin(endAngle) * radius;
-
-                // Control point pushed inward for scallop
-                const cpDist = radius * 0.88;
-                const cpx = cx + Math.cos(midAngle) * cpDist;
-                const cpy = cy + Math.sin(midAngle) * cpDist;
-
-                if (i === 0) ctx.moveTo(x1, y1);
-                ctx.quadraticCurveTo(cpx, cpy, x2, y2);
-            }
-            ctx.strokeStyle = 'rgba(60, 40, 60, 0.25)';
-            ctx.lineWidth = isHint ? 1.5 : 3;
-            ctx.stroke();
-
-            // Center point (umbrella tip)
-            ctx.beginPath();
-            ctx.arc(cx, cy, isHint ? 4 : 8, 0, Math.PI * 2);
-            ctx.fillStyle = centerColor;
-            ctx.fill();
-
-            // Inner ring
-            ctx.beginPath();
-            ctx.arc(cx, cy, isHint ? 8 : 16, 0, Math.PI * 2);
-            ctx.strokeStyle = 'rgba(60, 40, 60, 0.2)';
-            ctx.lineWidth = isHint ? 1 : 2;
-            ctx.stroke();
+            return `<svg viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">${paths}</svg>`;
         }
 
-        function drawGame() {
-            drawUmbrella(gameCtx, 160, 160, 148, targetColors, sliceRotations, numSlices, false);
+        function getGridConfig(round) {
+            if (round <= 3) return { cols: 3, rows: 3, count: 9 };
+            if (round <= 6) return { cols: 4, rows: 3, count: 12 };
+            if (round <= 10) return { cols: 4, rows: 4, count: 16 };
+            return { cols: 5, rows: 4, count: 20 };
+        }
 
-            // Highlight borders between slices if not solved
-            if (!solved) {
-                const anglePerSlice = (Math.PI * 2) / numSlices;
-                for (let i = 0; i < numSlices; i++) {
-                    const startAngle = i * anglePerSlice - Math.PI / 2;
+        function getTimeLimit(round) {
+            // Starts generous, gets tighter
+            if (round <= 2) return 3.0;
+            if (round <= 5) return 2.5;
+            if (round <= 8) return 2.0;
+            if (round <= 12) return 1.6;
+            return 1.2;
+        }
 
-                    // Subtle divider to show clickable areas
-                    gameCtx.beginPath();
-                    gameCtx.moveTo(160, 160);
-                    gameCtx.lineTo(
-                        160 + Math.cos(startAngle) * 148,
-                        160 + Math.sin(startAngle) * 148
-                    );
-                    gameCtx.strokeStyle = 'rgba(255,255,255,0.4)';
-                    gameCtx.lineWidth = 1;
-                    gameCtx.stroke();
+        function getDifference(round) {
+            // Types of differences, gets subtler over rounds
+            const ribs = 6 + Math.floor(round / 3);
+            const baseColor = `hsl(${baseHue}, 55%, 72%)`;
+
+            // Possible differences
+            const diffs = [];
+
+            if (round <= 3) {
+                // Obvious: different color
+                diffs.push({
+                    normal: { ribs, color: baseColor, offset: 0, dot: false },
+                    different: { ribs, color: `hsl(${baseHue + 40}, 55%, 72%)`, offset: 0, dot: false }
+                });
+            } else if (round <= 6) {
+                // Medium: different rib count
+                diffs.push({
+                    normal: { ribs, color: baseColor, offset: 0, dot: false },
+                    different: { ribs: ribs + 2, color: baseColor, offset: 0, dot: false }
+                });
+                diffs.push({
+                    normal: { ribs, color: baseColor, offset: 0, dot: false },
+                    different: { ribs, color: `hsl(${baseHue + 20}, 55%, 72%)`, offset: 0, dot: false }
+                });
+            } else if (round <= 10) {
+                // Hard: rotated ribs or subtle hue
+                diffs.push({
+                    normal: { ribs, color: baseColor, offset: 0, dot: false },
+                    different: { ribs, color: baseColor, offset: 360 / ribs / 2, dot: false }
+                });
+                diffs.push({
+                    normal: { ribs, color: baseColor, offset: 0, dot: false },
+                    different: { ribs, color: `hsl(${baseHue + 12}, 55%, 72%)`, offset: 0, dot: false }
+                });
+            } else {
+                // Very hard: tiny details
+                diffs.push({
+                    normal: { ribs, color: baseColor, offset: 0, dot: false },
+                    different: { ribs, color: baseColor, offset: 0, dot: true }
+                });
+                diffs.push({
+                    normal: { ribs, color: baseColor, offset: 0, dot: false },
+                    different: { ribs, color: `hsl(${baseHue + 8}, 52%, 72%)`, offset: 0, dot: false }
+                });
+                diffs.push({
+                    normal: { ribs, color: baseColor, offset: 0, dot: false },
+                    different: { ribs: ribs + 1, color: baseColor, offset: 0, dot: false }
+                });
+            }
+
+            return diffs[Math.floor(Math.random() * diffs.length)];
+        }
+
+        function spawnRound() {
+            round++;
+            roundEl.textContent = round;
+
+            const config = getGridConfig(round);
+            const diff = getDifference(round);
+            const umbrellaSize = config.cols <= 3 ? 90 : config.cols <= 4 ? 75 : 62;
+
+            grid.style.gridTemplateColumns = `repeat(${config.cols}, ${umbrellaSize}px)`;
+            grid.innerHTML = '';
+
+            differentIndex = Math.floor(Math.random() * config.count);
+
+            for (let i = 0; i < config.count; i++) {
+                const el = document.createElement('div');
+                el.className = 'umbrella';
+                el.style.width = umbrellaSize + 'px';
+                el.style.height = umbrellaSize + 'px';
+
+                const isDiff = (i === differentIndex);
+                const props = isDiff ? diff.different : diff.normal;
+                el.innerHTML = createUmbrellaSVG(props.ribs, props.color, props.offset, props.dot);
+
+                el.addEventListener('click', () => handleClick(i, el));
+                grid.appendChild(el);
+
+                // Staggered appear
+                setTimeout(() => el.classList.add('appear'), i * 30);
+            }
+
+            // Start timer
+            timeLeft = getTimeLimit(round);
+            timerEl.textContent = timeLeft.toFixed(1);
+            timerEl.classList.remove('urgent');
+
+            clearInterval(timerInterval);
+            clearTimeout(roundTimeout);
+
+            timerInterval = setInterval(() => {
+                timeLeft -= 0.1;
+                if (timeLeft <= 0) timeLeft = 0;
+                timerEl.textContent = timeLeft.toFixed(1);
+
+                if (timeLeft <= 1.0) {
+                    timerEl.classList.add('urgent');
+                }
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    handleMiss();
+                }
+            }, 100);
+        }
+
+        function handleClick(index, el) {
+            if (!isPlaying) return;
+            clearInterval(timerInterval);
+            clearTimeout(roundTimeout);
+
+            if (index === differentIndex) {
+                // Correct!
+                score += Math.ceil(timeLeft * 10);
+                scoreEl.textContent = score;
+                showFeedback('correct', '○');
+                el.style.transform = 'scale(1.2)';
+                el.style.boxShadow = '0 0 30px rgba(139,184,232,0.5)';
+                setTimeout(() => disappearAll(() => spawnRound()), 500);
+            } else {
+                // Wrong
+                showFeedback('wrong', '✕');
+                lives--;
+                if (lives <= 0) {
+                    setTimeout(() => endGame(), 400);
+                } else {
+                    // Brief shake, continue
+                    el.style.transform = 'translateX(-5px)';
+                    setTimeout(() => el.style.transform = '', 100);
                 }
             }
         }
 
-        function getClickedSlice(x, y) {
-            const cx = 160, cy = 160;
-            const dx = x - cx, dy = y - cy;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist > 148 || dist < 16) return -1;
+        function handleMiss() {
+            if (!isPlaying) return;
+            lives--;
+            showFeedback('miss', '놓쳤어!');
 
-            let angle = Math.atan2(dy, dx) + Math.PI / 2;
-            if (angle < 0) angle += Math.PI * 2;
-
-            const sliceIndex = Math.floor(angle / (Math.PI * 2 / numSlices));
-            return sliceIndex % numSlices;
-        }
-
-        function checkSolved() {
-            return sliceRotations.every(r => r % numSlices === 0);
-        }
-
-        gameCanvas.addEventListener('click', (e) => {
-            if (solved) return;
-
-            const rect = gameCanvas.getBoundingClientRect();
-            const scaleX = 320 / rect.width;
-            const scaleY = 320 / rect.height;
-            const x = (e.clientX - rect.left) * scaleX;
-            const y = (e.clientY - rect.top) * scaleY;
-
-            const sliceIndex = getClickedSlice(x, y);
-            if (sliceIndex < 0) return;
-
-            // Rotate this slice by one position
-            sliceRotations[sliceIndex] = (sliceRotations[sliceIndex] + 1) % numSlices;
-            clicks++;
-            document.getElementById('clicks').textContent = clicks;
-
-            drawGame();
-
-            if (checkSolved()) {
-                solved = true;
-                setTimeout(() => {
-                    document.getElementById('successMsg').textContent =
-                        `멋져요! ${clicks}번 만에 완성했어요.`;
-                    document.getElementById('successOverlay').classList.add('show');
-                }, 300);
+            // Flash the correct one
+            const umbrellas = grid.querySelectorAll('.umbrella');
+            if (umbrellas[differentIndex]) {
+                umbrellas[differentIndex].style.boxShadow = '0 0 20px rgba(232,139,139,0.6)';
+                umbrellas[differentIndex].style.transform = 'scale(1.15)';
             }
-        });
 
-        // Hover effect
-        gameCanvas.addEventListener('mousemove', (e) => {
-            if (solved) {
-                gameCanvas.style.cursor = 'default';
-                return;
+            if (lives <= 0) {
+                setTimeout(() => endGame(), 600);
+            } else {
+                setTimeout(() => disappearAll(() => spawnRound()), 800);
             }
-            const rect = gameCanvas.getBoundingClientRect();
-            const scaleX = 320 / rect.width;
-            const scaleY = 320 / rect.height;
-            const x = (e.clientX - rect.left) * scaleX;
-            const y = (e.clientY - rect.top) * scaleY;
-
-            const slice = getClickedSlice(x, y);
-            gameCanvas.style.cursor = slice >= 0 ? 'pointer' : 'default';
-        });
-
-        function nextLevel() {
-            initLevel(currentLevel + 1);
         }
 
-        // Start
-        initLevel(1);
+        function disappearAll(callback) {
+            const umbrellas = grid.querySelectorAll('.umbrella');
+            umbrellas.forEach((el, i) => {
+                setTimeout(() => el.classList.add('disappear'), i * 20);
+            });
+            setTimeout(callback, umbrellas.length * 20 + 300);
+        }
+
+        function showFeedback(type, text) {
+            feedback.textContent = text;
+            feedback.className = 'feedback ' + type;
+            // Force reflow for re-animation
+            void feedback.offsetWidth;
+            feedback.className = 'feedback ' + type;
+        }
+
+        function startGame() {
+            score = 0;
+            round = 0;
+            lives = 3;
+            isPlaying = true;
+
+            scoreEl.textContent = '0';
+            roundEl.textContent = '1';
+            timerEl.classList.remove('urgent');
+
+            startScreen.classList.add('hidden');
+            gameOverScreen.classList.add('hidden');
+
+            grid.innerHTML = '';
+            setTimeout(() => spawnRound(), 300);
+        }
+
+        function endGame() {
+            isPlaying = false;
+            clearInterval(timerInterval);
+            clearTimeout(roundTimeout);
+
+            document.getElementById('finalScore').textContent = score + '점';
+            document.getElementById('gameOverMsg').textContent =
+                `${round}라운드까지 도달! 3번 놓치면 게임이 끝나요.`;
+            gameOverScreen.classList.remove('hidden');
+        }
     </script>
 </body>
 </html>
