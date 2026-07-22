@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Find the Different Umbrella</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;700;900&display=swap');
 
         * {
             margin: 0;
@@ -15,67 +15,61 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: #f8f6f4;
-            color: #1a1a1a;
+            background: #0a0a0a;
+            color: white;
             min-height: 100vh;
             overflow: hidden;
             position: relative;
             user-select: none;
         }
 
-        /* Diagonal hatching text - poster style */
-        .hatch-text {
+        /* Bold typographic elements */
+        .typo {
             position: fixed;
             font-weight: 900;
-            line-height: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
             pointer-events: none;
             z-index: 2;
-            background: repeating-linear-gradient(
-                -45deg,
-                #1a1a1a 0px,
-                #1a1a1a 1.5px,
-                transparent 1.5px,
-                transparent 4px
-            );
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            opacity: 0.7;
+            color: rgba(255, 255, 255, 0.06);
+            line-height: 0.9;
         }
 
-        .hatch-1 {
-            top: 6%;
-            left: 4%;
-            font-size: clamp(3rem, 10vw, 8rem);
+        .typo-1 {
+            top: 4%;
+            left: 3%;
+            font-size: clamp(3rem, 9vw, 7.5rem);
         }
 
-        .hatch-2 {
-            top: 28%;
-            left: 2%;
-            font-size: clamp(2.5rem, 8vw, 6.5rem);
-        }
-
-        .hatch-3 {
-            bottom: 12%;
+        .typo-2 {
+            top: 22%;
             right: 3%;
-            font-size: clamp(2rem, 7vw, 5.5rem);
+            font-size: clamp(2.5rem, 7vw, 5.5rem);
+            text-align: right;
         }
 
-        .hatch-4 {
-            bottom: 32%;
-            left: 5%;
-            font-size: clamp(1.5rem, 4vw, 3rem);
+        .typo-3 {
+            bottom: 5%;
+            left: 3%;
+            font-size: clamp(2rem, 6vw, 5rem);
+        }
+
+        .typo-4 {
+            bottom: 22%;
+            right: 4%;
+            font-size: clamp(1rem, 3vw, 2rem);
             font-weight: 300;
-            opacity: 0.4;
-            background: repeating-linear-gradient(
-                -45deg,
-                #1a1a1a 0px,
-                #1a1a1a 1px,
-                transparent 1px,
-                transparent 3.5px
-            );
-            -webkit-background-clip: text;
-            background-clip: text;
+            letter-spacing: 0.2em;
+            color: rgba(255, 255, 255, 0.04);
+        }
+
+        .typo-5 {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: clamp(4rem, 12vw, 10rem);
+            color: rgba(255, 255, 255, 0.025);
+            white-space: nowrap;
         }
 
         /* HUD */
@@ -84,97 +78,99 @@
             top: 0;
             left: 0;
             right: 0;
-            padding: 1rem 1.5rem;
+            padding: 1.2rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 200;
-            mix-blend-mode: difference;
         }
 
         .hud-left {
             display: flex;
-            gap: 1.5rem;
+            gap: 2rem;
             align-items: baseline;
         }
 
         .hud-label {
-            font-size: 0.6rem;
-            font-weight: 300;
-            letter-spacing: 0.15em;
+            font-size: 0.55rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
             text-transform: uppercase;
-            color: rgba(255,255,255,0.6);
+            color: rgba(255,255,255,0.35);
         }
 
         .hud-value {
-            font-size: 1.3rem;
-            font-weight: 800;
+            font-size: 1.4rem;
+            font-weight: 900;
             color: white;
         }
 
         .hud-timer {
-            font-size: 2rem;
+            font-size: 2.2rem;
             font-weight: 900;
             color: white;
             font-variant-numeric: tabular-nums;
         }
 
         .hud-timer.urgent {
-            animation: timerPulse 0.4s ease-in-out infinite;
+            color: #ff4444;
+            animation: timerBlink 0.35s ease-in-out infinite;
         }
 
-        @keyframes timerPulse {
+        @keyframes timerBlink {
             0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
+            50% { opacity: 0.2; }
         }
 
         .lives {
             display: flex;
-            gap: 4px;
+            gap: 6px;
         }
 
         .life-dot {
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
             background: white;
-            transition: opacity 0.3s;
+            transition: opacity 0.3s, transform 0.3s;
         }
 
         .life-dot.lost {
-            opacity: 0.2;
+            opacity: 0.15;
+            transform: scale(0.6);
         }
 
-        /* Floating umbrella container */
+        /* Umbrella field */
         .umbrella-field {
             position: fixed;
             inset: 0;
             z-index: 10;
         }
 
-        /* Individual umbrella */
+        /* Umbrella */
         .umbrella {
             position: absolute;
             border-radius: 50%;
             cursor: pointer;
-            transition: transform 0.2s ease;
+            transition: transform 0.15s ease;
             will-change: transform;
         }
 
         .umbrella:hover {
-            transform: scale(1.06) !important;
+            transform: scale(1.1) !important;
+            z-index: 50;
         }
 
         .umbrella:active {
-            transform: scale(0.94) !important;
+            transform: scale(0.92) !important;
         }
 
         .umbrella.pop-in {
-            animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
 
         .umbrella.pop-out {
-            animation: popOut 0.3s ease forwards;
+            animation: popOut 0.25s ease forwards;
         }
 
         @keyframes popIn {
@@ -191,6 +187,7 @@
             width: 100%;
             height: 100%;
             display: block;
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));
         }
 
         /* Feedback */
@@ -199,44 +196,45 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: clamp(2rem, 6vw, 4rem);
+            font-size: clamp(2.5rem, 7vw, 5rem);
             font-weight: 900;
             pointer-events: none;
             z-index: 300;
             opacity: 0;
+            letter-spacing: 0.05em;
         }
 
         .feedback.correct {
-            color: #4a90d9;
-            animation: fbPop 0.7s ease forwards;
+            color: #00e676;
+            animation: fbPop 0.6s ease forwards;
         }
 
         .feedback.wrong {
-            color: #d94a4a;
-            animation: fbPop 0.7s ease forwards;
+            color: #ff4444;
+            animation: fbPop 0.6s ease forwards;
         }
 
         .feedback.miss {
-            color: #aaa;
-            animation: fbPop 0.9s ease forwards;
+            color: rgba(255,255,255,0.4);
+            animation: fbPop 0.8s ease forwards;
         }
 
         @keyframes fbPop {
-            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.6); }
-            25% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
-            100% { opacity: 0; transform: translate(-50%, -50%) scale(1) translateY(-30px); }
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+            30% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(1) translateY(-20px); }
         }
 
         /* Screens */
         .screen-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(248, 246, 244, 0.97);
+            background: #0a0a0a;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 1.2rem;
+            gap: 1.5rem;
             z-index: 500;
             transition: opacity 0.4s ease;
         }
@@ -247,89 +245,88 @@
         }
 
         .screen-overlay h1 {
-            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-size: clamp(2.5rem, 9vw, 6rem);
             font-weight: 900;
-            letter-spacing: -0.03em;
-            line-height: 1;
+            letter-spacing: -0.02em;
+            line-height: 0.95;
             text-align: center;
-            background: repeating-linear-gradient(
-                -45deg,
-                #1a1a1a 0px,
-                #1a1a1a 1.5px,
-                transparent 1.5px,
-                transparent 4px
-            );
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            text-transform: uppercase;
+        }
+
+        .screen-overlay h1 .accent {
+            color: #ff3b3b;
         }
 
         .screen-overlay .subtitle {
-            font-size: clamp(1rem, 3vw, 1.5rem);
+            font-size: clamp(0.85rem, 2.5vw, 1.2rem);
             font-weight: 300;
-            color: #666;
+            color: rgba(255,255,255,0.5);
             text-align: center;
-            max-width: 360px;
-            line-height: 1.5;
+            max-width: 340px;
+            line-height: 1.6;
+            letter-spacing: 0.02em;
         }
 
         .screen-overlay .score-big {
-            font-size: 2.5rem;
+            font-size: 3rem;
             font-weight: 900;
-            color: #4a90d9;
+            color: #00e676;
+            letter-spacing: -0.02em;
         }
 
         .start-btn {
-            margin-top: 1.5rem;
-            padding: 1rem 3rem;
-            background: #1a1a1a;
-            color: white;
+            margin-top: 2rem;
+            padding: 1rem 3.5rem;
+            background: white;
+            color: #0a0a0a;
             border: none;
-            border-radius: 50px;
+            border-radius: 0;
             font-family: 'Inter', sans-serif;
-            font-size: 0.9rem;
-            font-weight: 700;
+            font-size: 0.85rem;
+            font-weight: 900;
             cursor: pointer;
             transition: transform 0.2s, background 0.2s;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
         }
 
         .start-btn:hover {
             transform: scale(1.05);
-            background: #333;
+            background: #eee;
         }
 
-        /* Decorative static circles on start screen */
-        .start-deco {
+        /* Decorative colored dots on start screen */
+        .start-dot {
             position: absolute;
             border-radius: 50%;
-            background: #4a90d9;
-            opacity: 0.15;
         }
 
-        .start-deco-1 { width: 200px; height: 200px; top: -40px; right: -40px; }
-        .start-deco-2 { width: 140px; height: 140px; bottom: 10%; left: -30px; }
-        .start-deco-3 { width: 80px; height: 80px; top: 30%; left: 10%; opacity: 0.1; }
-        .start-deco-4 { width: 260px; height: 260px; bottom: -60px; right: 15%; opacity: 0.08; }
+        .start-dot-1 { width: 60px; height: 60px; background: #ff3b3b; top: 8%; left: 6%; }
+        .start-dot-2 { width: 45px; height: 45px; background: #2979ff; top: 12%; right: 10%; }
+        .start-dot-3 { width: 55px; height: 55px; background: #ffd600; bottom: 15%; left: 12%; }
+        .start-dot-4 { width: 40px; height: 40px; background: #00e676; bottom: 20%; right: 8%; }
+        .start-dot-5 { width: 50px; height: 50px; background: #ff6d00; top: 45%; left: 4%; }
+        .start-dot-6 { width: 35px; height: 35px; background: #d500f9; top: 55%; right: 5%; }
     </style>
 </head>
 <body>
 
-    <!-- Hatching poster text (visible during gameplay) -->
-    <div class="hatch-text hatch-1">Find</div>
-    <div class="hatch-text hatch-2">Different</div>
-    <div class="hatch-text hatch-3">Umbrella.</div>
-    <div class="hatch-text hatch-4">사라지기 전에 찾아봐</div>
+    <!-- Typography background -->
+    <div class="typo typo-1">FIND</div>
+    <div class="typo typo-2">THE<br>DIFFERENT</div>
+    <div class="typo typo-3">UMBRELLA</div>
+    <div class="typo typo-4">사라지기 전에 찾아봐</div>
+    <div class="typo typo-5">FIND</div>
 
     <!-- HUD -->
     <div class="hud" id="hud" style="display:none;">
         <div class="hud-left">
             <div>
-                <div class="hud-label">score</div>
+                <div class="hud-label">SCORE</div>
                 <div class="hud-value" id="score">0</div>
             </div>
             <div>
-                <div class="hud-label">round</div>
+                <div class="hud-label">ROUND</div>
                 <div class="hud-value" id="round">1</div>
             </div>
             <div class="lives">
@@ -349,20 +346,22 @@
 
     <!-- Start screen -->
     <div class="screen-overlay" id="startScreen">
-        <div class="start-deco start-deco-1"></div>
-        <div class="start-deco start-deco-2"></div>
-        <div class="start-deco start-deco-3"></div>
-        <div class="start-deco start-deco-4"></div>
-        <h1>Find the<br>Different<br>Umbrella.</h1>
-        <p class="subtitle">우산들 속에 하나만 달라요.<br>사라지기 전에 빠르게 찾아 클릭!</p>
+        <div class="start-dot start-dot-1"></div>
+        <div class="start-dot start-dot-2"></div>
+        <div class="start-dot start-dot-3"></div>
+        <div class="start-dot start-dot-4"></div>
+        <div class="start-dot start-dot-5"></div>
+        <div class="start-dot start-dot-6"></div>
+        <h1>FIND THE<br><span class="accent">DIFFERENT</span><br>UMBRELLA.</h1>
+        <p class="subtitle">우산들 속에 하나만 달라요<br>사라지기 전에 빠르게 찾아 클릭!</p>
         <button class="start-btn" onclick="startGame()">START</button>
     </div>
 
     <!-- Game Over screen -->
     <div class="screen-overlay hidden" id="gameOverScreen">
-        <h1>Game Over.</h1>
+        <h1>GAME<br><span class="accent">OVER</span></h1>
         <div class="score-big" id="finalScore">0</div>
-        <p class="subtitle" id="gameOverMsg">라운드 1까지 도달</p>
+        <p class="subtitle" id="gameOverMsg">ROUND 1</p>
         <button class="start-btn" onclick="startGame()">RETRY</button>
     </div>
 
@@ -383,64 +382,57 @@
         let timerInterval = null;
         let isPlaying = false;
         let differentId = -1;
-        let umbrellas = [];
+        let umbrellaData = [];
         let animFrame = null;
 
-        // Base color
-        const baseColor = '#4a90d9';
+        // Pop colors palette
+        const popColors = [
+            '#ff3b3b', // red
+            '#2979ff', // blue
+            '#ffd600', // yellow
+            '#00e676', // green
+            '#ff6d00', // orange
+            '#d500f9', // magenta
+            '#00bcd4', // cyan
+            '#ff1744', // hot pink
+            '#76ff03', // lime
+            '#651fff', // deep purple
+        ];
 
-        function createUmbrellaSVG(ribs, color, ribOffset, ribStyle) {
-            const cx = 50, cy = 50, r = 48;
+        const BG_COLOR = '#0a0a0a';
+
+        function getUmbrellaSize() {
+            const base = Math.min(window.innerWidth, window.innerHeight);
+            return Math.floor(base * 0.13);
+        }
+
+        function createUmbrellaSVG(ribs, fillColor, ribOffset) {
+            const cx = 50, cy = 50, r = 47;
             let paths = '';
 
-            // Fill
-            paths += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}" />`;
+            // Main fill
+            paths += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fillColor}" />`;
 
-            // Scalloped edge
-            paths += '<path d="';
-            for (let i = 0; i < ribs; i++) {
-                const a1 = (i * 360 / ribs + ribOffset) * Math.PI / 180;
-                const a2 = ((i + 1) * 360 / ribs + ribOffset) * Math.PI / 180;
-                const aMid = (a1 + a2) / 2;
-
-                const x1 = cx + Math.cos(a1) * r;
-                const y1 = cy + Math.sin(a1) * r;
-                const x2 = cx + Math.cos(a2) * r;
-                const y2 = cy + Math.sin(a2) * r;
-                const cpDist = r * 0.9;
-                const cpx = cx + Math.cos(aMid) * cpDist;
-                const cpy = cy + Math.sin(aMid) * cpDist;
-
-                if (i === 0) paths += `M${x1},${y1}`;
-                paths += ` Q${cpx},${cpy} ${x2},${y2}`;
-            }
-            paths += `Z" fill="none" stroke="rgba(0,0,0,0.1)" stroke-width="1.5"/>`;
-
-            // Ribs
+            // Ribs as background-colored lines (cut into the circle)
             for (let i = 0; i < ribs; i++) {
                 const angle = (i * 360 / ribs + ribOffset) * Math.PI / 180;
-                const x2 = cx + Math.cos(angle) * (r - 2);
-                const y2 = cy + Math.sin(angle) * (r - 2);
-
-                if (ribStyle === 'dashed') {
-                    paths += `<line x1="${cx}" y1="${cy}" x2="${x2}" y2="${y2}" stroke="rgba(255,255,255,0.35)" stroke-width="1.2" stroke-dasharray="3,3"/>`;
-                } else {
-                    paths += `<line x1="${cx}" y1="${cy}" x2="${x2}" y2="${y2}" stroke="rgba(255,255,255,0.3)" stroke-width="1.2"/>`;
-                }
+                const x2 = cx + Math.cos(angle) * r;
+                const y2 = cy + Math.sin(angle) * r;
+                paths += `<line x1="${cx}" y1="${cy}" x2="${x2}" y2="${y2}" stroke="${BG_COLOR}" stroke-width="2.5"/>`;
             }
 
-            // Center
-            paths += `<circle cx="${cx}" cy="${cy}" r="4" fill="rgba(255,255,255,0.4)" />`;
-            paths += `<circle cx="${cx}" cy="${cy}" r="2" fill="rgba(255,255,255,0.6)" />`;
+            // Center circle (background color)
+            paths += `<circle cx="${cx}" cy="${cy}" r="5" fill="${BG_COLOR}" />`;
+            paths += `<circle cx="${cx}" cy="${cy}" r="2.5" fill="${fillColor}" />`;
 
             return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">${paths}</svg>`;
         }
 
-        function getUmbrellaCount(round) {
-            if (round <= 2) return 8;
-            if (round <= 5) return 12;
-            if (round <= 9) return 16;
-            return 20;
+        function getCount(round) {
+            if (round <= 2) return 10;
+            if (round <= 5) return 14;
+            if (round <= 9) return 18;
+            return 22;
         }
 
         function getTimeLimit(round) {
@@ -448,85 +440,119 @@
             if (round <= 4) return 3.0;
             if (round <= 7) return 2.5;
             if (round <= 10) return 2.0;
-            if (round <= 14) return 1.6;
+            if (round <= 14) return 1.7;
             return 1.3;
         }
 
-        function getSizeRange(round) {
-            // Returns [min, max] in vw-ish pixels
-            const base = Math.min(window.innerWidth, window.innerHeight);
-            if (round <= 3) return [base * 0.12, base * 0.22];
-            if (round <= 7) return [base * 0.09, base * 0.18];
-            return [base * 0.08, base * 0.15];
-        }
-
         function getDifference(round) {
-            const ribs = 6 + Math.floor(round / 4);
+            const ribs = 8;
+            const colorIndex = Math.floor(Math.random() * popColors.length);
+            const normalColor = popColors[colorIndex];
 
-            if (round <= 2) {
+            if (round <= 3) {
+                // Different color (obvious)
+                let diffColorIndex = (colorIndex + 3 + Math.floor(Math.random() * 4)) % popColors.length;
                 return {
-                    normal: { ribs, color: baseColor, offset: 0, ribStyle: 'solid' },
-                    different: { ribs, color: '#d94a6a', offset: 0, ribStyle: 'solid' }
+                    normal: { ribs, color: normalColor, offset: 0 },
+                    different: { ribs, color: popColors[diffColorIndex], offset: 0 }
                 };
-            } else if (round <= 5) {
-                return {
-                    normal: { ribs, color: baseColor, offset: 0, ribStyle: 'solid' },
-                    different: { ribs: ribs + 2, color: baseColor, offset: 0, ribStyle: 'solid' }
-                };
-            } else if (round <= 8) {
+            } else if (round <= 6) {
+                // Different rib count
                 const choices = [
                     {
-                        normal: { ribs, color: baseColor, offset: 0, ribStyle: 'solid' },
-                        different: { ribs, color: '#5a78d9', offset: 0, ribStyle: 'solid' }
+                        normal: { ribs, color: normalColor, offset: 0 },
+                        different: { ribs: ribs + 2, color: normalColor, offset: 0 }
                     },
                     {
-                        normal: { ribs, color: baseColor, offset: 0, ribStyle: 'solid' },
-                        different: { ribs, color: baseColor, offset: 360 / ribs / 2, ribStyle: 'solid' }
+                        normal: { ribs, color: normalColor, offset: 0 },
+                        different: { ribs: ribs - 2, color: normalColor, offset: 0 }
+                    }
+                ];
+                return choices[Math.floor(Math.random() * choices.length)];
+            } else if (round <= 10) {
+                // Subtle color shift or rib rotation
+                const choices = [
+                    {
+                        normal: { ribs, color: normalColor, offset: 0 },
+                        different: { ribs, color: normalColor, offset: 360 / ribs / 2 }
+                    },
+                    {
+                        normal: { ribs, color: normalColor, offset: 0 },
+                        different: { ribs: ribs + 1, color: normalColor, offset: 0 }
                     }
                 ];
                 return choices[Math.floor(Math.random() * choices.length)];
             } else {
+                // Very subtle
                 const choices = [
                     {
-                        normal: { ribs, color: baseColor, offset: 0, ribStyle: 'solid' },
-                        different: { ribs, color: baseColor, offset: 0, ribStyle: 'dashed' }
+                        normal: { ribs, color: normalColor, offset: 0 },
+                        different: { ribs, color: normalColor, offset: 15 }
                     },
                     {
-                        normal: { ribs, color: baseColor, offset: 0, ribStyle: 'solid' },
-                        different: { ribs: ribs + 1, color: baseColor, offset: 0, ribStyle: 'solid' }
-                    },
-                    {
-                        normal: { ribs, color: baseColor, offset: 0, ribStyle: 'solid' },
-                        different: { ribs, color: '#5490c9', offset: 0, ribStyle: 'solid' }
+                        normal: { ribs: 10, color: normalColor, offset: 0 },
+                        different: { ribs: 11, color: normalColor, offset: 0 }
                     }
                 ];
                 return choices[Math.floor(Math.random() * choices.length)];
             }
         }
 
-        function randomPosition(size) {
-            const pad = size / 2;
-            return {
-                x: pad + Math.random() * (window.innerWidth - size - pad),
-                y: pad + Math.random() * (window.innerHeight - size - pad)
-            };
+        function placeUmbrellas(count, size) {
+            const positions = [];
+            const padding = 10;
+            const maxAttempts = 200;
+
+            for (let i = 0; i < count; i++) {
+                let placed = false;
+                for (let a = 0; a < maxAttempts; a++) {
+                    const x = padding + Math.random() * (window.innerWidth - size - padding * 2);
+                    const y = padding + Math.random() * (window.innerHeight - size - padding * 2);
+
+                    // Check overlap (allow slight overlap for density)
+                    let overlap = false;
+                    for (const p of positions) {
+                        const dx = x - p.x;
+                        const dy = y - p.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < size * 0.75) {
+                            overlap = true;
+                            break;
+                        }
+                    }
+
+                    if (!overlap) {
+                        positions.push({ x, y });
+                        placed = true;
+                        break;
+                    }
+                }
+                if (!placed) {
+                    // Force place
+                    positions.push({
+                        x: padding + Math.random() * (window.innerWidth - size - padding * 2),
+                        y: padding + Math.random() * (window.innerHeight - size - padding * 2)
+                    });
+                }
+            }
+            return positions;
         }
 
         function spawnRound() {
             round++;
             roundEl.textContent = round;
 
-            const count = getUmbrellaCount(round);
+            const count = getCount(round);
+            const size = getUmbrellaSize();
             const diff = getDifference(round);
-            const [minSize, maxSize] = getSizeRange(round);
+            const positions = placeUmbrellas(count, size);
 
             field.innerHTML = '';
-            umbrellas = [];
+            umbrellaData = [];
             differentId = Math.floor(Math.random() * count);
 
             for (let i = 0; i < count; i++) {
-                const size = minSize + Math.random() * (maxSize - minSize);
-                const pos = randomPosition(size);
+                const pos = positions[i];
                 const isDiff = (i === differentId);
                 const props = isDiff ? diff.different : diff.normal;
 
@@ -536,29 +562,29 @@
                 el.style.height = size + 'px';
                 el.style.left = pos.x + 'px';
                 el.style.top = pos.y + 'px';
-                el.innerHTML = createUmbrellaSVG(props.ribs, props.color, props.offset, props.ribStyle);
+                el.innerHTML = createUmbrellaSVG(props.ribs, props.color, props.offset);
 
-                // Movement data
-                const speed = 0.3 + Math.random() * 0.5;
-                const angle = Math.random() * Math.PI * 2;
-                const velX = Math.cos(angle) * speed;
-                const velY = Math.sin(angle) * speed;
-
-                el.dataset.id = i;
                 el.addEventListener('click', () => handleClick(i, el));
-
                 field.appendChild(el);
 
-                // Staggered pop-in
-                setTimeout(() => el.classList.add('pop-in'), i * 40);
+                setTimeout(() => el.classList.add('pop-in'), i * 25);
 
-                umbrellas.push({ el, x: pos.x, y: pos.y, velX, velY, size });
+                // Movement
+                const speed = 0.4 + Math.random() * 0.6;
+                const angle = Math.random() * Math.PI * 2;
+                umbrellaData.push({
+                    el,
+                    x: pos.x,
+                    y: pos.y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    size
+                });
             }
 
-            // Start floating animation
             startFloating();
 
-            // Start timer
+            // Timer
             timeLeft = getTimeLimit(round);
             timerEl.textContent = timeLeft.toFixed(1);
             timerEl.classList.remove('urgent');
@@ -568,9 +594,7 @@
                 timeLeft -= 0.1;
                 if (timeLeft <= 0) timeLeft = 0;
                 timerEl.textContent = timeLeft.toFixed(1);
-
                 if (timeLeft <= 1.0) timerEl.classList.add('urgent');
-
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
                     handleMiss();
@@ -580,20 +604,17 @@
 
         function startFloating() {
             cancelAnimationFrame(animFrame);
+            const W = window.innerWidth;
+            const H = window.innerHeight;
 
             function animate() {
-                const W = window.innerWidth;
-                const H = window.innerHeight;
+                umbrellaData.forEach(u => {
+                    u.x += u.vx;
+                    u.y += u.vy;
 
-                umbrellas.forEach(u => {
-                    u.x += u.velX;
-                    u.y += u.velY;
+                    if (u.x <= 0 || u.x + u.size >= W) u.vx *= -1;
+                    if (u.y <= 0 || u.y + u.size >= H) u.vy *= -1;
 
-                    // Bounce off edges
-                    if (u.x <= 0 || u.x + u.size >= W) u.velX *= -1;
-                    if (u.y <= 0 || u.y + u.size >= H) u.velY *= -1;
-
-                    // Clamp
                     u.x = Math.max(0, Math.min(W - u.size, u.x));
                     u.y = Math.max(0, Math.min(H - u.size, u.y));
 
@@ -612,24 +633,20 @@
             clearInterval(timerInterval);
 
             if (id === differentId) {
-                score += Math.ceil(timeLeft * 10) + round;
+                score += Math.ceil(timeLeft * 10) + round * 2;
                 scoreEl.textContent = score;
-                showFeedback('correct', '●');
-
-                el.style.transform = 'scale(1.2)';
-                el.style.boxShadow = '0 0 40px rgba(74, 144, 217, 0.5)';
-
-                setTimeout(() => popOutAll(() => spawnRound()), 500);
+                showFeedback('correct', 'NICE');
+                el.style.transform = 'scale(1.3)';
+                el.style.boxShadow = '0 0 50px rgba(0, 230, 118, 0.6)';
+                setTimeout(() => popOutAll(() => spawnRound()), 450);
             } else {
-                showFeedback('wrong', '✕');
+                showFeedback('wrong', 'MISS');
                 lives--;
                 updateLives();
-
-                el.style.transform = 'scale(0.9)';
-                setTimeout(() => el.style.transform = '', 150);
-
+                el.style.opacity = '0.3';
+                setTimeout(() => el.style.opacity = '1', 200);
                 if (lives <= 0) {
-                    setTimeout(() => endGame(), 400);
+                    setTimeout(() => endGame(), 350);
                 }
             }
         }
@@ -640,25 +657,24 @@
             updateLives();
             showFeedback('miss', 'TIME');
 
-            // Highlight correct one
-            const correctEl = umbrellas[differentId]?.el;
+            const correctEl = umbrellaData[differentId]?.el;
             if (correctEl) {
-                correctEl.style.boxShadow = '0 0 30px rgba(217, 74, 74, 0.5)';
-                correctEl.style.transform = 'scale(1.15)';
+                correctEl.style.boxShadow = '0 0 40px rgba(255, 68, 68, 0.6)';
+                correctEl.style.transform = 'scale(1.2)';
             }
 
             if (lives <= 0) {
-                setTimeout(() => endGame(), 600);
+                setTimeout(() => endGame(), 500);
             } else {
-                setTimeout(() => popOutAll(() => spawnRound()), 800);
+                setTimeout(() => popOutAll(() => spawnRound()), 700);
             }
         }
 
         function popOutAll(callback) {
-            umbrellas.forEach((u, i) => {
-                setTimeout(() => u.el.classList.add('pop-out'), i * 25);
+            umbrellaData.forEach((u, i) => {
+                setTimeout(() => u.el.classList.add('pop-out'), i * 20);
             });
-            setTimeout(callback, umbrellas.length * 25 + 350);
+            setTimeout(callback, umbrellaData.length * 20 + 300);
         }
 
         function updateLives() {
@@ -692,7 +708,7 @@
             gameOverScreen.classList.add('hidden');
             field.innerHTML = '';
 
-            setTimeout(() => spawnRound(), 400);
+            setTimeout(() => spawnRound(), 350);
         }
 
         function endGame() {
@@ -701,9 +717,19 @@
             cancelAnimationFrame(animFrame);
 
             document.getElementById('finalScore').textContent = score;
-            document.getElementById('gameOverMsg').textContent = `라운드 ${round}까지 도달`;
+            document.getElementById('gameOverMsg').textContent = `ROUND ${round}`;
             gameOverScreen.classList.remove('hidden');
         }
+
+        // Resize handler
+        window.addEventListener('resize', () => {
+            if (isPlaying) {
+                umbrellaData.forEach(u => {
+                    u.x = Math.min(u.x, window.innerWidth - u.size);
+                    u.y = Math.min(u.y, window.innerHeight - u.size);
+                });
+            }
+        });
     </script>
 </body>
 </html>
