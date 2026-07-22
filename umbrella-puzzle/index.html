@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Find the Different Umbrella</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;700;900&family=Special+Elite&display=swap');
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Special Elite', 'Courier New', monospace;
+            font-family: 'Inter', sans-serif;
             background: #0a0a0a;
             color: white;
             min-height: 100vh;
@@ -18,56 +18,28 @@
             user-select: none;
         }
 
-        /* ─── Text Pattern ─── */
+        /* ─── Text Pattern (typewriter font for bg animation only) ─── */
         .text-pattern {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 1;
-            overflow: hidden;
+            position: fixed; inset: 0;
+            pointer-events: none; z-index: 1; overflow: hidden;
         }
-
         .text-pattern span {
             position: absolute;
             font-family: 'Special Elite', 'Courier New', monospace;
-            font-weight: 700;
-            font-size: 0.75rem;
+            font-weight: 700; font-size: 0.75rem;
             letter-spacing: 0.4em;
             color: rgba(255, 255, 255, 0.92);
             white-space: nowrap;
         }
 
-        @keyframes rainDiag {
-            from { transform: translate(0, -30%); }
-            to { transform: translate(-15%, 5%); }
-        }
-        @keyframes rainReverse {
-            from { transform: translate(-15%, -30%); }
-            to { transform: translate(0%, 5%); }
-        }
-        @keyframes pulseConcentric {
-            0%, 100% { transform: scale(0.92); }
-            50% { transform: scale(1.08); }
-        }
-        @keyframes waveMove {
-            0%, 100% { transform: translateX(0); }
-            50% { transform: translateX(-8%); }
-        }
-        @keyframes expandCircle {
-            0%, 100% { transform: translate(-25%, -25%) scale(0.95); }
-            50% { transform: translate(-25%, -25%) scale(1.1); }
-        }
+        @keyframes rainDiag { from{transform:translate(0,-30%)} to{transform:translate(-15%,5%)} }
+        @keyframes rainReverse { from{transform:translate(-15%,-30%)} to{transform:translate(0%,5%)} }
+        @keyframes pulseConcentric { 0%,100%{transform:scale(0.92)} 50%{transform:scale(1.08)} }
+        @keyframes waveMove { 0%,100%{transform:translateX(0)} 50%{transform:translateX(-8%)} }
+        @keyframes expandCircle { 0%,100%{transform:translate(-25%,-25%) scale(0.95)} 50%{transform:translate(-25%,-25%) scale(1.1)} }
 
         /* ─── HUD ─── */
-        .hud {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            padding: 1.2rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 200;
-        }
+        .hud { position: fixed; top: 0; left: 0; right: 0; padding: 1.2rem 2rem; display: flex; justify-content: space-between; align-items: center; z-index: 200; }
         .hud-left { display: flex; gap: 2rem; align-items: baseline; }
         .hud-label { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.35); }
         .hud-value { font-size: 1.4rem; font-weight: 900; }
@@ -80,100 +52,53 @@
 
         /* ─── Umbrella ─── */
         .umbrella-field { position: fixed; inset: 0; z-index: 10; }
-        .umbrella {
-            position: absolute;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: opacity 0.15s ease;
-            will-change: transform;
-        }
+        .umbrella { position: absolute; border-radius: 50%; cursor: pointer; transition: opacity 0.15s ease; will-change: transform; }
         .umbrella:hover { opacity: 0.6; z-index: 50; }
         .umbrella:active { opacity: 0.4; }
         .umbrella.pop-out { animation: popOut 0.25s ease forwards; }
+        .umbrella.blink-hint { animation: blinkHint 0.4s ease-in-out 4; }
         @keyframes popOut { from{transform:scale(1);opacity:1} to{transform:scale(0);opacity:0} }
+        @keyframes blinkHint { 0%,100%{opacity:1} 50%{opacity:0.2} }
         .umbrella svg { width: 100%; height: 100%; display: block; }
 
         /* ─── Feedback ─── */
         .feedback { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: clamp(2.5rem,7vw,5rem); font-weight: 900; pointer-events: none; z-index: 300; opacity: 0; letter-spacing: 0.05em; }
-        .feedback.correct { color: white; animation: fbPop 0.6s ease forwards; }
-        .feedback.wrong { color: white; animation: fbPop 0.6s ease forwards; }
-        .feedback.miss { color: rgba(255,255,255,0.6); animation: fbPop 0.8s ease forwards; }
+        .feedback.correct,.feedback.wrong,.feedback.miss { color: white; animation: fbPop 0.6s ease forwards; }
         @keyframes fbPop { 0%{opacity:0;transform:translate(-50%,-50%) scale(0.5)} 30%{opacity:1;transform:translate(-50%,-50%) scale(1.1)} 100%{opacity:0;transform:translate(-50%,-50%) scale(1) translateY(-20px)} }
 
         /* ─── Screens ─── */
-        .screen-overlay {
-            position: fixed; inset: 0;
-            background: #0a0a0a;
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            gap: 1.5rem; z-index: 500;
-            transition: opacity 0.4s ease;
-            overflow: hidden;
-        }
+        .screen-overlay { position: fixed; inset: 0; background: #0a0a0a; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem; z-index: 500; transition: opacity 0.4s ease; overflow: hidden; }
         .screen-overlay.hidden { opacity: 0; pointer-events: none; }
         .screen-overlay h1 { font-size: clamp(2.5rem,9vw,6rem); font-weight: 900; letter-spacing: -0.02em; line-height: 0.95; text-align: center; text-transform: uppercase; z-index: 100; position: relative; }
         .screen-overlay h1 .accent { opacity: 0.5; }
         .screen-overlay .subtitle { font-size: clamp(0.85rem,2.5vw,1.2rem); font-weight: 300; color: rgba(255,255,255,0.5); text-align: center; max-width: 340px; line-height: 1.6; z-index: 100; position: relative; }
         .screen-overlay .score-big { font-size: 3rem; font-weight: 900; z-index: 100; position: relative; }
-        .start-btn { margin-top: 2rem; padding: 1rem 3.5rem; background: white; color: #0a0a0a; border: none; border-radius: 0; font-family: 'Special Elite', 'Courier New', monospace; font-size: 0.85rem; font-weight: 900; cursor: pointer; transition: transform 0.2s, background 0.2s; letter-spacing: 0.15em; text-transform: uppercase; z-index: 100; position: relative; }
+
+        .start-btn { margin-top: 2rem; padding: 1rem 3.5rem; background: white; color: #0a0a0a; border: none; border-radius: 50px; font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 900; cursor: pointer; transition: transform 0.2s, background 0.2s; letter-spacing: 0.15em; text-transform: uppercase; z-index: 100; position: relative; }
         .start-btn:hover { transform: scale(1.05); background: #eee; }
 
-        /* ─── Start Screen Umbrellas (polka dot grid) ─── */
-        .start-umbrellas {
-            position: absolute;
-            inset: 0;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .start-umbrella {
-            position: absolute;
-            border-radius: 50%;
-            pointer-events: none;
-        }
+        /* ─── Start Screen ─── */
+        .start-umbrellas { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+        .start-umbrella { position: absolute; border-radius: 50%; pointer-events: none; }
         .start-umbrella svg { width: 100%; height: 100%; }
+        .start-rain { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+        .rain-col { position: absolute; top: -100%; display: flex; flex-direction: column; gap: 3.5rem; animation: rainFall linear infinite; pointer-events: none; }
+        .rain-col span { font-family: 'Special Elite', 'Courier New', monospace; font-weight: 700; font-size: 0.75rem; letter-spacing: 0.3em; color: rgba(255,255,255,0.9); white-space: nowrap; pointer-events: none; }
+        @keyframes rainFall { from{transform:translateY(0)} to{transform:translateY(100vh)} }
 
-        /* ─── Start Screen Rain Text ─── */
-        .start-rain {
-            position: absolute;
-            inset: 0;
-            overflow: hidden;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .rain-col {
-            position: absolute;
-            top: -100%;
-            display: flex;
-            flex-direction: column;
-            gap: 3.5rem;
-            animation: rainFall linear infinite;
-            pointer-events: none;
-        }
-
-        .rain-col span {
-            font-family: 'Special Elite', 'Courier New', monospace;
-            font-weight: 700;
-            font-size: 0.75rem;
-            letter-spacing: 0.3em;
-            color: rgba(255, 255, 255, 0.9);
-            white-space: nowrap;
-            pointer-events: none;
-        }
-
-        @keyframes rainFall {
-            from { transform: translateY(0); }
-            to { transform: translateY(100vh); }
-        }
+        /* ─── Ranking ─── */
+        .ranking { z-index: 100; position: relative; margin-top: 1.5rem; width: 100%; max-width: 300px; }
+        .ranking h3 { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 0.6rem; text-align: center; }
+        .ranking-list { list-style: none; display: flex; flex-direction: column; gap: 0.3rem; }
+        .ranking-list li { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; padding: 0.3rem 0.6rem; border-radius: 4px; background: rgba(255,255,255,0.04); }
+        .ranking-list li .rank-name { color: rgba(255,255,255,0.7); }
+        .ranking-list li .rank-score { color: white; }
     </style>
 </head>
 <body>
 
-    <!-- Text pattern background (game) -->
     <div class="text-pattern" id="textPattern"></div>
 
-    <!-- HUD -->
     <div class="hud" id="hud" style="display:none;">
         <div class="hud-left">
             <div><div class="hud-label">SCORE</div><div class="hud-value" id="score">0</div></div>
@@ -183,10 +108,7 @@
         <div class="hud-timer" id="timer">3.0</div>
     </div>
 
-    <!-- Umbrella field -->
     <div class="umbrella-field" id="field"></div>
-
-    <!-- Feedback -->
     <div class="feedback" id="feedback"></div>
 
     <!-- Start screen -->
@@ -196,6 +118,7 @@
         <h1>FIND THE<br><span class="accent">DIFFERENT</span><br>UMBRELLA.</h1>
         <p class="subtitle">우산들 속에 하나만 달라요<br>사라지기 전에 빠르게 찾아 클릭!</p>
         <button class="start-btn" onclick="startGame()">START</button>
+        <div class="ranking" id="startRanking"></div>
     </div>
 
     <!-- Game Over screen -->
@@ -204,6 +127,7 @@
         <div class="score-big" id="finalScore">0</div>
         <p class="subtitle" id="gameOverMsg">ROUND 1</p>
         <button class="start-btn" onclick="startGame()">RETRY</button>
+        <div class="ranking" id="endRanking"></div>
     </div>
 
     <script>
@@ -225,60 +149,91 @@
         const BG_COLOR = '#0a0a0a';
         const patternTexts = ['FIND DIFFERENT','UMBRELLA','NOT THE SAME','LOOK CLOSER','FIND IT'];
 
-        // ─── Start screen setup ─────────────────────────────────
+        // ─── Ranking System ─────────────────────────────────────
+        const colorNames = ['빨간','파란','노란','초록','주황','보라','하늘','분홍','연두','남색'];
+        const umbrellaNames = ['우산','양산','장우산','접이식우산','투명우산'];
+
+        function generatePlayerName() {
+            const c = colorNames[Math.floor(Math.random()*colorNames.length)];
+            const u = umbrellaNames[Math.floor(Math.random()*umbrellaNames.length)];
+            return c + u;
+        }
+
+        function getRankings() {
+            try { return JSON.parse(localStorage.getItem('umbrella_rankings') || '[]'); }
+            catch { return []; }
+        }
+
+        function saveRanking(score, round) {
+            const rankings = getRankings();
+            rankings.push({ name: generatePlayerName(), score, round, date: Date.now() });
+            rankings.sort((a,b) => b.score - a.score);
+            const top10 = rankings.slice(0, 10);
+            localStorage.setItem('umbrella_rankings', JSON.stringify(top10));
+            return top10;
+        }
+
+        function renderRanking(containerId) {
+            const container = document.getElementById(containerId);
+            const rankings = getRankings();
+            if (rankings.length === 0) { container.innerHTML = ''; return; }
+            let html = '<h3>RANKING</h3><ol class="ranking-list">';
+            rankings.slice(0, 5).forEach((r, i) => {
+                html += `<li><span class="rank-name">${i+1}. ${r.name}</span><span class="rank-score">${r.score}</span></li>`;
+            });
+            html += '</ol>';
+            container.innerHTML = html;
+        }
+
+        // ─── Start Screen ───────────────────────────────────────
         let startColorInterval = null;
 
         function setupStartScreen() {
             const container = document.getElementById('startUmbrellas');
             container.innerHTML = '';
-            const W = window.innerWidth;
-            const H = window.innerHeight;
+            const W = window.innerWidth, H = window.innerHeight;
             const size = Math.min(W, H) * 0.16;
-            // Wider gaps
-            const cols = Math.floor(W / (size * 1.6));
-            const rows = Math.floor(H / (size * 1.6));
-            const gapX = W / cols;
-            const gapY = H / rows;
-
             let currentColor = popColors[0];
 
-            // All grid positions
-            const allPositions = [];
-            for (let r = 0; r < rows; r++) {
-                for (let c = 0; c < cols; c++) {
-                    allPositions.push({ r, c });
-                }
-            }
-            // Shuffle and keep 50%
-            for (let i = allPositions.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [allPositions[i], allPositions[j]] = [allPositions[j], allPositions[i]];
-            }
-            const kept = allPositions.slice(0, Math.floor(allPositions.length * 0.5));
+            // Scatter umbrellas naturally (random positions, no grid)
+            const count = Math.floor((W * H) / (size * size * 4));
+            const positions = [];
 
-            kept.forEach(({ r, c }) => {
+            for (let i = 0; i < count; i++) {
+                let placed = false;
+                for (let a = 0; a < 100; a++) {
+                    const x = Math.random() * (W - size);
+                    const y = Math.random() * (H - size);
+                    let overlap = false;
+                    for (const p of positions) {
+                        if (Math.sqrt((x-p.x)**2 + (y-p.y)**2) < size * 1.2) { overlap = true; break; }
+                    }
+                    if (!overlap) { positions.push({x, y}); placed = true; break; }
+                }
+                if (!placed) continue;
+            }
+
+            positions.forEach(pos => {
                 const el = document.createElement('div');
                 el.className = 'start-umbrella';
                 el.style.width = size + 'px';
                 el.style.height = size + 'px';
-                const offsetX = (r % 2) * (gapX * 0.3);
-                el.style.left = (c * gapX + offsetX + (gapX - size) / 2) + 'px';
-                el.style.top = (r * gapY + (gapY - size) / 2) + 'px';
+                el.style.left = pos.x + 'px';
+                el.style.top = pos.y + 'px';
                 el.innerHTML = createUmbrellaSVG(8, currentColor, 0);
                 container.appendChild(el);
             });
 
-            // Change color every 2 seconds
             clearInterval(startColorInterval);
             startColorInterval = setInterval(() => {
                 currentColor = popColors[Math.floor(Math.random() * popColors.length)];
-                const umbrellas = container.querySelectorAll('.start-umbrella');
-                umbrellas.forEach(el => {
+                container.querySelectorAll('.start-umbrella').forEach(el => {
                     el.innerHTML = createUmbrellaSVG(8, currentColor, 0);
                 });
             }, 2000);
 
             generateStartRain();
+            renderRanking('startRanking');
         }
 
         function generateStartRain() {
@@ -294,10 +249,8 @@
                 const col = document.createElement('div');
                 col.className = 'rain-col';
                 col.style.left = (i * colSpacing + Math.random() * 30) + 'px';
-                const duration = 4 + Math.random() * 3;
-                const delay = Math.random() * -6;
-                col.style.animationDuration = duration + 's';
-                col.style.animationDelay = delay + 's';
+                col.style.animationDuration = (4 + Math.random() * 3) + 's';
+                col.style.animationDelay = (Math.random() * -6) + 's';
 
                 const charCount = 12 + Math.floor(Math.random() * 6);
                 for (let j = 0; j < charCount; j++) {
@@ -313,71 +266,36 @@
         // ─── Text Pattern (game) ────────────────────────────────
         function generateTextPattern(round) {
             textPattern.innerHTML = '';
-            const W = window.innerWidth;
-            const H = window.innerHeight;
+            const W = window.innerWidth, H = window.innerHeight;
             const patternType = round % 5;
             const text = patternTexts[round % patternTexts.length];
             const chars = text.split('');
 
             const container = document.createElement('div');
-            container.style.position = 'absolute';
-            container.style.inset = '-40% -40%';
-            container.style.width = '180%';
-            container.style.height = '180%';
+            container.style.cssText = 'position:absolute;inset:-40% -40%;width:180%;height:180%';
+            container.style.animation = ['rainDiag 3s linear infinite','pulseConcentric 2.5s ease-in-out infinite','waveMove 3s ease-in-out infinite','rainReverse 3s linear infinite','expandCircle 3s ease-in-out infinite'][patternType];
 
-            const animations = [
-                'rainDiag 3s linear infinite',
-                'pulseConcentric 2.5s ease-in-out infinite',
-                'waveMove 3s ease-in-out infinite',
-                'rainReverse 3s linear infinite',
-                'expandCircle 3s ease-in-out infinite'
-            ];
-            container.style.animation = animations[patternType];
+            const rowGap=44, colGap=28;
+            const rows=Math.floor(H*1.8/rowGap), cols=Math.floor(W*1.8/colGap);
 
-            const rowGap = 44;
-            const colGap = 28;
-            const rows = Math.floor(H * 1.8 / rowGap);
-            const cols = Math.floor(W * 1.8 / colGap);
-
-            for (let row = 0; row < rows; row++) {
-                for (let col = 0; col < cols; col++) {
-                    const charIndex = (row * cols + col) % chars.length;
-                    const char = chars[charIndex];
-                    if (char === ' ') continue;
-
-                    let x = col * colGap;
-                    let y = row * rowGap;
-                    let show = false;
-
-                    switch (patternType) {
-                        case 0:
-                            show = Math.abs((col - row * 0.6) % 12) < 4;
-                            break;
-                        case 1:
-                            const cx = cols/2, cy = rows/2;
-                            const dist = Math.abs(col-cx) + Math.abs(row-cy);
-                            show = (Math.floor(dist) % 9) < 3;
-                            break;
-                        case 2:
-                            const wave = Math.sin(col * 0.08) * 12;
-                            show = Math.abs(row - rows/2 - wave) < 4;
-                            break;
-                        case 3:
-                            show = Math.abs((col + row * 0.6) % 12) < 4;
-                            break;
-                        case 4:
-                            const dx = col - cols/2;
-                            const dy = (row - rows/2) * 1.5;
-                            const r = Math.sqrt(dx*dx + dy*dy);
-                            show = (Math.floor(r) % 10) < 3;
-                            break;
+            for (let row=0; row<rows; row++) {
+                for (let col=0; col<cols; col++) {
+                    const ci = (row*cols+col) % chars.length;
+                    const char = chars[ci];
+                    if (char===' ') continue;
+                    let show=false;
+                    switch(patternType) {
+                        case 0: show=Math.abs((col-row*0.6)%12)<4; break;
+                        case 1: show=(Math.floor(Math.abs(col-cols/2)+Math.abs(row-rows/2))%9)<3; break;
+                        case 2: show=Math.abs(row-rows/2-Math.sin(col*0.08)*12)<4; break;
+                        case 3: show=Math.abs((col+row*0.6)%12)<4; break;
+                        case 4: show=(Math.floor(Math.sqrt((col-cols/2)**2+((row-rows/2)*1.5)**2))%10)<3; break;
                     }
-
                     if (show) {
                         const span = document.createElement('span');
                         span.textContent = char;
-                        span.style.left = x + 'px';
-                        span.style.top = y + 'px';
+                        span.style.left = col*colGap+'px';
+                        span.style.top = row*rowGap+'px';
                         container.appendChild(span);
                     }
                 }
@@ -386,175 +304,97 @@
         }
 
         // ─── Umbrella ───────────────────────────────────────────
-        function getUmbrellaSize() {
-            const base = Math.min(window.innerWidth, window.innerHeight);
-            return Math.floor(base * 0.16);
-        }
+        function getUmbrellaSize() { return Math.floor(Math.min(window.innerWidth,window.innerHeight)*0.16); }
 
         function createUmbrellaSVG(ribs, fillColor, ribOffset) {
-            const cx = 50, cy = 50, r = 48;
-            let paths = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fillColor}" />`;
-            for (let i = 0; i < ribs; i++) {
-                const angle = (i * 360 / ribs + ribOffset) * Math.PI / 180;
-                const x2 = cx + Math.cos(angle) * r;
-                const y2 = cy + Math.sin(angle) * r;
-                paths += `<line x1="${cx}" y1="${cy}" x2="${x2}" y2="${y2}" stroke="${BG_COLOR}" stroke-width="1.5"/>`;
+            const cx=50,cy=50,r=48;
+            let p = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fillColor}" />`;
+            for (let i=0;i<ribs;i++) {
+                const a=(i*360/ribs+ribOffset)*Math.PI/180;
+                p+=`<line x1="${cx}" y1="${cy}" x2="${cx+Math.cos(a)*r}" y2="${cy+Math.sin(a)*r}" stroke="${BG_COLOR}" stroke-width="1.5"/>`;
             }
-            return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">${paths}</svg>`;
+            return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">${p}</svg>`;
         }
 
-        function getCount(round) {
-            if (round <= 2) return 10;
-            if (round <= 5) return 14;
-            if (round <= 9) return 18;
-            return 22;
-        }
-
-        function getTimeLimit(round) {
-            if (round <= 2) return 3.5;
-            if (round <= 4) return 3.0;
-            if (round <= 7) return 2.5;
-            if (round <= 10) return 2.0;
-            if (round <= 14) return 1.7;
-            return 1.3;
-        }
+        function getCount(r){if(r<=2)return 10;if(r<=5)return 14;if(r<=9)return 18;return 22;}
+        function getTimeLimit(r){if(r<=2)return 3.5;if(r<=4)return 3.0;if(r<=7)return 2.5;if(r<=10)return 2.0;if(r<=14)return 1.7;return 1.3;}
 
         function getDifference(round) {
-            const ribs = 8;
-            const ci = Math.floor(Math.random() * popColors.length);
-            const nc = popColors[ci];
-            if (round <= 3) {
-                let di = (ci + 3 + Math.floor(Math.random()*4)) % popColors.length;
-                return { normal:{ribs,color:nc,offset:0}, different:{ribs,color:popColors[di],offset:0} };
-            } else if (round <= 6) {
-                const c = [{normal:{ribs,color:nc,offset:0},different:{ribs:ribs+2,color:nc,offset:0}},{normal:{ribs,color:nc,offset:0},different:{ribs:ribs-2,color:nc,offset:0}}];
-                return c[Math.floor(Math.random()*c.length)];
-            } else if (round <= 10) {
-                const c = [{normal:{ribs,color:nc,offset:0},different:{ribs,color:nc,offset:360/ribs/2}},{normal:{ribs,color:nc,offset:0},different:{ribs:ribs+1,color:nc,offset:0}}];
-                return c[Math.floor(Math.random()*c.length)];
-            } else {
-                const c = [{normal:{ribs,color:nc,offset:0},different:{ribs,color:nc,offset:15}},{normal:{ribs:10,color:nc,offset:0},different:{ribs:11,color:nc,offset:0}}];
-                return c[Math.floor(Math.random()*c.length)];
-            }
+            const ribs=8, ci=Math.floor(Math.random()*popColors.length), nc=popColors[ci];
+            if(round<=3){let di=(ci+3+Math.floor(Math.random()*4))%popColors.length;return{normal:{ribs,color:nc,offset:0},different:{ribs,color:popColors[di],offset:0}};}
+            else if(round<=6){const c=[{normal:{ribs,color:nc,offset:0},different:{ribs:ribs+2,color:nc,offset:0}},{normal:{ribs,color:nc,offset:0},different:{ribs:ribs-2,color:nc,offset:0}}];return c[Math.floor(Math.random()*c.length)];}
+            else if(round<=10){const c=[{normal:{ribs,color:nc,offset:0},different:{ribs,color:nc,offset:360/ribs/2}},{normal:{ribs,color:nc,offset:0},different:{ribs:ribs+1,color:nc,offset:0}}];return c[Math.floor(Math.random()*c.length)];}
+            else{const c=[{normal:{ribs,color:nc,offset:0},different:{ribs,color:nc,offset:15}},{normal:{ribs:10,color:nc,offset:0},different:{ribs:11,color:nc,offset:0}}];return c[Math.floor(Math.random()*c.length)];}
         }
 
         function placeUmbrellas(count, size) {
-            const positions = [], pad = 10;
-            for (let i = 0; i < count; i++) {
-                let placed = false;
-                for (let a = 0; a < 200; a++) {
-                    const x = pad + Math.random()*(window.innerWidth-size-pad*2);
-                    const y = pad + Math.random()*(window.innerHeight-size-pad*2);
-                    let overlap = false;
-                    for (const p of positions) { if (Math.sqrt((x-p.x)**2+(y-p.y)**2) < size*0.75) { overlap=true; break; } }
-                    if (!overlap) { positions.push({x,y}); placed=true; break; }
-                }
-                if (!placed) positions.push({x:pad+Math.random()*(window.innerWidth-size-pad*2),y:pad+Math.random()*(window.innerHeight-size-pad*2)});
-            }
+            const positions=[],pad=10;
+            for(let i=0;i<count;i++){let placed=false;for(let a=0;a<200;a++){const x=pad+Math.random()*(window.innerWidth-size-pad*2),y=pad+Math.random()*(window.innerHeight-size-pad*2);let ov=false;for(const p of positions){if(Math.sqrt((x-p.x)**2+(y-p.y)**2)<size*0.75){ov=true;break;}}if(!ov){positions.push({x,y});placed=true;break;}}if(!placed)positions.push({x:pad+Math.random()*(window.innerWidth-size-pad*2),y:pad+Math.random()*(window.innerHeight-size-pad*2)});}
             return positions;
         }
 
         function spawnRound() {
-            round++;
-            roundEl.textContent = round;
+            round++; roundEl.textContent=round;
             generateTextPattern(round);
-            const count = getCount(round), size = getUmbrellaSize();
-            const diff = getDifference(round), positions = placeUmbrellas(count, size);
-            field.innerHTML = '';
-            umbrellaData = [];
-            differentId = Math.floor(Math.random()*count);
-            for (let i = 0; i < count; i++) {
-                const pos = positions[i], isDiff = (i===differentId);
-                const props = isDiff ? diff.different : diff.normal;
-                const el = document.createElement('div');
-                el.className = 'umbrella';
-                el.style.width = size+'px'; el.style.height = size+'px';
-                el.style.left = pos.x+'px'; el.style.top = pos.y+'px';
-                el.innerHTML = createUmbrellaSVG(props.ribs, props.color, props.offset);
-                el.addEventListener('click', () => handleClick(i, el));
+            const count=getCount(round),size=getUmbrellaSize();
+            const diff=getDifference(round),positions=placeUmbrellas(count,size);
+            field.innerHTML=''; umbrellaData=[]; differentId=Math.floor(Math.random()*count);
+            for(let i=0;i<count;i++){
+                const pos=positions[i],isDiff=(i===differentId),props=isDiff?diff.different:diff.normal;
+                const el=document.createElement('div');
+                el.className='umbrella'; el.style.width=size+'px'; el.style.height=size+'px';
+                el.style.left=pos.x+'px'; el.style.top=pos.y+'px';
+                el.innerHTML=createUmbrellaSVG(props.ribs,props.color,props.offset);
+                el.addEventListener('click',()=>handleClick(i,el));
                 field.appendChild(el);
-                const speed = 0.4+Math.random()*0.6, angle = Math.random()*Math.PI*2;
+                const speed=0.4+Math.random()*0.6,angle=Math.random()*Math.PI*2;
                 umbrellaData.push({el,x:pos.x,y:pos.y,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,size});
             }
             startFloating();
-            timeLeft = getTimeLimit(round);
-            timerEl.textContent = timeLeft.toFixed(1);
-            timerEl.classList.remove('urgent');
+            timeLeft=getTimeLimit(round); timerEl.textContent=timeLeft.toFixed(1); timerEl.classList.remove('urgent');
             clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
-                timeLeft -= 0.1; if (timeLeft<=0) timeLeft=0;
-                timerEl.textContent = timeLeft.toFixed(1);
-                if (timeLeft<=1.0) timerEl.classList.add('urgent');
-                if (timeLeft<=0) { clearInterval(timerInterval); handleMiss(); }
-            }, 100);
+            timerInterval=setInterval(()=>{timeLeft-=0.1;if(timeLeft<=0)timeLeft=0;timerEl.textContent=timeLeft.toFixed(1);if(timeLeft<=1.0)timerEl.classList.add('urgent');if(timeLeft<=0){clearInterval(timerInterval);handleMiss();}},100);
         }
 
         function startFloating() {
             cancelAnimationFrame(animFrame);
-            const W=window.innerWidth, H=window.innerHeight;
-            function animate() {
-                umbrellaData.forEach(u => {
-                    u.x+=u.vx; u.y+=u.vy;
-                    if (u.x<=0||u.x+u.size>=W) u.vx*=-1;
-                    if (u.y<=0||u.y+u.size>=H) u.vy*=-1;
-                    u.x=Math.max(0,Math.min(W-u.size,u.x));
-                    u.y=Math.max(0,Math.min(H-u.size,u.y));
-                    u.el.style.left=u.x+'px'; u.el.style.top=u.y+'px';
-                });
-                if (isPlaying) animFrame=requestAnimationFrame(animate);
-            }
+            const W=window.innerWidth,H=window.innerHeight;
+            function animate(){umbrellaData.forEach(u=>{u.x+=u.vx;u.y+=u.vy;if(u.x<=0||u.x+u.size>=W)u.vx*=-1;if(u.y<=0||u.y+u.size>=H)u.vy*=-1;u.x=Math.max(0,Math.min(W-u.size,u.x));u.y=Math.max(0,Math.min(H-u.size,u.y));u.el.style.left=u.x+'px';u.el.style.top=u.y+'px';});if(isPlaying)animFrame=requestAnimationFrame(animate);}
             animFrame=requestAnimationFrame(animate);
         }
 
         function handleClick(id, el) {
-            if (!isPlaying) return;
-            clearInterval(timerInterval);
-            if (id===differentId) {
-                score += Math.ceil(timeLeft*10)+round*2;
-                scoreEl.textContent = score;
-                showFeedback('correct','NICE');
-                el.style.opacity='0.5';
+            if(!isPlaying) return; clearInterval(timerInterval);
+            if(id===differentId){
+                score+=Math.ceil(timeLeft*10)+round*2; scoreEl.textContent=score;
+                showFeedback('correct','NICE'); el.style.opacity='0.5';
                 setTimeout(()=>popOutAll(()=>spawnRound()),450);
             } else {
-                showFeedback('wrong','MISS');
-                lives--; updateLives();
-                el.style.opacity='0.3';
-                setTimeout(()=>el.style.opacity='1',200);
-                if (lives<=0) setTimeout(()=>endGame(),350);
+                showFeedback('wrong','MISS'); lives--; updateLives();
+                el.style.opacity='0.3'; setTimeout(()=>el.style.opacity='1',200);
+                if(lives<=0) setTimeout(()=>endGame(),350);
             }
         }
 
         function handleMiss() {
-            if (!isPlaying) return;
-            lives--; updateLives();
+            if(!isPlaying) return; lives--; updateLives();
             showFeedback('miss','TIME');
-            const ce = umbrellaData[differentId]?.el;
-            if (ce) ce.style.opacity='0.5';
-            if (lives<=0) setTimeout(()=>endGame(),500);
-            else setTimeout(()=>popOutAll(()=>spawnRound()),700);
+            // Blink the correct answer
+            const ce=umbrellaData[differentId]?.el;
+            if(ce) ce.classList.add('blink-hint');
+            if(lives<=0) setTimeout(()=>endGame(),1800);
+            else setTimeout(()=>popOutAll(()=>spawnRound()),1800);
         }
 
-        function popOutAll(cb) {
-            umbrellaData.forEach((u,i)=>setTimeout(()=>u.el.classList.add('pop-out'),i*20));
-            setTimeout(cb, umbrellaData.length*20+300);
-        }
-
-        function updateLives() {
-            for (let i=1;i<=3;i++) { const d=document.getElementById('life'+i); if(i>lives) d.classList.add('lost'); else d.classList.remove('lost'); }
-        }
-
-        function showFeedback(type, text) {
-            feedbackEl.textContent=text;
-            feedbackEl.className='feedback';
-            void feedbackEl.offsetWidth;
-            feedbackEl.className='feedback '+type;
-        }
+        function popOutAll(cb){umbrellaData.forEach((u,i)=>setTimeout(()=>u.el.classList.add('pop-out'),i*20));setTimeout(cb,umbrellaData.length*20+300);}
+        function updateLives(){for(let i=1;i<=3;i++){const d=document.getElementById('life'+i);if(i>lives)d.classList.add('lost');else d.classList.remove('lost');}}
+        function showFeedback(type,text){feedbackEl.textContent=text;feedbackEl.className='feedback';void feedbackEl.offsetWidth;feedbackEl.className='feedback '+type;}
 
         function startGame() {
             clearInterval(startColorInterval);
-            score=0; round=0; lives=3; isPlaying=true;
-            scoreEl.textContent='0'; roundEl.textContent='1';
-            timerEl.classList.remove('urgent'); updateLives();
+            score=0;round=0;lives=3;isPlaying=true;
+            scoreEl.textContent='0';roundEl.textContent='1';
+            timerEl.classList.remove('urgent');updateLives();
             hud.style.display='flex';
             startScreen.classList.add('hidden');
             gameOverScreen.classList.add('hidden');
@@ -563,17 +403,17 @@
         }
 
         function endGame() {
-            isPlaying=false; clearInterval(timerInterval); cancelAnimationFrame(animFrame);
+            isPlaying=false;clearInterval(timerInterval);cancelAnimationFrame(animFrame);
+            // Save ranking
+            saveRanking(score, round);
             document.getElementById('finalScore').textContent=score;
             document.getElementById('gameOverMsg').textContent=`ROUND ${round}`;
+            renderRanking('endRanking');
             gameOverScreen.classList.remove('hidden');
         }
 
-        window.addEventListener('resize',()=>{
-            if(isPlaying){umbrellaData.forEach(u=>{u.x=Math.min(u.x,window.innerWidth-u.size);u.y=Math.min(u.y,window.innerHeight-u.size);});generateTextPattern(round);}
-        });
+        window.addEventListener('resize',()=>{if(isPlaying){umbrellaData.forEach(u=>{u.x=Math.min(u.x,window.innerWidth-u.size);u.y=Math.min(u.y,window.innerHeight-u.size);});generateTextPattern(round);}});
 
-        // Init start screen
         setupStartScreen();
     </script>
 </body>
