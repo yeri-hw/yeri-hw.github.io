@@ -111,11 +111,11 @@
             overflow: hidden;
         }
         .screen-overlay.hidden { opacity: 0; pointer-events: none; }
-        .screen-overlay h1 { font-size: clamp(2.5rem,9vw,6rem); font-weight: 900; letter-spacing: -0.02em; line-height: 0.95; text-align: center; text-transform: uppercase; z-index: 10; position: relative; }
+        .screen-overlay h1 { font-size: clamp(2.5rem,9vw,6rem); font-weight: 900; letter-spacing: -0.02em; line-height: 0.95; text-align: center; text-transform: uppercase; z-index: 100; position: relative; }
         .screen-overlay h1 .accent { opacity: 0.5; }
-        .screen-overlay .subtitle { font-size: clamp(0.85rem,2.5vw,1.2rem); font-weight: 300; color: rgba(255,255,255,0.5); text-align: center; max-width: 340px; line-height: 1.6; z-index: 10; position: relative; }
-        .screen-overlay .score-big { font-size: 3rem; font-weight: 900; z-index: 10; position: relative; }
-        .start-btn { margin-top: 2rem; padding: 1rem 3.5rem; background: white; color: #0a0a0a; border: none; border-radius: 0; font-family: 'Special Elite', 'Courier New', monospace; font-size: 0.85rem; font-weight: 900; cursor: pointer; transition: transform 0.2s, background 0.2s; letter-spacing: 0.15em; text-transform: uppercase; z-index: 10; position: relative; }
+        .screen-overlay .subtitle { font-size: clamp(0.85rem,2.5vw,1.2rem); font-weight: 300; color: rgba(255,255,255,0.5); text-align: center; max-width: 340px; line-height: 1.6; z-index: 100; position: relative; }
+        .screen-overlay .score-big { font-size: 3rem; font-weight: 900; z-index: 100; position: relative; }
+        .start-btn { margin-top: 2rem; padding: 1rem 3.5rem; background: white; color: #0a0a0a; border: none; border-radius: 0; font-family: 'Special Elite', 'Courier New', monospace; font-size: 0.85rem; font-weight: 900; cursor: pointer; transition: transform 0.2s, background 0.2s; letter-spacing: 0.15em; text-transform: uppercase; z-index: 100; position: relative; }
         .start-btn:hover { transform: scale(1.05); background: #eee; }
 
         /* ─── Start Screen Umbrellas (polka dot grid) ─── */
@@ -149,6 +149,7 @@
             flex-direction: column;
             gap: 3.5rem;
             animation: rainFall linear infinite;
+            pointer-events: none;
         }
 
         .rain-col span {
@@ -158,6 +159,7 @@
             letter-spacing: 0.3em;
             color: rgba(255, 255, 255, 0.9);
             white-space: nowrap;
+            pointer-events: none;
         }
 
         @keyframes rainFall {
