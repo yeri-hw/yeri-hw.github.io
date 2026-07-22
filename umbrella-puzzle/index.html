@@ -38,8 +38,35 @@
             font-weight: 700;
             font-size: 0.7rem;
             letter-spacing: 0.3em;
-            color: rgba(255, 255, 255, 0.06);
+            color: rgba(255, 255, 255, 0.15);
             white-space: nowrap;
+        }
+
+        /* Text pattern movement animations */
+        @keyframes rainDiag {
+            from { transform: translate(0, -25%); }
+            to { transform: translate(-10%, 0%); }
+        }
+
+        @keyframes rainReverse {
+            from { transform: translate(-10%, -25%); }
+            to { transform: translate(0%, 0%); }
+        }
+
+        @keyframes pulseConcentric {
+            0%, 100% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+        }
+
+        @keyframes waveMove {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(-5%); }
+            100% { transform: translateX(0); }
+        }
+
+        @keyframes expandCircle {
+            0%, 100% { transform: translate(-25%, -25%) scale(1); }
+            50% { transform: translate(-25%, -25%) scale(1.08); }
         }
 
         /* HUD */
@@ -122,19 +149,17 @@
             position: absolute;
             border-radius: 50%;
             cursor: pointer;
-            transition: transform 0.15s ease;
+            transition: opacity 0.15s ease;
             will-change: transform;
         }
 
         .umbrella:hover {
-            transform: scale(1.06) !important;
+            opacity: 0.6;
             z-index: 50;
-            outline: 2px solid rgba(255,255,255,0.5);
-            outline-offset: 3px;
         }
 
         .umbrella:active {
-            transform: scale(0.94) !important;
+            opacity: 0.4;
         }
 
         .umbrella.pop-out {
@@ -368,12 +393,29 @@
             textPattern.innerHTML = '';
             const W = window.innerWidth;
             const H = window.innerHeight;
-            const patternType = round % 5; // 5 different patterns
+            const patternType = round % 5;
             const text = patternTexts[round % patternTexts.length];
             const chars = text.split('');
 
-            const rows = Math.floor(H / 22);
-            const cols = Math.floor(W / 14);
+            // Create a container that animates
+            const container = document.createElement('div');
+            container.style.position = 'absolute';
+            container.style.inset = '-50% -50%';
+            container.style.width = '200%';
+            container.style.height = '200%';
+
+            // Different animation per pattern type
+            const animations = [
+                'rainDiag 8s linear infinite',       // diagonal rain
+                'pulseConcentric 6s ease-in-out infinite', // concentric pulse
+                'waveMove 10s ease-in-out infinite', // wave drift
+                'rainReverse 8s linear infinite',    // reverse diagonal
+                'expandCircle 7s ease-in-out infinite' // expanding
+            ];
+            container.style.animation = animations[patternType];
+
+            const rows = Math.floor(H * 2 / 22);
+            const cols = Math.floor(W * 2 / 14);
 
             for (let row = 0; row < rows; row++) {
                 for (let col = 0; col < cols; col++) {
@@ -384,34 +426,30 @@
                     let x, y, show;
 
                     switch (patternType) {
-                        case 0: // Diagonal rain (top-left to bottom-right)
+                        case 0:
                             x = col * 14;
                             y = row * 22;
                             show = Math.abs((col - row * 0.6) % 8) < 3;
                             break;
-
-                        case 1: // Concentric circles (diamond)
+                        case 1:
                             x = col * 14;
                             y = row * 22;
                             const cx = cols / 2, cy = rows / 2;
                             const dist = Math.abs(col - cx) + Math.abs(row - cy);
                             show = (Math.floor(dist) % 6) < 2;
                             break;
-
-                        case 2: // Wave (sine)
+                        case 2:
                             x = col * 14;
                             y = row * 22;
-                            const wave = Math.sin(col * 0.15) * 8;
+                            const wave = Math.sin(col * 0.12) * 10;
                             show = Math.abs(row - rows / 2 - wave) < 3;
                             break;
-
-                        case 3: // Reverse diagonal (top-right to bottom-left)
+                        case 3:
                             x = col * 14;
                             y = row * 22;
                             show = Math.abs((col + row * 0.6) % 8) < 3;
                             break;
-
-                        case 4: // Expanding circles from center
+                        case 4:
                             x = col * 14;
                             y = row * 22;
                             const dx = col - cols / 2;
@@ -426,17 +464,19 @@
                         span.textContent = char;
                         span.style.left = x + 'px';
                         span.style.top = y + 'px';
-                        textPattern.appendChild(span);
+                        container.appendChild(span);
                     }
                 }
             }
+
+            textPattern.appendChild(container);
         }
 
         // ─── Umbrella ──────────────────────────────────────────────
 
         function getUmbrellaSize() {
             const base = Math.min(window.innerWidth, window.innerHeight);
-            return Math.floor(base * 0.13);
+            return Math.floor(base * 0.16);
         }
 
         function createUmbrellaSVG(ribs, fillColor, ribOffset) {
@@ -632,9 +672,7 @@
                 score += Math.ceil(timeLeft * 10) + round * 2;
                 scoreEl.textContent = score;
                 showFeedback('correct', 'NICE');
-                el.style.transform = 'scale(1.15)';
-                el.style.outline = '3px solid rgba(255,255,255,0.7)';
-                el.style.outlineOffset = '4px';
+                el.style.opacity = '0.5';
                 setTimeout(() => popOutAll(() => spawnRound()), 450);
             } else {
                 showFeedback('wrong', 'MISS');
@@ -656,9 +694,7 @@
 
             const correctEl = umbrellaData[differentId]?.el;
             if (correctEl) {
-                correctEl.style.outline = '3px solid rgba(255,255,255,0.5)';
-                correctEl.style.outlineOffset = '4px';
-                correctEl.style.transform = 'scale(1.1)';
+                correctEl.style.opacity = '0.5';
             }
 
             if (lives <= 0) {
