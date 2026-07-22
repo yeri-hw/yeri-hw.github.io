@@ -7,11 +7,7 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;700;900&display=swap');
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -19,11 +15,10 @@
             color: white;
             min-height: 100vh;
             overflow: hidden;
-            position: relative;
             user-select: none;
         }
 
-        /* Text pattern background */
+        /* ─── Text Pattern ─── */
         .text-pattern {
             position: fixed;
             inset: 0;
@@ -35,116 +30,56 @@
         .text-pattern span {
             position: absolute;
             font-family: 'Inter', sans-serif;
-            font-weight: 700;
-            font-size: 0.7rem;
-            letter-spacing: 0.3em;
-            color: rgba(255, 255, 255, 0.15);
+            font-weight: 900;
+            font-size: 0.75rem;
+            letter-spacing: 0.4em;
+            color: rgba(255, 255, 255, 0.92);
             white-space: nowrap;
         }
 
-        /* Text pattern movement animations */
         @keyframes rainDiag {
-            from { transform: translate(0, -25%); }
-            to { transform: translate(-10%, 0%); }
+            from { transform: translate(0, -30%); }
+            to { transform: translate(-15%, 5%); }
         }
-
         @keyframes rainReverse {
-            from { transform: translate(-10%, -25%); }
-            to { transform: translate(0%, 0%); }
+            from { transform: translate(-15%, -30%); }
+            to { transform: translate(0%, 5%); }
         }
-
         @keyframes pulseConcentric {
-            0%, 100% { transform: scale(0.95); opacity: 0.8; }
-            50% { transform: scale(1.05); opacity: 1; }
+            0%, 100% { transform: scale(0.92); }
+            50% { transform: scale(1.08); }
         }
-
         @keyframes waveMove {
-            0% { transform: translateX(0); }
-            50% { transform: translateX(-5%); }
-            100% { transform: translateX(0); }
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(-8%); }
         }
-
         @keyframes expandCircle {
-            0%, 100% { transform: translate(-25%, -25%) scale(1); }
-            50% { transform: translate(-25%, -25%) scale(1.08); }
+            0%, 100% { transform: translate(-25%, -25%) scale(0.95); }
+            50% { transform: translate(-25%, -25%) scale(1.1); }
         }
 
-        /* HUD */
+        /* ─── HUD ─── */
         .hud {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
+            top: 0; left: 0; right: 0;
             padding: 1.2rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 200;
         }
+        .hud-left { display: flex; gap: 2rem; align-items: baseline; }
+        .hud-label { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.35); }
+        .hud-value { font-size: 1.4rem; font-weight: 900; }
+        .hud-timer { font-size: 2.2rem; font-weight: 900; font-variant-numeric: tabular-nums; }
+        .hud-timer.urgent { color: #ff4444; animation: timerBlink 0.35s ease-in-out infinite; }
+        @keyframes timerBlink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+        .lives { display: flex; gap: 6px; }
+        .life-dot { width: 10px; height: 10px; border-radius: 50%; background: white; transition: opacity 0.3s, transform 0.3s; }
+        .life-dot.lost { opacity: 0.15; transform: scale(0.6); }
 
-        .hud-left {
-            display: flex;
-            gap: 2rem;
-            align-items: baseline;
-        }
-
-        .hud-label {
-            font-size: 0.55rem;
-            font-weight: 700;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: rgba(255,255,255,0.35);
-        }
-
-        .hud-value {
-            font-size: 1.4rem;
-            font-weight: 900;
-            color: white;
-        }
-
-        .hud-timer {
-            font-size: 2.2rem;
-            font-weight: 900;
-            color: white;
-            font-variant-numeric: tabular-nums;
-        }
-
-        .hud-timer.urgent {
-            color: #ff4444;
-            animation: timerBlink 0.35s ease-in-out infinite;
-        }
-
-        @keyframes timerBlink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.2; }
-        }
-
-        .lives {
-            display: flex;
-            gap: 6px;
-        }
-
-        .life-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: white;
-            transition: opacity 0.3s, transform 0.3s;
-        }
-
-        .life-dot.lost {
-            opacity: 0.15;
-            transform: scale(0.6);
-        }
-
-        /* Umbrella field */
-        .umbrella-field {
-            position: fixed;
-            inset: 0;
-            z-index: 10;
-        }
-
-        /* Umbrella - no blink, instant appear */
+        /* ─── Umbrella ─── */
+        .umbrella-field { position: fixed; inset: 0; z-index: 10; }
         .umbrella {
             position: absolute;
             border-radius: 50%;
@@ -152,172 +87,76 @@
             transition: opacity 0.15s ease;
             will-change: transform;
         }
+        .umbrella:hover { opacity: 0.6; z-index: 50; }
+        .umbrella:active { opacity: 0.4; }
+        .umbrella.pop-out { animation: popOut 0.25s ease forwards; }
+        @keyframes popOut { from{transform:scale(1);opacity:1} to{transform:scale(0);opacity:0} }
+        .umbrella svg { width: 100%; height: 100%; display: block; }
 
-        .umbrella:hover {
-            opacity: 0.6;
-            z-index: 50;
-        }
+        /* ─── Feedback ─── */
+        .feedback { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: clamp(2.5rem,7vw,5rem); font-weight: 900; pointer-events: none; z-index: 300; opacity: 0; letter-spacing: 0.05em; }
+        .feedback.correct { color: white; animation: fbPop 0.6s ease forwards; }
+        .feedback.wrong { color: white; animation: fbPop 0.6s ease forwards; }
+        .feedback.miss { color: rgba(255,255,255,0.6); animation: fbPop 0.8s ease forwards; }
+        @keyframes fbPop { 0%{opacity:0;transform:translate(-50%,-50%) scale(0.5)} 30%{opacity:1;transform:translate(-50%,-50%) scale(1.1)} 100%{opacity:0;transform:translate(-50%,-50%) scale(1) translateY(-20px)} }
 
-        .umbrella:active {
-            opacity: 0.4;
-        }
-
-        .umbrella.pop-out {
-            animation: popOut 0.25s ease forwards;
-        }
-
-        @keyframes popOut {
-            from { transform: scale(1); opacity: 1; }
-            to { transform: scale(0); opacity: 0; }
-        }
-
-        .umbrella svg {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-
-        /* Feedback */
-        .feedback {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: clamp(2.5rem, 7vw, 5rem);
-            font-weight: 900;
-            pointer-events: none;
-            z-index: 300;
-            opacity: 0;
-            letter-spacing: 0.05em;
-        }
-
-        .feedback.correct {
-            color: white;
-            animation: fbPop 0.6s ease forwards;
-        }
-
-        .feedback.wrong {
-            color: white;
-            animation: fbPop 0.6s ease forwards;
-        }
-
-        .feedback.miss {
-            color: rgba(255,255,255,0.6);
-            animation: fbPop 0.8s ease forwards;
-        }
-
-        @keyframes fbPop {
-            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
-            30% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
-            100% { opacity: 0; transform: translate(-50%, -50%) scale(1) translateY(-20px); }
-        }
-
-        /* Screens */
+        /* ─── Screens ─── */
         .screen-overlay {
-            position: fixed;
-            inset: 0;
+            position: fixed; inset: 0;
             background: #0a0a0a;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 1.5rem;
-            z-index: 500;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 1.5rem; z-index: 500;
             transition: opacity 0.4s ease;
+            overflow: hidden;
         }
+        .screen-overlay.hidden { opacity: 0; pointer-events: none; }
+        .screen-overlay h1 { font-size: clamp(2.5rem,9vw,6rem); font-weight: 900; letter-spacing: -0.02em; line-height: 0.95; text-align: center; text-transform: uppercase; z-index: 10; position: relative; }
+        .screen-overlay h1 .accent { opacity: 0.5; }
+        .screen-overlay .subtitle { font-size: clamp(0.85rem,2.5vw,1.2rem); font-weight: 300; color: rgba(255,255,255,0.5); text-align: center; max-width: 340px; line-height: 1.6; z-index: 10; position: relative; }
+        .screen-overlay .score-big { font-size: 3rem; font-weight: 900; z-index: 10; position: relative; }
+        .start-btn { margin-top: 2rem; padding: 1rem 3.5rem; background: white; color: #0a0a0a; border: none; border-radius: 0; font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 900; cursor: pointer; transition: transform 0.2s, background 0.2s; letter-spacing: 0.15em; text-transform: uppercase; z-index: 10; position: relative; }
+        .start-btn:hover { transform: scale(1.05); background: #eee; }
 
-        .screen-overlay.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .screen-overlay h1 {
-            font-size: clamp(2.5rem, 9vw, 6rem);
-            font-weight: 900;
-            letter-spacing: -0.02em;
-            line-height: 0.95;
-            text-align: center;
-            text-transform: uppercase;
-        }
-
-        .screen-overlay h1 .accent {
-            color: white;
-            opacity: 0.5;
-        }
-
-        .screen-overlay .subtitle {
-            font-size: clamp(0.85rem, 2.5vw, 1.2rem);
-            font-weight: 300;
-            color: rgba(255,255,255,0.5);
-            text-align: center;
-            max-width: 340px;
-            line-height: 1.6;
-            letter-spacing: 0.02em;
-        }
-
-        .screen-overlay .score-big {
-            font-size: 3rem;
-            font-weight: 900;
-            color: white;
-            letter-spacing: -0.02em;
-        }
-
-        .start-btn {
-            margin-top: 2rem;
-            padding: 1rem 3.5rem;
-            background: white;
-            color: #0a0a0a;
-            border: none;
-            border-radius: 0;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.85rem;
-            font-weight: 900;
-            cursor: pointer;
-            transition: transform 0.2s, background 0.2s;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-        }
-
-        .start-btn:hover {
-            transform: scale(1.05);
-            background: #eee;
-        }
-
-        /* Decorative colored dots on start screen */
-        .start-dot {
+        /* ─── Start Screen Umbrellas ─── */
+        .start-umbrella {
             position: absolute;
             border-radius: 50%;
         }
+        .start-umbrella svg { width: 100%; height: 100%; }
 
-        .start-dot-1 { width: 60px; height: 60px; background: #ff3b3b; top: 8%; left: 6%; }
-        .start-dot-2 { width: 45px; height: 45px; background: #2979ff; top: 12%; right: 10%; }
-        .start-dot-3 { width: 55px; height: 55px; background: #ffd600; bottom: 15%; left: 12%; }
-        .start-dot-4 { width: 40px; height: 40px; background: #00e676; bottom: 20%; right: 8%; }
-        .start-dot-5 { width: 50px; height: 50px; background: #ff6d00; top: 45%; left: 4%; }
-        .start-dot-6 { width: 35px; height: 35px; background: #d500f9; top: 55%; right: 5%; }
+        /* ─── Start Screen Text Pattern ─── */
+        .start-pattern-container {
+            position: absolute;
+            inset: -30% -30%;
+            width: 160%;
+            height: 160%;
+            animation: rainDiag 3s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .start-pattern-container span {
+            position: absolute;
+            font-family: 'Inter', sans-serif;
+            font-weight: 900;
+            font-size: 0.75rem;
+            letter-spacing: 0.4em;
+            color: rgba(255, 255, 255, 0.92);
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body>
 
-    <!-- Text pattern background (generated by JS per stage) -->
+    <!-- Text pattern background (game) -->
     <div class="text-pattern" id="textPattern"></div>
 
     <!-- HUD -->
     <div class="hud" id="hud" style="display:none;">
         <div class="hud-left">
-            <div>
-                <div class="hud-label">SCORE</div>
-                <div class="hud-value" id="score">0</div>
-            </div>
-            <div>
-                <div class="hud-label">ROUND</div>
-                <div class="hud-value" id="round">1</div>
-            </div>
-            <div class="lives">
-                <div class="life-dot" id="life1"></div>
-                <div class="life-dot" id="life2"></div>
-                <div class="life-dot" id="life3"></div>
-            </div>
+            <div><div class="hud-label">SCORE</div><div class="hud-value" id="score">0</div></div>
+            <div><div class="hud-label">ROUND</div><div class="hud-value" id="round">1</div></div>
+            <div class="lives"><div class="life-dot" id="life1"></div><div class="life-dot" id="life2"></div><div class="life-dot" id="life3"></div></div>
         </div>
         <div class="hud-timer" id="timer">3.0</div>
     </div>
@@ -330,12 +169,13 @@
 
     <!-- Start screen -->
     <div class="screen-overlay" id="startScreen">
-        <div class="start-dot start-dot-1"></div>
-        <div class="start-dot start-dot-2"></div>
-        <div class="start-dot start-dot-3"></div>
-        <div class="start-dot start-dot-4"></div>
-        <div class="start-dot start-dot-5"></div>
-        <div class="start-dot start-dot-6"></div>
+        <div class="start-pattern-container" id="startPattern"></div>
+        <div class="start-umbrella" id="su1" style="width:22vw;height:22vw;max-width:200px;max-height:200px;top:3%;left:2%;"></div>
+        <div class="start-umbrella" id="su2" style="width:18vw;height:18vw;max-width:160px;max-height:160px;top:5%;right:5%;"></div>
+        <div class="start-umbrella" id="su3" style="width:24vw;height:24vw;max-width:220px;max-height:220px;bottom:12%;left:3%;"></div>
+        <div class="start-umbrella" id="su4" style="width:16vw;height:16vw;max-width:145px;max-height:145px;bottom:8%;right:4%;"></div>
+        <div class="start-umbrella" id="su5" style="width:14vw;height:14vw;max-width:130px;max-height:130px;top:35%;left:5%;"></div>
+        <div class="start-umbrella" id="su6" style="width:19vw;height:19vw;max-width:170px;max-height:170px;top:40%;right:2%;"></div>
         <h1>FIND THE<br><span class="accent">DIFFERENT</span><br>UMBRELLA.</h1>
         <p class="subtitle">우산들 속에 하나만 달라요<br>사라지기 전에 빠르게 찾아 클릭!</p>
         <button class="start-btn" onclick="startGame()">START</button>
@@ -360,35 +200,58 @@
         const gameOverScreen = document.getElementById('gameOverScreen');
         const textPattern = document.getElementById('textPattern');
 
-        let score = 0;
-        let round = 0;
-        let lives = 3;
-        let timeLeft = 0;
-        let timerInterval = null;
-        let isPlaying = false;
-        let differentId = -1;
-        let umbrellaData = [];
-        let animFrame = null;
+        let score = 0, round = 0, lives = 3, timeLeft = 0;
+        let timerInterval = null, isPlaying = false, differentId = -1;
+        let umbrellaData = [], animFrame = null;
 
-        // Pop colors
-        const popColors = [
-            '#ff3b3b', '#2979ff', '#ffd600', '#00e676',
-            '#ff6d00', '#d500f9', '#00bcd4', '#ff1744',
-            '#76ff03', '#651fff',
-        ];
-
+        const popColors = ['#ff3b3b','#2979ff','#ffd600','#00e676','#ff6d00','#d500f9','#00bcd4','#ff1744','#76ff03','#651fff'];
         const BG_COLOR = '#0a0a0a';
+        const patternTexts = ['FIND DIFFERENT','UMBRELLA','NOT THE SAME','LOOK CLOSER','FIND IT'];
 
-        // ─── Text Pattern Generators ───────────────────────────────
+        // ─── Start screen setup ─────────────────────────────────
+        function setupStartScreen() {
+            // Render umbrellas on start screen
+            const startColors = ['#ff3b3b','#2979ff','#ffd600','#00e676','#ff6d00','#d500f9'];
+            for (let i = 1; i <= 6; i++) {
+                const el = document.getElementById('su' + i);
+                el.innerHTML = createUmbrellaSVG(8, startColors[i-1], 0);
+            }
+            // Render text pattern on start screen
+            generateStartPattern();
+        }
 
-        const patternTexts = [
-            'FIND DIFFERENT',
-            'UMBRELLA',
-            'NOT THE SAME',
-            'LOOK CLOSER',
-            'FIND IT',
-        ];
+        function generateStartPattern() {
+            const container = document.getElementById('startPattern');
+            container.innerHTML = '';
+            const W = window.innerWidth * 1.6;
+            const H = window.innerHeight * 1.6;
+            const text = 'FIND DIFFERENT UMBRELLA';
+            const chars = text.split('');
+            const rowGap = 44;
+            const colGap = 28;
+            const rows = Math.floor(H / rowGap);
+            const cols = Math.floor(W / colGap);
 
+            for (let row = 0; row < rows; row++) {
+                for (let col = 0; col < cols; col++) {
+                    const charIndex = (row * cols + col) % chars.length;
+                    const char = chars[charIndex];
+                    if (char === ' ') continue;
+                    const x = col * colGap;
+                    const y = row * rowGap;
+                    const show = Math.abs((col - row * 0.6) % 12) < 4;
+                    if (show) {
+                        const span = document.createElement('span');
+                        span.textContent = char;
+                        span.style.left = x + 'px';
+                        span.style.top = y + 'px';
+                        container.appendChild(span);
+                    }
+                }
+            }
+        }
+
+        // ─── Text Pattern (game) ────────────────────────────────
         function generateTextPattern(round) {
             textPattern.innerHTML = '';
             const W = window.innerWidth;
@@ -397,25 +260,25 @@
             const text = patternTexts[round % patternTexts.length];
             const chars = text.split('');
 
-            // Create a container that animates
             const container = document.createElement('div');
             container.style.position = 'absolute';
-            container.style.inset = '-50% -50%';
-            container.style.width = '200%';
-            container.style.height = '200%';
+            container.style.inset = '-40% -40%';
+            container.style.width = '180%';
+            container.style.height = '180%';
 
-            // Different animation per pattern type
             const animations = [
-                'rainDiag 8s linear infinite',       // diagonal rain
-                'pulseConcentric 6s ease-in-out infinite', // concentric pulse
-                'waveMove 10s ease-in-out infinite', // wave drift
-                'rainReverse 8s linear infinite',    // reverse diagonal
-                'expandCircle 7s ease-in-out infinite' // expanding
+                'rainDiag 3s linear infinite',
+                'pulseConcentric 2.5s ease-in-out infinite',
+                'waveMove 3s ease-in-out infinite',
+                'rainReverse 3s linear infinite',
+                'expandCircle 3s ease-in-out infinite'
             ];
             container.style.animation = animations[patternType];
 
-            const rows = Math.floor(H * 2 / 22);
-            const cols = Math.floor(W * 2 / 14);
+            const rowGap = 44;
+            const colGap = 28;
+            const rows = Math.floor(H * 1.8 / rowGap);
+            const cols = Math.floor(W * 1.8 / colGap);
 
             for (let row = 0; row < rows; row++) {
                 for (let col = 0; col < cols; col++) {
@@ -423,39 +286,31 @@
                     const char = chars[charIndex];
                     if (char === ' ') continue;
 
-                    let x, y, show;
+                    let x = col * colGap;
+                    let y = row * rowGap;
+                    let show = false;
 
                     switch (patternType) {
                         case 0:
-                            x = col * 14;
-                            y = row * 22;
-                            show = Math.abs((col - row * 0.6) % 8) < 3;
+                            show = Math.abs((col - row * 0.6) % 12) < 4;
                             break;
                         case 1:
-                            x = col * 14;
-                            y = row * 22;
-                            const cx = cols / 2, cy = rows / 2;
-                            const dist = Math.abs(col - cx) + Math.abs(row - cy);
-                            show = (Math.floor(dist) % 6) < 2;
+                            const cx = cols/2, cy = rows/2;
+                            const dist = Math.abs(col-cx) + Math.abs(row-cy);
+                            show = (Math.floor(dist) % 9) < 3;
                             break;
                         case 2:
-                            x = col * 14;
-                            y = row * 22;
-                            const wave = Math.sin(col * 0.12) * 10;
-                            show = Math.abs(row - rows / 2 - wave) < 3;
+                            const wave = Math.sin(col * 0.08) * 12;
+                            show = Math.abs(row - rows/2 - wave) < 4;
                             break;
                         case 3:
-                            x = col * 14;
-                            y = row * 22;
-                            show = Math.abs((col + row * 0.6) % 8) < 3;
+                            show = Math.abs((col + row * 0.6) % 12) < 4;
                             break;
                         case 4:
-                            x = col * 14;
-                            y = row * 22;
-                            const dx = col - cols / 2;
-                            const dy = (row - rows / 2) * 1.5;
-                            const r = Math.sqrt(dx * dx + dy * dy);
-                            show = (Math.floor(r) % 7) < 2;
+                            const dx = col - cols/2;
+                            const dy = (row - rows/2) * 1.5;
+                            const r = Math.sqrt(dx*dx + dy*dy);
+                            show = (Math.floor(r) % 10) < 3;
                             break;
                     }
 
@@ -468,12 +323,10 @@
                     }
                 }
             }
-
             textPattern.appendChild(container);
         }
 
-        // ─── Umbrella ──────────────────────────────────────────────
-
+        // ─── Umbrella ───────────────────────────────────────────
         function getUmbrellaSize() {
             const base = Math.min(window.innerWidth, window.innerHeight);
             return Math.floor(base * 0.16);
@@ -481,17 +334,13 @@
 
         function createUmbrellaSVG(ribs, fillColor, ribOffset) {
             const cx = 50, cy = 50, r = 48;
-            let paths = '';
-
-            paths += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fillColor}" />`;
-
+            let paths = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fillColor}" />`;
             for (let i = 0; i < ribs; i++) {
                 const angle = (i * 360 / ribs + ribOffset) * Math.PI / 180;
                 const x2 = cx + Math.cos(angle) * r;
                 const y2 = cy + Math.sin(angle) * r;
                 paths += `<line x1="${cx}" y1="${cy}" x2="${x2}" y2="${y2}" stroke="${BG_COLOR}" stroke-width="1.5"/>`;
             }
-
             return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">${paths}</svg>`;
         }
 
@@ -513,69 +362,35 @@
 
         function getDifference(round) {
             const ribs = 8;
-            const colorIndex = Math.floor(Math.random() * popColors.length);
-            const normalColor = popColors[colorIndex];
-
+            const ci = Math.floor(Math.random() * popColors.length);
+            const nc = popColors[ci];
             if (round <= 3) {
-                let diffColorIndex = (colorIndex + 3 + Math.floor(Math.random() * 4)) % popColors.length;
-                return {
-                    normal: { ribs, color: normalColor, offset: 0 },
-                    different: { ribs, color: popColors[diffColorIndex], offset: 0 }
-                };
+                let di = (ci + 3 + Math.floor(Math.random()*4)) % popColors.length;
+                return { normal:{ribs,color:nc,offset:0}, different:{ribs,color:popColors[di],offset:0} };
             } else if (round <= 6) {
-                const choices = [
-                    { normal: { ribs, color: normalColor, offset: 0 }, different: { ribs: ribs + 2, color: normalColor, offset: 0 } },
-                    { normal: { ribs, color: normalColor, offset: 0 }, different: { ribs: ribs - 2, color: normalColor, offset: 0 } }
-                ];
-                return choices[Math.floor(Math.random() * choices.length)];
+                const c = [{normal:{ribs,color:nc,offset:0},different:{ribs:ribs+2,color:nc,offset:0}},{normal:{ribs,color:nc,offset:0},different:{ribs:ribs-2,color:nc,offset:0}}];
+                return c[Math.floor(Math.random()*c.length)];
             } else if (round <= 10) {
-                const choices = [
-                    { normal: { ribs, color: normalColor, offset: 0 }, different: { ribs, color: normalColor, offset: 360 / ribs / 2 } },
-                    { normal: { ribs, color: normalColor, offset: 0 }, different: { ribs: ribs + 1, color: normalColor, offset: 0 } }
-                ];
-                return choices[Math.floor(Math.random() * choices.length)];
+                const c = [{normal:{ribs,color:nc,offset:0},different:{ribs,color:nc,offset:360/ribs/2}},{normal:{ribs,color:nc,offset:0},different:{ribs:ribs+1,color:nc,offset:0}}];
+                return c[Math.floor(Math.random()*c.length)];
             } else {
-                const choices = [
-                    { normal: { ribs, color: normalColor, offset: 0 }, different: { ribs, color: normalColor, offset: 15 } },
-                    { normal: { ribs: 10, color: normalColor, offset: 0 }, different: { ribs: 11, color: normalColor, offset: 0 } }
-                ];
-                return choices[Math.floor(Math.random() * choices.length)];
+                const c = [{normal:{ribs,color:nc,offset:0},different:{ribs,color:nc,offset:15}},{normal:{ribs:10,color:nc,offset:0},different:{ribs:11,color:nc,offset:0}}];
+                return c[Math.floor(Math.random()*c.length)];
             }
         }
 
         function placeUmbrellas(count, size) {
-            const positions = [];
-            const padding = 10;
-            const maxAttempts = 200;
-
+            const positions = [], pad = 10;
             for (let i = 0; i < count; i++) {
                 let placed = false;
-                for (let a = 0; a < maxAttempts; a++) {
-                    const x = padding + Math.random() * (window.innerWidth - size - padding * 2);
-                    const y = padding + Math.random() * (window.innerHeight - size - padding * 2);
-
+                for (let a = 0; a < 200; a++) {
+                    const x = pad + Math.random()*(window.innerWidth-size-pad*2);
+                    const y = pad + Math.random()*(window.innerHeight-size-pad*2);
                     let overlap = false;
-                    for (const p of positions) {
-                        const dx = x - p.x;
-                        const dy = y - p.y;
-                        if (Math.sqrt(dx * dx + dy * dy) < size * 0.75) {
-                            overlap = true;
-                            break;
-                        }
-                    }
-
-                    if (!overlap) {
-                        positions.push({ x, y });
-                        placed = true;
-                        break;
-                    }
+                    for (const p of positions) { if (Math.sqrt((x-p.x)**2+(y-p.y)**2) < size*0.75) { overlap=true; break; } }
+                    if (!overlap) { positions.push({x,y}); placed=true; break; }
                 }
-                if (!placed) {
-                    positions.push({
-                        x: padding + Math.random() * (window.innerWidth - size - padding * 2),
-                        y: padding + Math.random() * (window.innerHeight - size - padding * 2)
-                    });
-                }
+                if (!placed) positions.push({x:pad+Math.random()*(window.innerWidth-size-pad*2),y:pad+Math.random()*(window.innerHeight-size-pad*2)});
             }
             return positions;
         }
@@ -583,187 +398,123 @@
         function spawnRound() {
             round++;
             roundEl.textContent = round;
-
-            // Generate new text pattern for this stage
             generateTextPattern(round);
-
-            const count = getCount(round);
-            const size = getUmbrellaSize();
-            const diff = getDifference(round);
-            const positions = placeUmbrellas(count, size);
-
+            const count = getCount(round), size = getUmbrellaSize();
+            const diff = getDifference(round), positions = placeUmbrellas(count, size);
             field.innerHTML = '';
             umbrellaData = [];
-            differentId = Math.floor(Math.random() * count);
-
+            differentId = Math.floor(Math.random()*count);
             for (let i = 0; i < count; i++) {
-                const pos = positions[i];
-                const isDiff = (i === differentId);
+                const pos = positions[i], isDiff = (i===differentId);
                 const props = isDiff ? diff.different : diff.normal;
-
                 const el = document.createElement('div');
                 el.className = 'umbrella';
-                el.style.width = size + 'px';
-                el.style.height = size + 'px';
-                el.style.left = pos.x + 'px';
-                el.style.top = pos.y + 'px';
+                el.style.width = size+'px'; el.style.height = size+'px';
+                el.style.left = pos.x+'px'; el.style.top = pos.y+'px';
                 el.innerHTML = createUmbrellaSVG(props.ribs, props.color, props.offset);
-
                 el.addEventListener('click', () => handleClick(i, el));
                 field.appendChild(el);
-
-                // Movement
-                const speed = 0.4 + Math.random() * 0.6;
-                const angle = Math.random() * Math.PI * 2;
-                umbrellaData.push({
-                    el, x: pos.x, y: pos.y,
-                    vx: Math.cos(angle) * speed,
-                    vy: Math.sin(angle) * speed,
-                    size
-                });
+                const speed = 0.4+Math.random()*0.6, angle = Math.random()*Math.PI*2;
+                umbrellaData.push({el,x:pos.x,y:pos.y,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,size});
             }
-
             startFloating();
-
-            // Timer
             timeLeft = getTimeLimit(round);
             timerEl.textContent = timeLeft.toFixed(1);
             timerEl.classList.remove('urgent');
-
             clearInterval(timerInterval);
             timerInterval = setInterval(() => {
-                timeLeft -= 0.1;
-                if (timeLeft <= 0) timeLeft = 0;
+                timeLeft -= 0.1; if (timeLeft<=0) timeLeft=0;
                 timerEl.textContent = timeLeft.toFixed(1);
-                if (timeLeft <= 1.0) timerEl.classList.add('urgent');
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    handleMiss();
-                }
+                if (timeLeft<=1.0) timerEl.classList.add('urgent');
+                if (timeLeft<=0) { clearInterval(timerInterval); handleMiss(); }
             }, 100);
         }
 
         function startFloating() {
             cancelAnimationFrame(animFrame);
-            const W = window.innerWidth;
-            const H = window.innerHeight;
-
+            const W=window.innerWidth, H=window.innerHeight;
             function animate() {
                 umbrellaData.forEach(u => {
-                    u.x += u.vx;
-                    u.y += u.vy;
-                    if (u.x <= 0 || u.x + u.size >= W) u.vx *= -1;
-                    if (u.y <= 0 || u.y + u.size >= H) u.vy *= -1;
-                    u.x = Math.max(0, Math.min(W - u.size, u.x));
-                    u.y = Math.max(0, Math.min(H - u.size, u.y));
-                    u.el.style.left = u.x + 'px';
-                    u.el.style.top = u.y + 'px';
+                    u.x+=u.vx; u.y+=u.vy;
+                    if (u.x<=0||u.x+u.size>=W) u.vx*=-1;
+                    if (u.y<=0||u.y+u.size>=H) u.vy*=-1;
+                    u.x=Math.max(0,Math.min(W-u.size,u.x));
+                    u.y=Math.max(0,Math.min(H-u.size,u.y));
+                    u.el.style.left=u.x+'px'; u.el.style.top=u.y+'px';
                 });
-                if (isPlaying) animFrame = requestAnimationFrame(animate);
+                if (isPlaying) animFrame=requestAnimationFrame(animate);
             }
-            animFrame = requestAnimationFrame(animate);
+            animFrame=requestAnimationFrame(animate);
         }
 
         function handleClick(id, el) {
             if (!isPlaying) return;
             clearInterval(timerInterval);
-
-            if (id === differentId) {
-                score += Math.ceil(timeLeft * 10) + round * 2;
+            if (id===differentId) {
+                score += Math.ceil(timeLeft*10)+round*2;
                 scoreEl.textContent = score;
-                showFeedback('correct', 'NICE');
-                el.style.opacity = '0.5';
-                setTimeout(() => popOutAll(() => spawnRound()), 450);
+                showFeedback('correct','NICE');
+                el.style.opacity='0.5';
+                setTimeout(()=>popOutAll(()=>spawnRound()),450);
             } else {
-                showFeedback('wrong', 'MISS');
-                lives--;
-                updateLives();
-                el.style.opacity = '0.3';
-                setTimeout(() => el.style.opacity = '1', 200);
-                if (lives <= 0) {
-                    setTimeout(() => endGame(), 350);
-                }
+                showFeedback('wrong','MISS');
+                lives--; updateLives();
+                el.style.opacity='0.3';
+                setTimeout(()=>el.style.opacity='1',200);
+                if (lives<=0) setTimeout(()=>endGame(),350);
             }
         }
 
         function handleMiss() {
             if (!isPlaying) return;
-            lives--;
-            updateLives();
-            showFeedback('miss', 'TIME');
-
-            const correctEl = umbrellaData[differentId]?.el;
-            if (correctEl) {
-                correctEl.style.opacity = '0.5';
-            }
-
-            if (lives <= 0) {
-                setTimeout(() => endGame(), 500);
-            } else {
-                setTimeout(() => popOutAll(() => spawnRound()), 700);
-            }
+            lives--; updateLives();
+            showFeedback('miss','TIME');
+            const ce = umbrellaData[differentId]?.el;
+            if (ce) ce.style.opacity='0.5';
+            if (lives<=0) setTimeout(()=>endGame(),500);
+            else setTimeout(()=>popOutAll(()=>spawnRound()),700);
         }
 
-        function popOutAll(callback) {
-            umbrellaData.forEach((u, i) => {
-                setTimeout(() => u.el.classList.add('pop-out'), i * 20);
-            });
-            setTimeout(callback, umbrellaData.length * 20 + 300);
+        function popOutAll(cb) {
+            umbrellaData.forEach((u,i)=>setTimeout(()=>u.el.classList.add('pop-out'),i*20));
+            setTimeout(cb, umbrellaData.length*20+300);
         }
 
         function updateLives() {
-            for (let i = 1; i <= 3; i++) {
-                const dot = document.getElementById('life' + i);
-                if (i > lives) dot.classList.add('lost');
-                else dot.classList.remove('lost');
-            }
+            for (let i=1;i<=3;i++) { const d=document.getElementById('life'+i); if(i>lives) d.classList.add('lost'); else d.classList.remove('lost'); }
         }
 
         function showFeedback(type, text) {
-            feedbackEl.textContent = text;
-            feedbackEl.className = 'feedback';
+            feedbackEl.textContent=text;
+            feedbackEl.className='feedback';
             void feedbackEl.offsetWidth;
-            feedbackEl.className = 'feedback ' + type;
+            feedbackEl.className='feedback '+type;
         }
 
         function startGame() {
-            score = 0;
-            round = 0;
-            lives = 3;
-            isPlaying = true;
-
-            scoreEl.textContent = '0';
-            roundEl.textContent = '1';
-            timerEl.classList.remove('urgent');
-            updateLives();
-
-            hud.style.display = 'flex';
+            score=0; round=0; lives=3; isPlaying=true;
+            scoreEl.textContent='0'; roundEl.textContent='1';
+            timerEl.classList.remove('urgent'); updateLives();
+            hud.style.display='flex';
             startScreen.classList.add('hidden');
             gameOverScreen.classList.add('hidden');
-            field.innerHTML = '';
-
-            setTimeout(() => spawnRound(), 250);
+            field.innerHTML='';
+            setTimeout(()=>spawnRound(),250);
         }
 
         function endGame() {
-            isPlaying = false;
-            clearInterval(timerInterval);
-            cancelAnimationFrame(animFrame);
-
-            document.getElementById('finalScore').textContent = score;
-            document.getElementById('gameOverMsg').textContent = `ROUND ${round}`;
+            isPlaying=false; clearInterval(timerInterval); cancelAnimationFrame(animFrame);
+            document.getElementById('finalScore').textContent=score;
+            document.getElementById('gameOverMsg').textContent=`ROUND ${round}`;
             gameOverScreen.classList.remove('hidden');
         }
 
-        window.addEventListener('resize', () => {
-            if (isPlaying) {
-                umbrellaData.forEach(u => {
-                    u.x = Math.min(u.x, window.innerWidth - u.size);
-                    u.y = Math.min(u.y, window.innerHeight - u.size);
-                });
-                generateTextPattern(round);
-            }
+        window.addEventListener('resize',()=>{
+            if(isPlaying){umbrellaData.forEach(u=>{u.x=Math.min(u.x,window.innerWidth-u.size);u.y=Math.min(u.y,window.innerHeight-u.size);});generateTextPattern(round);}
         });
+
+        // Init start screen
+        setupStartScreen();
     </script>
 </body>
 </html>
