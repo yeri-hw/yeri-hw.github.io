@@ -127,6 +127,17 @@
         .destruct-text { font-size: 1.2rem; color: #ff4444; text-shadow: 2px 2px 0 #880000; text-align: center; line-height: 2.5; animation: shake 0.2s steps(2) infinite; }
         @keyframes shake { 0%,100%{transform:translateX(0)} 50%{transform:translateX(-2px)} }
 
+        /* ─── Success screen ─── */
+        .success-overlay { position: fixed; inset: 0; z-index: 400; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.85); pointer-events: none; opacity: 0; transition: opacity 0.5s; }
+        .success-overlay.show { opacity: 1; pointer-events: auto; }
+        .success-text { font-size: clamp(1.5rem, 5vw, 2.5rem); color: #ffcc00; text-shadow: 0 0 20px #ffcc00, 0 0 40px #ff8800, 3px 3px 0 #884400; text-align: center; line-height: 2; animation: successPulse 0.8s ease-in-out infinite alternate; }
+        @keyframes successPulse { 0%{transform:scale(1);text-shadow:0 0 20px #ffcc00,0 0 40px #ff8800,3px 3px 0 #884400} 100%{transform:scale(1.05);text-shadow:0 0 30px #ffcc00,0 0 60px #ff8800,3px 3px 0 #884400} }
+
+        /* Molar effects */
+        .molar-shine img { animation: molarShine 0.5s ease-in-out infinite alternate; }
+        @keyframes molarShine { 0%{filter:brightness(1.5) drop-shadow(0 0 8px #ffcc00);} 100%{filter:brightness(2) drop-shadow(0 0 16px #ffffff);} }
+        .molar-decay img { filter: brightness(0.3) sepia(1) hue-rotate(60deg) saturate(3); }
+
         /* ─── Intro ─── */
         .intro-overlay { position: fixed; inset: 0; z-index: 600; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; transition: opacity 1s; gap: 1rem; }
         .intro-overlay.hidden { opacity: 0; pointer-events: none; }
@@ -248,6 +259,11 @@
     <!-- Destruction -->
     <div class="destruct-overlay" id="destructOverlay">
         <div class="destruct-text">MOLAR PRIME<br>HAS FALLEN...</div>
+    </div>
+
+    <!-- Success -->
+    <div class="success-overlay" id="successOverlay">
+        <div class="success-text">MISSION<br>SUCCESS</div>
     </div>
 
     <!-- Intro -->
@@ -504,18 +520,35 @@
             hud.style.display='none';gameContainer.style.display='none';
             cockpit.style.display='none';warriorFace.style.display='none';keyDisplay.style.display='none';
 
+            // Apply molar effects
+            const allMolars = document.querySelectorAll('[id="molarRow"], [id="molarRow"] ~ div');
+            const molarContainers = document.querySelectorAll('div[style*="molar.png"]');
+
             if(!survived){
+                // Decay effect - molars turn black/rotten
+                document.querySelectorAll('img[src="molar.png"]').forEach(m => m.closest('div').classList.add('molar-decay'));
                 destructOverlay.classList.add('show');
                 setTimeout(()=>{
                     destructOverlay.classList.remove('show');
+                    document.querySelectorAll('.molar-decay').forEach(m => m.classList.remove('molar-decay'));
                     document.getElementById('finalScore').textContent=score;
                     document.getElementById('gameOverMsg').textContent='MOLAR PRIME DESTROYED  MAX COMBO: '+maxCombo;
+                    gameOverScreen.querySelector('h1').textContent='GAME OVER';
                     gameOverScreen.classList.remove('hidden');
                 },2500);
             } else {
-                document.getElementById('finalScore').textContent=score;
-                document.getElementById('gameOverMsg').textContent='MOLAR PRIME DEFENDED!  MAX COMBO: '+maxCombo;
-                gameOverScreen.classList.remove('hidden');
+                // Shine effect - molars sparkle
+                document.querySelectorAll('img[src="molar.png"]').forEach(m => m.closest('div').classList.add('molar-shine'));
+                document.getElementById('successOverlay').classList.add('show');
+                setTimeout(()=>{
+                    document.getElementById('successOverlay').classList.remove('show');
+                    document.querySelectorAll('.molar-shine').forEach(m => m.classList.remove('molar-shine'));
+                    document.getElementById('finalScore').textContent=score;
+                    document.getElementById('gameOverMsg').textContent='MOLAR PRIME DEFENDED!  MAX COMBO: '+maxCombo;
+                    gameOverScreen.querySelector('h1').textContent='MISSION SUCCESS';
+                    gameOverScreen.querySelector('h1').style.color='#ffcc00';
+                    gameOverScreen.classList.remove('hidden');
+                },3000);
             }
         }
 
