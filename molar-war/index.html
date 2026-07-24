@@ -534,8 +534,8 @@
 
             audioEl.addEventListener('playing', () => requestAnimationFrame(detectBeats));
 
-            // Game duration: 1 min 20 sec (80 seconds)
-            setTimeout(() => { if (isPlaying) endGame(true); }, 80000);
+            // Game duration: 60 seconds
+            setTimeout(() => { if (isPlaying) endGame(true); }, 60000);
             audioEl.addEventListener('ended', () => { if (isPlaying) endGame(true); });
         }
 
