@@ -28,12 +28,12 @@
 
         /* ─── HUD top (Galaga style) ─── */
         .hud { position: fixed; top: 0; left: 0; right: 0; padding: 12px 20px; display: flex; justify-content: space-between; align-items: flex-start; z-index: 200; }
-        .hud-left .label { font-size: 0.5rem; color: #ff4444; }
-        .hud-left .value { font-size: 0.7rem; color: #fff; margin-top: 4px; }
-        .hud-right .label { font-size: 0.5rem; color: #ff4444; }
-        .hud-right .value { font-size: 0.7rem; color: #fff; margin-top: 4px; }
+        .hud-left .label { font-size: 0.7rem; color: #ff4444; }
+        .hud-left .value { font-size: 1rem; color: #fff; margin-top: 4px; }
+        .hud-right .label { font-size: 0.7rem; color: #ff4444; }
+        .hud-right .value { font-size: 1rem; color: #fff; margin-top: 4px; }
         .hud-center { text-align: center; }
-        .hud-center .label { font-size: 0.4rem; color: #4488cc; }
+        .hud-center .label { font-size: 0.6rem; color: #4488cc; }
         .hp-bar-outer { width: 100px; height: 8px; background: #111; border: 1px solid #4488cc; margin-top: 4px; }
         .hp-bar-inner { height: 100%; background: #44ff44; transition: width 0.3s, background 0.3s; }
         .hp-bar-inner.low { background: #ff4444; }
@@ -48,9 +48,9 @@
 
         /* ─── Key display (aligned with lanes) ─── */
         .key-display { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 320px; display: flex; gap: 2px; z-index: 25; }
-        .key-btn { flex: 1; height: 40px; background: #0a1628; border: 2px solid #4488cc; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: #4488cc; transition: all 0.08s steps(1); }
+        .key-btn { flex: 1; height: 44px; background: #0a1628; border: 2px solid #4488cc; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; color: #4488cc; transition: all 0.08s steps(1); }
         .key-btn.active { background: #4488cc; color: #000; box-shadow: 0 0 8px #4488cc; }
-        .key-btn.space-btn { font-size: 0.6rem; }
+        .key-btn.space-btn { font-size: 0.7rem; }
 
         /* ─── Notes (pixel aliens falling) ─── */
         .note { position: absolute; width: 70%; left: 15%; height: 36px; display: flex; align-items: center; justify-content: center; will-change: top; image-rendering: pixelated; }
@@ -106,12 +106,12 @@
         /* face states handled by border color */
 
         /* ─── Combo / Judge ─── */
-        .combo { position: fixed; top: 20%; right: 5%; font-size: 0.7rem; color: #ffcc00; z-index: 100; opacity: 0; transition: opacity 0.3s; text-shadow: 2px 2px 0 #884400; }
+        .combo { position: fixed; top: 20%; right: 5%; font-size: 1rem; color: #ffcc00; z-index: 100; opacity: 0; transition: opacity 0.3s; text-shadow: 2px 2px 0 #884400; }
         .combo.show { opacity: 1; }
-        .judge { position: fixed; top: 38%; left: 50%; transform: translateX(-50%); font-size: 0.8rem; z-index: 100; opacity: 0; pointer-events: none; }
-        .judge.perfect { color: #ffcc00; text-shadow: 0 0 6px #ffcc00; animation: judgePop 0.4s steps(4) forwards; }
-        .judge.great { color: #44ff44; text-shadow: 0 0 6px #44ff44; animation: judgePop 0.4s steps(4) forwards; }
-        .judge.miss { color: #ff4444; text-shadow: 0 0 6px #ff4444; animation: judgePop 0.5s steps(4) forwards; }
+        .judge { position: fixed; top: 38%; left: 50%; transform: translateX(-50%); font-size: 1.4rem; z-index: 100; opacity: 0; pointer-events: none; }
+        .judge.perfect { color: #ffcc00; text-shadow: 0 0 8px #ffcc00; animation: judgePop 0.4s steps(4) forwards; }
+        .judge.great { color: #44ff44; text-shadow: 0 0 8px #44ff44; animation: judgePop 0.4s steps(4) forwards; }
+        .judge.miss { color: #ff4444; text-shadow: 0 0 8px #ff4444; animation: judgePop 0.5s steps(4) forwards; }
         @keyframes judgePop { 0%{opacity:0;transform:translateX(-50%) scale(0.5)} 25%{opacity:1;transform:translateX(-50%) scale(1.3)} 100%{opacity:0;transform:translateX(-50%) translateY(-15px) scale(1)} }
 
         /* ─── Explosion (pixel burst) ─── */
@@ -124,7 +124,7 @@
         /* ─── Destruction ─── */
         .destruct-overlay { position: fixed; inset: 0; z-index: 400; display: flex; flex-direction: column; align-items: center; justify-content: center; background: transparent; pointer-events: none; opacity: 0; transition: opacity 0.5s; }
         .destruct-overlay.show { opacity: 1; pointer-events: auto; }
-        .destruct-text { font-size: 0.8rem; color: #ff4444; text-shadow: 2px 2px 0 #880000; text-align: center; line-height: 2.5; animation: shake 0.2s steps(2) infinite; }
+        .destruct-text { font-size: 1.2rem; color: #ff4444; text-shadow: 2px 2px 0 #880000; text-align: center; line-height: 2.5; animation: shake 0.2s steps(2) infinite; }
         @keyframes shake { 0%,100%{transform:translateX(0)} 50%{transform:translateX(-2px)} }
 
         /* ─── Intro ─── */
@@ -140,9 +140,9 @@
         /* ─── Game Over ─── */
         .screen-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.92); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; z-index: 500; transition: opacity 0.5s; }
         .screen-overlay.hidden { opacity: 0; pointer-events: none; }
-        .screen-overlay h1 { font-size: clamp(0.8rem, 3vw, 1.5rem); color: #ff4444; text-shadow: 2px 2px 0 #880000; text-align: center; line-height: 2; }
-        .screen-overlay .score-big { font-size: 1.2rem; color: #ffcc00; }
-        .screen-overlay .subtitle { font-size: 0.5rem; color: rgba(255,255,255,0.5); text-align: center; max-width: 350px; line-height: 2; }
+        .screen-overlay h1 { font-size: clamp(1.2rem, 4vw, 2rem); color: #ff4444; text-shadow: 2px 2px 0 #880000; text-align: center; line-height: 2; }
+        .screen-overlay .score-big { font-size: 1.8rem; color: #ffcc00; }
+        .screen-overlay .subtitle { font-size: 0.65rem; color: rgba(255,255,255,0.5); text-align: center; max-width: 350px; line-height: 2; }
     </style>
 </head>
 <body>
@@ -406,11 +406,10 @@
             updateHUD();
             document.querySelectorAll('.note').forEach(n=>n.remove());
 
-            // Web Audio API for beat detection
+            // Audio setup
             const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             const audioEl = new Audio('bgm.mp3');
             audioEl.volume = 0.7;
-            audioEl.crossOrigin = 'anonymous';
             audio = audioEl;
 
             const source = audioCtx.createMediaElementSource(audioEl);
@@ -419,15 +418,26 @@
             source.connect(analyser);
             analyser.connect(audioCtx.destination);
 
-            const bufferLength = analyser.frequencyBinCount;
-            const dataArray = new Uint8Array(bufferLength);
-
+            const dataArray = new Uint8Array(analyser.frequencyBinCount);
             let lastBeatTime = 0;
-            let lastSubBeatTime = 0;
             let beatCount = 0;
-            const minBeatGap = 300; // minimum ms between beats
-            const minSubGap = 180;
             let energyHistory = [];
+            const minBeatGap = 280;
+
+            // Fallback timer: guarantee at least 1 note every 600ms
+            let lastNoteTime = Date.now();
+            const fallbackInterval = setInterval(() => {
+                if (!isPlaying) { clearInterval(fallbackInterval); return; }
+                if (Date.now() - lastNoteTime > 700) {
+                    spawnNote(false);
+                    lastNoteTime = Date.now();
+                    beatCount++;
+                }
+                // Speed up
+                if (beatCount === 30) noteSpeed = 2.4;
+                if (beatCount === 60) noteSpeed = 2.0;
+                if (beatCount === 90) noteSpeed = 1.7;
+            }, 100);
 
             audioEl.play().catch(()=>{});
 
@@ -435,54 +445,39 @@
                 if (!isPlaying) return;
                 analyser.getByteFrequencyData(dataArray);
 
-                // Low frequency energy (bass/kick) - bins 0-8 (~0-700Hz)
                 let bassEnergy = 0;
-                for (let i = 0; i < 8; i++) bassEnergy += dataArray[i];
-                bassEnergy /= 8;
+                for (let i = 0; i < 10; i++) bassEnergy += dataArray[i];
+                bassEnergy /= 10;
 
-                // Mid frequency energy (snare/hi-hat) - bins 8-32
                 let midEnergy = 0;
-                for (let i = 8; i < 32; i++) midEnergy += dataArray[i];
-                midEnergy /= 24;
+                for (let i = 10; i < 40; i++) midEnergy += dataArray[i];
+                midEnergy /= 30;
 
-                // Track energy history for adaptive threshold
                 energyHistory.push(bassEnergy);
-                if (energyHistory.length > 40) energyHistory.shift();
+                if (energyHistory.length > 30) energyHistory.shift();
                 const avgEnergy = energyHistory.reduce((a,b) => a+b, 0) / energyHistory.length;
 
                 const now = Date.now();
 
-                // Bass kick detection → spawn note
-                if (bassEnergy > avgEnergy * 1.4 && bassEnergy > 120 && (now - lastBeatTime) > minBeatGap) {
+                // Bass kick → note
+                if (bassEnergy > avgEnergy * 1.3 && bassEnergy > 80 && (now - lastBeatTime) > minBeatGap) {
                     lastBeatTime = now;
+                    lastNoteTime = now;
                     beatCount++;
                     spawnNote(false);
-
-                    // Long note every ~12 beats
-                    if (beatCount % 12 === 0) spawnNote(true);
-
-                    // Speed up over time
-                    if (beatCount === 30) noteSpeed = 2.4;
-                    if (beatCount === 60) noteSpeed = 2.0;
-                    if (beatCount === 90) noteSpeed = 1.7;
+                    if (beatCount % 10 === 0) spawnNote(true);
                 }
 
-                // Mid energy (snare) → occasional double note
-                if (midEnergy > avgEnergy * 1.6 && midEnergy > 130 && (now - lastSubBeatTime) > minSubGap && (now - lastBeatTime) > 150) {
-                    lastSubBeatTime = now;
-                    if (beatCount > 20 && Math.random() < 0.4) {
-                        spawnNote(false);
-                    }
+                // Mid energy → double
+                if (midEnergy > avgEnergy * 1.5 && midEnergy > 100 && (now - lastBeatTime) > 150 && beatCount > 15 && Math.random() < 0.35) {
+                    spawnNote(false);
+                    lastNoteTime = now;
                 }
 
                 requestAnimationFrame(detectBeats);
             }
 
-            // Start detection after a brief delay for audio to load
-            audioEl.addEventListener('playing', () => {
-                requestAnimationFrame(detectBeats);
-            });
-
+            audioEl.addEventListener('playing', () => requestAnimationFrame(detectBeats));
             audioEl.addEventListener('ended', () => { if (isPlaying) endGame(true); });
         }
 
