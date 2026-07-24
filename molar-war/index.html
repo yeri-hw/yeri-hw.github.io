@@ -42,11 +42,11 @@
         .hit-zone.flash { animation: hitFlash 0.1s steps(2); }
         @keyframes hitFlash { 0%{background:rgba(68,200,255,0.3)} 100%{background:rgba(68,136,204,0.05)} }
 
-        /* ─── Key display ─── */
-        .key-display { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 25; }
-        .key-btn { width: 50px; height: 36px; background: #0a1628; border: 2px solid #4488cc; display: flex; align-items: center; justify-content: center; font-size: 0.5rem; color: #4488cc; transition: all 0.08s steps(1); }
+        /* ─── Key display (aligned with lanes) ─── */
+        .key-display { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 320px; display: flex; gap: 2px; z-index: 25; }
+        .key-btn { flex: 1; height: 40px; background: #0a1628; border: 2px solid #4488cc; display: flex; align-items: center; justify-content: center; font-size: 0.5rem; color: #4488cc; transition: all 0.08s steps(1); }
         .key-btn.active { background: #4488cc; color: #000; box-shadow: 0 0 8px #4488cc; }
-        .key-btn.space-btn { width: 70px; font-size: 0.4rem; }
+        .key-btn.space-btn { font-size: 0.4rem; }
 
         /* ─── Notes (pixel aliens falling) ─── */
         .note { position: absolute; width: 70%; left: 15%; height: 36px; display: flex; align-items: center; justify-content: center; will-change: top; image-rendering: pixelated; }
@@ -56,68 +56,71 @@
         /* ─── Pixel alien sprites via box-shadow ─── */
         .alien-sprite { width: 4px; height: 4px; background: transparent; position: relative; margin: auto; }
 
-        /* Alien type A (red crab - like galaga) */
+        /* Alien type A - root spider (green/brown branching) */
         .alien-a { box-shadow:
-            4px 0 0 #ff2222, 8px 0 0 #ff2222, 16px 0 0 #ff2222, 20px 0 0 #ff2222,
-            0px 4px 0 #ff2222, 4px 4px 0 #ff6644, 8px 4px 0 #ff6644, 12px 4px 0 #ffcc00, 16px 4px 0 #ff6644, 20px 4px 0 #ff6644, 24px 4px 0 #ff2222,
-            0px 8px 0 #ff2222, 4px 8px 0 #ff2222, 8px 8px 0 #ff6644, 12px 8px 0 #ff6644, 16px 8px 0 #ff6644, 20px 8px 0 #ff2222, 24px 8px 0 #ff2222,
-            0px 12px 0 #ff2222, 8px 12px 0 #ffffff, 12px 12px 0 #ff2222, 16px 12px 0 #ffffff, 24px 12px 0 #ff2222,
-            4px 16px 0 #ff2222, 8px 16px 0 #ff2222, 12px 16px 0 #ff2222, 16px 16px 0 #ff2222, 20px 16px 0 #ff2222;
+            0px 0px 0 #4a6b2a, 24px 0px 0 #4a6b2a,
+            4px 4px 0 #3d5a22, 8px 4px 0 #5a8033, 16px 4px 0 #5a8033, 20px 4px 0 #3d5a22,
+            0px 8px 0 #3d5a22, 4px 8px 0 #5a8033, 8px 8px 0 #7acc44, 12px 8px 0 #44ff66, 16px 8px 0 #7acc44, 20px 8px 0 #5a8033, 24px 8px 0 #3d5a22,
+            4px 12px 0 #5a8033, 8px 12px 0 #44ff66, 12px 12px 0 #222, 16px 12px 0 #44ff66, 20px 12px 0 #5a8033,
+            0px 16px 0 #3d5a22, 4px 16px 0 #5a8033, 8px 16px 0 #3d5a22, 12px 16px 0 #5a8033, 16px 16px 0 #3d5a22, 20px 16px 0 #5a8033, 24px 16px 0 #3d5a22,
+            0px 20px 0 #2d4418, 8px 20px 0 #3d5a22, 16px 20px 0 #3d5a22, 24px 20px 0 #2d4418;
         }
-        /* Alien type B (blue butterfly) */
+        /* Alien type B - virus spore (teal/cyan) */
         .alien-b { box-shadow:
-            8px 0 0 #4488ff, 12px 0 0 #ffcc00, 16px 0 0 #4488ff,
-            4px 4px 0 #4488ff, 8px 4px 0 #4488ff, 12px 4px 0 #4488ff, 16px 4px 0 #4488ff, 20px 4px 0 #4488ff,
-            0px 8px 0 #4488ff, 4px 8px 0 #88ccff, 8px 8px 0 #4488ff, 12px 8px 0 #ffcc00, 16px 8px 0 #4488ff, 20px 8px 0 #88ccff, 24px 8px 0 #4488ff,
-            0px 12px 0 #4488ff, 4px 12px 0 #4488ff, 8px 12px 0 #4488ff, 16px 12px 0 #4488ff, 20px 12px 0 #4488ff, 24px 12px 0 #4488ff,
-            0px 16px 0 #4488ff, 12px 16px 0 #4488ff, 24px 16px 0 #4488ff;
+            12px 0px 0 #22aaaa,
+            8px 4px 0 #22aaaa, 12px 4px 0 #44ffdd, 16px 4px 0 #22aaaa,
+            4px 8px 0 #22aaaa, 8px 8px 0 #44ffdd, 12px 8px 0 #88ffee, 16px 8px 0 #44ffdd, 20px 8px 0 #22aaaa,
+            0px 12px 0 #166666, 4px 12px 0 #22aaaa, 8px 12px 0 #44ffdd, 12px 12px 0 #222, 16px 12px 0 #44ffdd, 20px 12px 0 #22aaaa, 24px 12px 0 #166666,
+            4px 16px 0 #22aaaa, 8px 16px 0 #166666, 12px 16px 0 #22aaaa, 16px 16px 0 #166666, 20px 16px 0 #22aaaa,
+            0px 20px 0 #166666, 12px 20px 0 #166666, 24px 20px 0 #166666;
         }
-        /* Alien type C (green boss) */
+        /* Alien type C - decay fungus (brown/olive) */
         .alien-c { box-shadow:
-            8px 0 0 #00cc66, 12px 0 0 #00cc66, 16px 0 0 #00cc66,
-            4px 4px 0 #00cc66, 8px 4px 0 #00ff88, 12px 4px 0 #ffcc00, 16px 4px 0 #00ff88, 20px 4px 0 #00cc66,
-            0px 8px 0 #00cc66, 4px 8px 0 #00ff88, 8px 8px 0 #00cc66, 12px 8px 0 #00cc66, 16px 8px 0 #00cc66, 20px 8px 0 #00ff88, 24px 8px 0 #00cc66,
-            4px 12px 0 #00cc66, 8px 12px 0 #ffffff, 12px 12px 0 #00cc66, 16px 12px 0 #ffffff, 20px 12px 0 #00cc66,
-            8px 16px 0 #00cc66, 12px 16px 0 #00cc66, 16px 16px 0 #00cc66;
+            8px 0px 0 #6b5522, 12px 0px 0 #8b7733, 16px 0px 0 #6b5522,
+            4px 4px 0 #6b5522, 8px 4px 0 #aa9944, 12px 4px 0 #ccbb55, 16px 4px 0 #aa9944, 20px 4px 0 #6b5522,
+            0px 8px 0 #4a3a11, 4px 8px 0 #6b5522, 8px 8px 0 #aa9944, 12px 8px 0 #222, 16px 8px 0 #aa9944, 20px 8px 0 #6b5522, 24px 8px 0 #4a3a11,
+            4px 12px 0 #6b5522, 8px 12px 0 #4a3a11, 12px 12px 0 #6b5522, 16px 12px 0 #4a3a11, 20px 12px 0 #6b5522,
+            0px 16px 0 #4a3a11, 8px 16px 0 #6b5522, 16px 16px 0 #6b5522, 24px 16px 0 #4a3a11;
         }
-        /* Alien type D (purple) */
+        /* Alien type D - mutant tooth (dark green glow) */
         .alien-d { box-shadow:
-            12px 0 0 #cc44ff,
-            8px 4px 0 #cc44ff, 12px 4px 0 #ff88ff, 16px 4px 0 #cc44ff,
-            4px 8px 0 #cc44ff, 8px 8px 0 #cc44ff, 12px 8px 0 #ffcc00, 16px 8px 0 #cc44ff, 20px 8px 0 #cc44ff,
-            0px 12px 0 #cc44ff, 4px 12px 0 #cc44ff, 8px 12px 0 #cc44ff, 12px 12px 0 #cc44ff, 16px 12px 0 #cc44ff, 20px 12px 0 #cc44ff, 24px 12px 0 #cc44ff,
-            0px 16px 0 #cc44ff, 8px 16px 0 #cc44ff, 16px 16px 0 #cc44ff, 24px 16px 0 #cc44ff;
+            8px 0px 0 #2a5a2a, 12px 0px 0 #44aa44, 16px 0px 0 #2a5a2a,
+            4px 4px 0 #2a5a2a, 8px 4px 0 #44aa44, 12px 4px 0 #66ff66, 16px 4px 0 #44aa44, 20px 4px 0 #2a5a2a,
+            4px 8px 0 #44aa44, 8px 8px 0 #66ff66, 12px 8px 0 #ffffff, 16px 8px 0 #66ff66, 20px 8px 0 #44aa44,
+            0px 12px 0 #1a3a1a, 4px 12px 0 #2a5a2a, 8px 12px 0 #44aa44, 12px 12px 0 #44aa44, 16px 12px 0 #44aa44, 20px 12px 0 #2a5a2a, 24px 12px 0 #1a3a1a,
+            0px 16px 0 #1a3a1a, 4px 16px 0 #2a5a2a, 20px 16px 0 #2a5a2a, 24px 16px 0 #1a3a1a,
+            0px 20px 0 #1a3a1a, 24px 20px 0 #1a3a1a;
         }
 
-        /* ─── Warrior pixel face (bottom right) ─── */
-        .warrior-face { position: fixed; bottom: 100px; right: 15px; z-index: 200; text-align: center; }
-        .warrior-avatar { width: 48px; height: 48px; background: #0a1628; border: 2px solid #4488cc; display: flex; align-items: center; justify-content: center; image-rendering: pixelated; }
-        .warrior-name { font-size: 0.3rem; color: #4488cc; margin-top: 3px; }
-        /* Pixel face via box-shadow */
-        .face-sprite { width: 3px; height: 3px; background: transparent; }
+        /* ─── Warrior pixel face (bottom right, larger) ─── */
+        .warrior-face { position: fixed; bottom: 100px; right: 12px; z-index: 200; text-align: center; }
+        .warrior-avatar { width: 72px; height: 72px; background: #0a1628; border: 3px solid #4488cc; display: flex; align-items: center; justify-content: center; image-rendering: pixelated; box-shadow: 0 0 10px rgba(68,136,204,0.2); }
+        .warrior-name { font-size: 0.35rem; color: #4488cc; margin-top: 4px; }
+        /* Pixel face via box-shadow (scaled up) */
+        .face-sprite { width: 4px; height: 4px; background: transparent; }
         .face-happy { box-shadow:
-            6px 6px 0 #ffcc88, 9px 6px 0 #ffcc88, 12px 6px 0 #ffcc88, 15px 6px 0 #ffcc88, 18px 6px 0 #ffcc88,
-            3px 9px 0 #ffcc88, 6px 9px 0 #ffcc88, 9px 9px 0 #ffcc88, 12px 9px 0 #ffcc88, 15px 9px 0 #ffcc88, 18px 9px 0 #ffcc88, 21px 9px 0 #ffcc88,
-            6px 12px 0 #222, 9px 12px 0 #ffcc88, 12px 12px 0 #ffcc88, 15px 12px 0 #222, 18px 12px 0 #ffcc88,
-            6px 15px 0 #ffcc88, 9px 15px 0 #ffcc88, 12px 15px 0 #ffcc88, 15px 15px 0 #ffcc88, 18px 15px 0 #ffcc88,
-            6px 18px 0 #ffcc88, 9px 18px 0 #ff4444, 12px 18px 0 #ff4444, 15px 18px 0 #ff4444, 18px 18px 0 #ffcc88,
-            9px 21px 0 #ffcc88, 12px 21px 0 #ffcc88, 15px 21px 0 #ffcc88;
+            8px 8px 0 #ffcc88, 12px 8px 0 #ffcc88, 16px 8px 0 #ffcc88, 20px 8px 0 #ffcc88, 24px 8px 0 #ffcc88,
+            4px 12px 0 #ffcc88, 8px 12px 0 #ffcc88, 12px 12px 0 #ffcc88, 16px 12px 0 #ffcc88, 20px 12px 0 #ffcc88, 24px 12px 0 #ffcc88, 28px 12px 0 #ffcc88,
+            8px 16px 0 #222, 12px 16px 0 #ffcc88, 16px 16px 0 #ffcc88, 20px 16px 0 #222, 24px 16px 0 #ffcc88,
+            8px 20px 0 #ffcc88, 12px 20px 0 #ffcc88, 16px 20px 0 #ffcc88, 20px 20px 0 #ffcc88, 24px 20px 0 #ffcc88,
+            8px 24px 0 #ffcc88, 12px 24px 0 #ff4444, 16px 24px 0 #ff4444, 20px 24px 0 #ff4444, 24px 24px 0 #ffcc88,
+            12px 28px 0 #ffcc88, 16px 28px 0 #ffcc88, 20px 28px 0 #ffcc88;
         }
         .face-sad { box-shadow:
-            6px 6px 0 #ffcc88, 9px 6px 0 #ffcc88, 12px 6px 0 #ffcc88, 15px 6px 0 #ffcc88, 18px 6px 0 #ffcc88,
-            3px 9px 0 #ffcc88, 6px 9px 0 #ffcc88, 9px 9px 0 #ffcc88, 12px 9px 0 #ffcc88, 15px 9px 0 #ffcc88, 18px 9px 0 #ffcc88, 21px 9px 0 #ffcc88,
-            6px 12px 0 #222, 9px 12px 0 #ffcc88, 12px 12px 0 #ffcc88, 15px 12px 0 #222, 18px 12px 0 #ffcc88,
-            6px 15px 0 #4444ff, 9px 15px 0 #ffcc88, 12px 15px 0 #ffcc88, 15px 15px 0 #4444ff, 18px 15px 0 #ffcc88,
-            9px 18px 0 #ffcc88, 12px 18px 0 #ffcc88, 15px 18px 0 #ffcc88,
-            6px 21px 0 #ffcc88, 9px 21px 0 #ff4444, 12px 21px 0 #ff4444, 15px 21px 0 #ff4444, 18px 21px 0 #ffcc88;
+            8px 8px 0 #ffcc88, 12px 8px 0 #ffcc88, 16px 8px 0 #ffcc88, 20px 8px 0 #ffcc88, 24px 8px 0 #ffcc88,
+            4px 12px 0 #ffcc88, 8px 12px 0 #ffcc88, 12px 12px 0 #ffcc88, 16px 12px 0 #ffcc88, 20px 12px 0 #ffcc88, 24px 12px 0 #ffcc88, 28px 12px 0 #ffcc88,
+            8px 16px 0 #222, 12px 16px 0 #ffcc88, 16px 16px 0 #ffcc88, 20px 16px 0 #222, 24px 16px 0 #ffcc88,
+            8px 20px 0 #4444ff, 12px 20px 0 #ffcc88, 16px 20px 0 #ffcc88, 20px 20px 0 #4444ff, 24px 20px 0 #ffcc88,
+            12px 24px 0 #ffcc88, 16px 24px 0 #ffcc88, 20px 24px 0 #ffcc88,
+            8px 28px 0 #ffcc88, 12px 28px 0 #ff4444, 16px 28px 0 #ff4444, 20px 28px 0 #ff4444, 24px 28px 0 #ffcc88;
         }
         .face-neutral { box-shadow:
-            6px 6px 0 #ffcc88, 9px 6px 0 #ffcc88, 12px 6px 0 #ffcc88, 15px 6px 0 #ffcc88, 18px 6px 0 #ffcc88,
-            3px 9px 0 #ffcc88, 6px 9px 0 #ffcc88, 9px 9px 0 #ffcc88, 12px 9px 0 #ffcc88, 15px 9px 0 #ffcc88, 18px 9px 0 #ffcc88, 21px 9px 0 #ffcc88,
-            6px 12px 0 #222, 9px 12px 0 #ffcc88, 12px 12px 0 #ffcc88, 15px 12px 0 #222, 18px 12px 0 #ffcc88,
-            6px 15px 0 #ffcc88, 9px 15px 0 #ffcc88, 12px 15px 0 #ffcc88, 15px 15px 0 #ffcc88, 18px 15px 0 #ffcc88,
-            9px 18px 0 #ff8866, 12px 18px 0 #ff8866, 15px 18px 0 #ff8866,
-            9px 21px 0 #ffcc88, 12px 21px 0 #ffcc88, 15px 21px 0 #ffcc88;
+            8px 8px 0 #ffcc88, 12px 8px 0 #ffcc88, 16px 8px 0 #ffcc88, 20px 8px 0 #ffcc88, 24px 8px 0 #ffcc88,
+            4px 12px 0 #ffcc88, 8px 12px 0 #ffcc88, 12px 12px 0 #ffcc88, 16px 12px 0 #ffcc88, 20px 12px 0 #ffcc88, 24px 12px 0 #ffcc88, 28px 12px 0 #ffcc88,
+            8px 16px 0 #222, 12px 16px 0 #ffcc88, 16px 16px 0 #ffcc88, 20px 16px 0 #222, 24px 16px 0 #ffcc88,
+            8px 20px 0 #ffcc88, 12px 20px 0 #ffcc88, 16px 20px 0 #ffcc88, 20px 20px 0 #ffcc88, 24px 20px 0 #ffcc88,
+            12px 24px 0 #ff8866, 16px 24px 0 #ff8866, 20px 24px 0 #ff8866,
+            12px 28px 0 #ffcc88, 16px 28px 0 #ffcc88, 20px 28px 0 #ffcc88;
         }
 
         /* ─── Combo / Judge ─── */
@@ -147,7 +150,7 @@
         .intro-overlay.hidden { opacity: 0; pointer-events: none; }
         .intro-title { font-size: clamp(1.8rem, 6vw, 3.5rem); color: #ff4444; text-shadow: 3px 3px 0 #880000, 6px 6px 0 #440000; text-align: center; line-height: 1.4; letter-spacing: 0.05em; }
         .intro-subtitle { font-size: clamp(0.5rem, 1.5vw, 0.7rem); color: #ffcc00; text-align: center; margin-top: 0.5rem; }
-        .intro-story { font-size: clamp(0.4rem, 1.2vw, 0.55rem); color: rgba(255,255,255,0.6); text-align: center; max-width: 500px; line-height: 2.2; margin-top: 1rem; }
+        .intro-story { font-size: clamp(0.55rem, 1.6vw, 0.75rem); color: rgba(255,255,255,0.7); text-align: center; max-width: 550px; line-height: 2.5; margin-top: 1.5rem; }
         .intro-keys { font-size: 0.4rem; color: #4488cc; margin-top: 1rem; }
         .start-btn { margin-top: 1.5rem; padding: 12px 40px; background: #000; border: 2px solid #ffcc00; color: #ffcc00; font-family: 'Press Start 2P', monospace; font-size: 0.6rem; cursor: pointer; transition: all 0.1s steps(1); }
         .start-btn:hover { background: #ffcc00; color: #000; }
@@ -210,7 +213,7 @@
     <div class="intro-overlay" id="introOverlay">
         <div class="intro-title">MOLAR<br>WAR</div>
         <div class="intro-subtitle">- 어금니별을 지켜라 -</div>
-        <div class="intro-story">서기 2847년, 충치 외계인 군단 "카리에스 임페리움"이 어금니별을 침략했다. 칫솔 전사 브러시 원이여, 리듬에 맞춰 적을 격퇴하라.</div>
+        <div class="intro-story">충치별에서 보낸 돌연변이 바이러스가 어금니별을 향해 쏟아지고 있다. 감염되면 어금니가 충치 돌연변이로 변해버린다. 칫솔 전사 브러시 원이여, 리듬에 맞춰 바이러스를 격퇴하고 어금니별을 지켜라.</div>
         <div class="intro-keys">[ SPACE ] [ LEFT ] [ DOWN ] [ RIGHT ]</div>
         <button class="start-btn" onclick="startGame()">PUSH START</button>
     </div>
