@@ -428,7 +428,14 @@
         }
 
         // ─── Game Flow ──────────────────────────────────────
-        function showIntro(){gameOverScreen.classList.add('hidden');introOverlay.classList.remove('hidden');}
+        function showIntro(){
+            gameOverScreen.classList.add('hidden');
+            introOverlay.classList.remove('hidden');
+            // Clean up molar effects
+            document.querySelectorAll('.molar-shine,.molar-decay').forEach(m => {m.classList.remove('molar-shine');m.classList.remove('molar-decay');});
+            hud.style.display='none';gameContainer.style.display='none';
+            cockpit.style.display='none';warriorFace.style.display='none';
+        }
 
         function startGame(){
             score=0;hp=100;combo=0;maxCombo=0;notes=[];isPlaying=true;noteSpeed=2.8;
@@ -510,43 +517,51 @@
             }
 
             audioEl.addEventListener('playing', () => requestAnimationFrame(detectBeats));
+
+            // Game duration: 1 min 20 sec (80 seconds)
+            setTimeout(() => { if (isPlaying) endGame(true); }, 80000);
             audioEl.addEventListener('ended', () => { if (isPlaying) endGame(true); });
         }
 
         function endGame(survived){
             isPlaying=false;
-            if(audio){audio.pause();audio.currentTime=0;}
+            if(audio){audio.pause();}
             if(score>hiScore){hiScore=score;localStorage.setItem('molar_hi',hiScore);hiScoreEl.textContent=hiScore;}
-            hud.style.display='none';gameContainer.style.display='none';
-            cockpit.style.display='none';warriorFace.style.display='none';keyDisplay.style.display='none';
 
-            // Apply molar effects
-            const allMolars = document.querySelectorAll('[id="molarRow"], [id="molarRow"] ~ div');
-            const molarContainers = document.querySelectorAll('div[style*="molar.png"]');
+            // Keep game scene visible, hide only interactive elements
+            keyDisplay.style.display='none';
 
             if(!survived){
-                // Decay effect - molars turn black/rotten
-                document.querySelectorAll('img[src="molar.png"]').forEach(m => m.closest('div').classList.add('molar-decay'));
+                // Decay effect persists
+                document.querySelectorAll('img[src="molar.png"]').forEach(m => {
+                    const d = m.closest('div');
+                    if(d) d.classList.add('molar-decay');
+                });
                 destructOverlay.classList.add('show');
+                // After shake, show result overlay (dimmed)
                 setTimeout(()=>{
                     destructOverlay.classList.remove('show');
-                    document.querySelectorAll('.molar-decay').forEach(m => m.classList.remove('molar-decay'));
                     document.getElementById('finalScore').textContent=score;
-                    document.getElementById('gameOverMsg').textContent='MOLAR PRIME DESTROYED  MAX COMBO: '+maxCombo;
+                    document.getElementById('gameOverMsg').textContent='MAX COMBO: '+maxCombo;
                     gameOverScreen.querySelector('h1').textContent='GAME OVER';
+                    gameOverScreen.querySelector('h1').style.color='#ff4444';
+                    gameOverScreen.style.background='rgba(0,0,0,0.6)';
                     gameOverScreen.classList.remove('hidden');
-                },2500);
+                },2000);
             } else {
-                // Shine effect - molars sparkle
-                document.querySelectorAll('img[src="molar.png"]').forEach(m => m.closest('div').classList.add('molar-shine'));
+                // Shine effect persists
+                document.querySelectorAll('img[src="molar.png"]').forEach(m => {
+                    const d = m.closest('div');
+                    if(d) d.classList.add('molar-shine');
+                });
                 document.getElementById('successOverlay').classList.add('show');
                 setTimeout(()=>{
                     document.getElementById('successOverlay').classList.remove('show');
-                    document.querySelectorAll('.molar-shine').forEach(m => m.classList.remove('molar-shine'));
                     document.getElementById('finalScore').textContent=score;
-                    document.getElementById('gameOverMsg').textContent='MOLAR PRIME DEFENDED!  MAX COMBO: '+maxCombo;
+                    document.getElementById('gameOverMsg').textContent='MAX COMBO: '+maxCombo;
                     gameOverScreen.querySelector('h1').textContent='MISSION SUCCESS';
                     gameOverScreen.querySelector('h1').style.color='#ffcc00';
+                    gameOverScreen.style.background='rgba(0,0,0,0.5)';
                     gameOverScreen.classList.remove('hidden');
                 },3000);
             }
