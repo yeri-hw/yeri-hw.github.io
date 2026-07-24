@@ -5,149 +5,187 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MOLAR WAR — 어금니별을 지켜라</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #020010; color: white; min-height: 100vh; overflow: hidden; user-select: none; }
+        body { font-family: 'Press Start 2P', monospace; background: #000; color: white; min-height: 100vh; overflow: hidden; user-select: none; image-rendering: pixelated; }
 
-        /* ─── Space BG (retro pixel style) ─── */
-        .space-bg { position: fixed; inset: 0; z-index: 0; background: #000; }
-        .starfield { position: fixed; inset: 0; z-index: 1; }
-        .star { position: absolute; background: white; animation: twinkle 2s ease-in-out infinite alternate; image-rendering: pixelated; }
-        @keyframes twinkle { 0%{opacity:0.1} 100%{opacity:0.9} }
+        /* ─── Pixel Stars ─── */
+        .starfield { position: fixed; inset: 0; z-index: 0; }
+        .star { position: absolute; }
 
-        /* ─── Molar Planet (pixel style) ─── */
-        .molar-planet { position: fixed; bottom: -60px; left: 50%; transform: translateX(-50%); width: 450px; height: 450px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ffffff, #d0d0e0, #9090a8); box-shadow: 0 0 60px rgba(200,200,255,0.2), 0 0 120px rgba(150,150,200,0.1), inset -20px -20px 40px rgba(0,0,0,0.4); z-index: 2; opacity: 0.5; transition: all 1.5s; image-rendering: pixelated; }
-        .molar-planet.destroyed { opacity: 0.2; box-shadow: 0 0 120px rgba(255,50,0,0.5); background: radial-gradient(circle at 35% 30%, #aa4400, #662200, #331100); }
+        /* ─── Cockpit HUD frame (bottom) ─── */
+        .cockpit { position: fixed; bottom: 0; left: 0; right: 0; height: 90px; z-index: 20; background: linear-gradient(0deg, #0a1628 0%, #112244 60%, #1a3366 100%); border-top: 3px solid #4488cc; box-shadow: 0 -4px 20px rgba(68,136,204,0.3); }
+        .cockpit::before { content: ''; position: absolute; top: 6px; left: 50%; transform: translateX(-50%); width: 200px; height: 4px; background: #4488cc; border-radius: 2px; opacity: 0.5; }
+        .cockpit-lights { position: absolute; top: 15px; left: 20px; display: flex; gap: 8px; }
+        .cockpit-light { width: 6px; height: 6px; background: #44ff44; animation: blink 1s step-end infinite; }
+        .cockpit-light:nth-child(2) { background: #ff4444; animation-delay: 0.3s; }
+        .cockpit-light:nth-child(3) { background: #ffcc00; animation-delay: 0.6s; }
+        @keyframes blink { 0%,50%{opacity:1}51%,100%{opacity:0.3} }
 
-        /* ─── Pixel decorations on intro ─── */
-        .pixel-ship { position: absolute; z-index: 5; image-rendering: pixelated; }
-        .pixel-ship-left { left: 8%; top: 25%; width: 60px; height: 40px; background: linear-gradient(135deg, #4488ff, #88ccff); clip-path: polygon(0% 50%, 40% 0%, 100% 20%, 100% 80%, 40% 100%); box-shadow: 3px 0 0 #ffd700, 6px 0 0 #ff8800; }
-        .pixel-ship-right { right: 10%; top: 40%; width: 50px; height: 35px; background: linear-gradient(135deg, #44ff88, #88ffcc); clip-path: polygon(100% 50%, 60% 0%, 0% 20%, 0% 80%, 60% 100%); box-shadow: -3px 0 0 #ffd700, -6px 0 0 #ff8800; }
+        /* ─── HUD top (Galaga style) ─── */
+        .hud { position: fixed; top: 0; left: 0; right: 0; padding: 12px 20px; display: flex; justify-content: space-between; align-items: flex-start; z-index: 200; }
+        .hud-left .label { font-size: 0.5rem; color: #ff4444; }
+        .hud-left .value { font-size: 0.7rem; color: #fff; margin-top: 4px; }
+        .hud-right .label { font-size: 0.5rem; color: #ff4444; }
+        .hud-right .value { font-size: 0.7rem; color: #fff; margin-top: 4px; }
+        .hud-center { text-align: center; }
+        .hud-center .label { font-size: 0.4rem; color: #4488cc; }
+        .hp-bar-outer { width: 100px; height: 8px; background: #111; border: 1px solid #4488cc; margin-top: 4px; }
+        .hp-bar-inner { height: 100%; background: #44ff44; transition: width 0.3s, background 0.3s; }
+        .hp-bar-inner.low { background: #ff4444; }
 
-        /* ─── Mothership (pixel alien) ─── */
-        .mothership { position: fixed; top: -10px; left: 50%; transform: translateX(-50%); width: 280px; height: 70px; z-index: 3; image-rendering: pixelated; }
-        .mothership-body { width: 100%; height: 100%; background: #111; border-radius: 40% 40% 20% 20%; border: 3px solid #440066; box-shadow: 0 8px 30px rgba(100,0,150,0.4), 0 0 15px rgba(0,255,0,0.08); position: relative; overflow: hidden; }
-        .mothership-body::before { content:''; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent, transparent 18px, rgba(80,0,120,0.3) 18px, rgba(80,0,120,0.3) 20px); }
-        .mothership-body::after { content:'👁️'; position: absolute; top: 30%; left: 50%; transform: translateX(-50%); font-size: 1.5rem; }
-        .mothership-drip { position: absolute; bottom: -12px; width: 10px; height: 16px; background: #220033; border-radius: 0 0 50% 50%; animation: drip 1.2s ease-in-out infinite; }
-        @keyframes drip { 0%,100%{height:12px;opacity:0.7} 50%{height:22px;opacity:1} }
+        /* ─── Game lanes ─── */
+        .game-container { position: fixed; inset: 0; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 95px; }
+        .lanes { position: relative; width: 320px; height: calc(100vh - 140px); display: flex; gap: 2px; }
+        .lane { flex: 1; position: relative; border-left: 1px solid rgba(68,136,204,0.15); border-right: 1px solid rgba(68,136,204,0.15); overflow: hidden; }
+        .hit-zone { position: absolute; bottom: 0; left: 0; right: 0; height: 50px; border-top: 2px solid #4488cc; background: rgba(68,136,204,0.05); }
+        .hit-zone.flash { animation: hitFlash 0.1s steps(2); }
+        @keyframes hitFlash { 0%{background:rgba(68,200,255,0.3)} 100%{background:rgba(68,136,204,0.05)} }
 
-        /* ─── Game Container & Lanes (4 lanes) ─── */
-        .game-container { position: fixed; inset: 0; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 3vh; }
-        .lanes { position: relative; width: 320px; height: 65vh; display: flex; gap: 4px; }
-        .lane { flex: 1; position: relative; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 6px; overflow: hidden; }
-        .hit-zone { position: absolute; bottom: 0; left: 0; right: 0; height: 60px; border-top: 2px solid rgba(255,255,255,0.2); }
-        .hit-zone.flash { animation: hitFlash 0.12s ease; }
-        @keyframes hitFlash { 0%{background:rgba(255,255,255,0.25)} 100%{background:transparent} }
+        /* ─── Key display ─── */
+        .key-display { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 25; }
+        .key-btn { width: 50px; height: 36px; background: #0a1628; border: 2px solid #4488cc; display: flex; align-items: center; justify-content: center; font-size: 0.5rem; color: #4488cc; transition: all 0.08s steps(1); }
+        .key-btn.active { background: #4488cc; color: #000; box-shadow: 0 0 8px #4488cc; }
+        .key-btn.space-btn { width: 70px; font-size: 0.4rem; }
 
-        /* ─── Key Display (4 keys: SPACE ← ↓ →) ─── */
-        .key-display { display: flex; gap: 6px; margin-top: 10px; z-index: 20; }
-        .key-btn { width: 60px; height: 60px; border-radius: 12px; border: 2px solid rgba(255,255,255,0.25); background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; transition: all 0.08s; }
-        .key-btn.active { background: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.7); transform: scale(0.9); box-shadow: 0 0 20px rgba(255,255,255,0.3); }
-        .key-btn.space-btn { width: 80px; font-size: 0.55rem; font-weight: 900; letter-spacing: 0.08em; }
+        /* ─── Notes (pixel aliens falling) ─── */
+        .note { position: absolute; width: 70%; left: 15%; height: 36px; display: flex; align-items: center; justify-content: center; will-change: top; image-rendering: pixelated; }
+        .note-long { min-height: 90px; }
+        .note canvas { width: 100%; height: 100%; image-rendering: pixelated; }
 
-        /* ─── Notes with neon glow (pixel style) ─── */
-        .note { position: absolute; width: 80%; left: 10%; height: 40px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; will-change: top; border: 2px solid rgba(255,255,255,0.7); image-rendering: pixelated; }
-        .note-long { min-height: 100px; }
-        .note-0 { background: #2266dd; box-shadow: 0 0 8px #44aaff, 0 0 20px rgba(68,170,255,0.5), 0 0 40px rgba(68,170,255,0.2); border-color: #66ccff; }
-        .note-1 { background: #8822bb; box-shadow: 0 0 8px #bb55ff, 0 0 20px rgba(187,85,255,0.5), 0 0 40px rgba(187,85,255,0.2); border-color: #cc88ff; }
-        .note-2 { background: #cc2222; box-shadow: 0 0 8px #ff4444, 0 0 20px rgba(255,68,68,0.5), 0 0 40px rgba(255,68,68,0.2); border-color: #ff6666; }
-        .note-3 { background: #cc8800; box-shadow: 0 0 8px #ffaa00, 0 0 20px rgba(255,170,0,0.5), 0 0 40px rgba(255,170,0,0.2); border-color: #ffcc44; }
+        /* ─── Pixel alien sprites via box-shadow ─── */
+        .alien-sprite { width: 4px; height: 4px; background: transparent; position: relative; margin: auto; }
 
-        /* ─── Warrior Face (bottom right) ─── */
-        .warrior-face { position: fixed; bottom: 20px; right: 20px; z-index: 200; text-align: center; }
-        .warrior-avatar { width: 70px; height: 70px; border-radius: 50%; border: 3px solid rgba(255,215,0,0.5); background: #1a1a2e; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; box-shadow: 0 0 15px rgba(255,215,0,0.2); transition: all 0.3s; }
-        .warrior-avatar.happy { border-color: #2ecc71; box-shadow: 0 0 20px rgba(46,204,113,0.3); }
-        .warrior-avatar.sad { border-color: #e74c3c; box-shadow: 0 0 20px rgba(231,76,60,0.3); }
-        .warrior-name { font-family: 'Press Start 2P', monospace; font-size: 0.35rem; color: rgba(255,255,255,0.4); margin-top: 4px; }
+        /* Alien type A (red crab - like galaga) */
+        .alien-a { box-shadow:
+            4px 0 0 #ff2222, 8px 0 0 #ff2222, 16px 0 0 #ff2222, 20px 0 0 #ff2222,
+            0px 4px 0 #ff2222, 4px 4px 0 #ff6644, 8px 4px 0 #ff6644, 12px 4px 0 #ffcc00, 16px 4px 0 #ff6644, 20px 4px 0 #ff6644, 24px 4px 0 #ff2222,
+            0px 8px 0 #ff2222, 4px 8px 0 #ff2222, 8px 8px 0 #ff6644, 12px 8px 0 #ff6644, 16px 8px 0 #ff6644, 20px 8px 0 #ff2222, 24px 8px 0 #ff2222,
+            0px 12px 0 #ff2222, 8px 12px 0 #ffffff, 12px 12px 0 #ff2222, 16px 12px 0 #ffffff, 24px 12px 0 #ff2222,
+            4px 16px 0 #ff2222, 8px 16px 0 #ff2222, 12px 16px 0 #ff2222, 16px 16px 0 #ff2222, 20px 16px 0 #ff2222;
+        }
+        /* Alien type B (blue butterfly) */
+        .alien-b { box-shadow:
+            8px 0 0 #4488ff, 12px 0 0 #ffcc00, 16px 0 0 #4488ff,
+            4px 4px 0 #4488ff, 8px 4px 0 #4488ff, 12px 4px 0 #4488ff, 16px 4px 0 #4488ff, 20px 4px 0 #4488ff,
+            0px 8px 0 #4488ff, 4px 8px 0 #88ccff, 8px 8px 0 #4488ff, 12px 8px 0 #ffcc00, 16px 8px 0 #4488ff, 20px 8px 0 #88ccff, 24px 8px 0 #4488ff,
+            0px 12px 0 #4488ff, 4px 12px 0 #4488ff, 8px 12px 0 #4488ff, 16px 12px 0 #4488ff, 20px 12px 0 #4488ff, 24px 12px 0 #4488ff,
+            0px 16px 0 #4488ff, 12px 16px 0 #4488ff, 24px 16px 0 #4488ff;
+        }
+        /* Alien type C (green boss) */
+        .alien-c { box-shadow:
+            8px 0 0 #00cc66, 12px 0 0 #00cc66, 16px 0 0 #00cc66,
+            4px 4px 0 #00cc66, 8px 4px 0 #00ff88, 12px 4px 0 #ffcc00, 16px 4px 0 #00ff88, 20px 4px 0 #00cc66,
+            0px 8px 0 #00cc66, 4px 8px 0 #00ff88, 8px 8px 0 #00cc66, 12px 8px 0 #00cc66, 16px 8px 0 #00cc66, 20px 8px 0 #00ff88, 24px 8px 0 #00cc66,
+            4px 12px 0 #00cc66, 8px 12px 0 #ffffff, 12px 12px 0 #00cc66, 16px 12px 0 #ffffff, 20px 12px 0 #00cc66,
+            8px 16px 0 #00cc66, 12px 16px 0 #00cc66, 16px 16px 0 #00cc66;
+        }
+        /* Alien type D (purple) */
+        .alien-d { box-shadow:
+            12px 0 0 #cc44ff,
+            8px 4px 0 #cc44ff, 12px 4px 0 #ff88ff, 16px 4px 0 #cc44ff,
+            4px 8px 0 #cc44ff, 8px 8px 0 #cc44ff, 12px 8px 0 #ffcc00, 16px 8px 0 #cc44ff, 20px 8px 0 #cc44ff,
+            0px 12px 0 #cc44ff, 4px 12px 0 #cc44ff, 8px 12px 0 #cc44ff, 12px 12px 0 #cc44ff, 16px 12px 0 #cc44ff, 20px 12px 0 #cc44ff, 24px 12px 0 #cc44ff,
+            0px 16px 0 #cc44ff, 8px 16px 0 #cc44ff, 16px 16px 0 #cc44ff, 24px 16px 0 #cc44ff;
+        }
 
-        /* ─── HUD ─── */
-        .hud { position: fixed; top: 0; left: 0; right: 0; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; z-index: 200; }
-        .hud-title { font-family: 'Press Start 2P', monospace; font-size: 0.5rem; color: rgba(255,255,255,0.4); }
-        .hud-stats { display: flex; gap: 2rem; align-items: baseline; }
-        .hud-item .label { font-size: 0.5rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.3); }
-        .hud-item .value { font-size: 1.2rem; font-weight: 900; }
-        .hp-bar { width: 120px; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
-        .hp-fill { height: 100%; background: linear-gradient(90deg, #e74c3c, #2ecc71); border-radius: 4px; transition: width 0.3s; }
+        /* ─── Warrior pixel face (bottom right) ─── */
+        .warrior-face { position: fixed; bottom: 100px; right: 15px; z-index: 200; text-align: center; }
+        .warrior-avatar { width: 48px; height: 48px; background: #0a1628; border: 2px solid #4488cc; display: flex; align-items: center; justify-content: center; image-rendering: pixelated; }
+        .warrior-name { font-size: 0.3rem; color: #4488cc; margin-top: 3px; }
+        /* Pixel face via box-shadow */
+        .face-sprite { width: 3px; height: 3px; background: transparent; }
+        .face-happy { box-shadow:
+            6px 6px 0 #ffcc88, 9px 6px 0 #ffcc88, 12px 6px 0 #ffcc88, 15px 6px 0 #ffcc88, 18px 6px 0 #ffcc88,
+            3px 9px 0 #ffcc88, 6px 9px 0 #ffcc88, 9px 9px 0 #ffcc88, 12px 9px 0 #ffcc88, 15px 9px 0 #ffcc88, 18px 9px 0 #ffcc88, 21px 9px 0 #ffcc88,
+            6px 12px 0 #222, 9px 12px 0 #ffcc88, 12px 12px 0 #ffcc88, 15px 12px 0 #222, 18px 12px 0 #ffcc88,
+            6px 15px 0 #ffcc88, 9px 15px 0 #ffcc88, 12px 15px 0 #ffcc88, 15px 15px 0 #ffcc88, 18px 15px 0 #ffcc88,
+            6px 18px 0 #ffcc88, 9px 18px 0 #ff4444, 12px 18px 0 #ff4444, 15px 18px 0 #ff4444, 18px 18px 0 #ffcc88,
+            9px 21px 0 #ffcc88, 12px 21px 0 #ffcc88, 15px 21px 0 #ffcc88;
+        }
+        .face-sad { box-shadow:
+            6px 6px 0 #ffcc88, 9px 6px 0 #ffcc88, 12px 6px 0 #ffcc88, 15px 6px 0 #ffcc88, 18px 6px 0 #ffcc88,
+            3px 9px 0 #ffcc88, 6px 9px 0 #ffcc88, 9px 9px 0 #ffcc88, 12px 9px 0 #ffcc88, 15px 9px 0 #ffcc88, 18px 9px 0 #ffcc88, 21px 9px 0 #ffcc88,
+            6px 12px 0 #222, 9px 12px 0 #ffcc88, 12px 12px 0 #ffcc88, 15px 12px 0 #222, 18px 12px 0 #ffcc88,
+            6px 15px 0 #4444ff, 9px 15px 0 #ffcc88, 12px 15px 0 #ffcc88, 15px 15px 0 #4444ff, 18px 15px 0 #ffcc88,
+            9px 18px 0 #ffcc88, 12px 18px 0 #ffcc88, 15px 18px 0 #ffcc88,
+            6px 21px 0 #ffcc88, 9px 21px 0 #ff4444, 12px 21px 0 #ff4444, 15px 21px 0 #ff4444, 18px 21px 0 #ffcc88;
+        }
+        .face-neutral { box-shadow:
+            6px 6px 0 #ffcc88, 9px 6px 0 #ffcc88, 12px 6px 0 #ffcc88, 15px 6px 0 #ffcc88, 18px 6px 0 #ffcc88,
+            3px 9px 0 #ffcc88, 6px 9px 0 #ffcc88, 9px 9px 0 #ffcc88, 12px 9px 0 #ffcc88, 15px 9px 0 #ffcc88, 18px 9px 0 #ffcc88, 21px 9px 0 #ffcc88,
+            6px 12px 0 #222, 9px 12px 0 #ffcc88, 12px 12px 0 #ffcc88, 15px 12px 0 #222, 18px 12px 0 #ffcc88,
+            6px 15px 0 #ffcc88, 9px 15px 0 #ffcc88, 12px 15px 0 #ffcc88, 15px 15px 0 #ffcc88, 18px 15px 0 #ffcc88,
+            9px 18px 0 #ff8866, 12px 18px 0 #ff8866, 15px 18px 0 #ff8866,
+            9px 21px 0 #ffcc88, 12px 21px 0 #ffcc88, 15px 21px 0 #ffcc88;
+        }
 
         /* ─── Combo / Judge ─── */
-        .combo { position: fixed; top: 25%; right: 8%; font-family: 'Press Start 2P', monospace; font-size: 1.2rem; color: #ffd700; text-shadow: 0 0 20px #ffd700; z-index: 100; opacity: 0; transition: opacity 0.3s; }
+        .combo { position: fixed; top: 20%; right: 5%; font-size: 0.7rem; color: #ffcc00; z-index: 100; opacity: 0; transition: opacity 0.3s; text-shadow: 2px 2px 0 #884400; }
         .combo.show { opacity: 1; }
-        .judge { position: fixed; top: 40%; left: 50%; transform: translateX(-50%); font-weight: 900; font-size: 1.5rem; z-index: 100; opacity: 0; pointer-events: none; }
-        .judge.perfect { color: #ffd700; text-shadow: 0 0 20px #ffd700; animation: judgePop 0.5s ease forwards; }
-        .judge.great { color: #2ecc71; text-shadow: 0 0 15px #2ecc71; animation: judgePop 0.5s ease forwards; }
-        .judge.miss { color: #e74c3c; text-shadow: 0 0 15px #e74c3c; animation: judgePop 0.6s ease forwards; }
-        @keyframes judgePop { 0%{opacity:0;transform:translateX(-50%) scale(0.5)} 20%{opacity:1;transform:translateX(-50%) scale(1.2)} 100%{opacity:0;transform:translateX(-50%) translateY(-20px) scale(1)} }
+        .judge { position: fixed; top: 38%; left: 50%; transform: translateX(-50%); font-size: 0.8rem; z-index: 100; opacity: 0; pointer-events: none; }
+        .judge.perfect { color: #ffcc00; text-shadow: 0 0 6px #ffcc00; animation: judgePop 0.4s steps(4) forwards; }
+        .judge.great { color: #44ff44; text-shadow: 0 0 6px #44ff44; animation: judgePop 0.4s steps(4) forwards; }
+        .judge.miss { color: #ff4444; text-shadow: 0 0 6px #ff4444; animation: judgePop 0.5s steps(4) forwards; }
+        @keyframes judgePop { 0%{opacity:0;transform:translateX(-50%) scale(0.5)} 25%{opacity:1;transform:translateX(-50%) scale(1.3)} 100%{opacity:0;transform:translateX(-50%) translateY(-15px) scale(1)} }
 
-        /* ─── Effects ─── */
-        .explosion { position: fixed; width: 80px; height: 80px; border-radius: 50%; pointer-events: none; z-index: 50; animation: explode 0.4s ease forwards; }
-        @keyframes explode { 0%{transform:scale(0);opacity:1;background:radial-gradient(circle,#fff,#ffd700,transparent)} 100%{transform:scale(3);opacity:0;background:radial-gradient(circle,transparent,#ffd700,transparent)} }
-        .damage-flash { position: fixed; inset: 0; background: rgba(255,0,0,0.12); pointer-events: none; z-index: 90; animation: dmgFlash 0.2s ease forwards; }
+        /* ─── Explosion (pixel burst) ─── */
+        .explosion { position: fixed; width: 5px; height: 5px; pointer-events: none; z-index: 50; }
+        .explosion .px { position: absolute; width: 4px; height: 4px; animation: pxBurst 0.4s ease-out forwards; }
+        @keyframes pxBurst { 0%{transform:translate(0,0);opacity:1} 100%{opacity:0} }
+        .damage-flash { position: fixed; inset: 0; background: rgba(255,0,0,0.15); pointer-events: none; z-index: 90; animation: dmgFlash 0.15s steps(2) forwards; }
         @keyframes dmgFlash { 0%{opacity:1} 100%{opacity:0} }
-        .scanlines { position: fixed; inset: 0; pointer-events: none; z-index: 999; background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.02) 3px, rgba(0,0,0,0.02) 6px); }
 
-        /* ─── Destruction animation ─── */
+        /* ─── Destruction ─── */
         .destruct-overlay { position: fixed; inset: 0; z-index: 400; display: flex; flex-direction: column; align-items: center; justify-content: center; background: transparent; pointer-events: none; opacity: 0; transition: opacity 0.5s; }
         .destruct-overlay.show { opacity: 1; pointer-events: auto; }
-        .destruct-text { font-family: 'Press Start 2P', monospace; font-size: clamp(0.8rem, 3vw, 1.4rem); color: #e74c3c; text-shadow: 0 0 30px rgba(231,76,60,0.6); text-align: center; line-height: 2; animation: shake 0.3s infinite; }
-        @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-3px)} 75%{transform:translateX(3px)} }
-        .destruct-boom { position: absolute; width: 300px; height: 300px; border-radius: 50%; background: radial-gradient(circle, rgba(255,100,0,0.8), rgba(255,50,0,0.4), transparent); animation: boomPulse 0.8s ease-in-out infinite; }
-        @keyframes boomPulse { 0%,100%{transform:scale(0.8);opacity:0.6} 50%{transform:scale(1.3);opacity:1} }
+        .destruct-text { font-size: 0.8rem; color: #ff4444; text-shadow: 2px 2px 0 #880000; text-align: center; line-height: 2.5; animation: shake 0.2s steps(2) infinite; }
+        @keyframes shake { 0%,100%{transform:translateX(0)} 50%{transform:translateX(-2px)} }
 
-        /* ─── Intro Crawl ─── */
-        .intro-overlay { position: fixed; inset: 0; z-index: 600; background: #000; display: flex; align-items: center; justify-content: flex-end; flex-direction: column; perspective: 400px; overflow: hidden; transition: opacity 1s; }
+        /* ─── Intro ─── */
+        .intro-overlay { position: fixed; inset: 0; z-index: 600; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; transition: opacity 1s; gap: 1rem; }
         .intro-overlay.hidden { opacity: 0; pointer-events: none; }
-        .crawl-container { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%) rotateX(25deg); transform-origin: bottom center; width: 85%; max-width: 650px; animation: crawl 22s linear forwards; }
-        .crawl-container p { font-family: 'Press Start 2P', monospace; font-size: clamp(0.6rem, 1.6vw, 0.85rem); color: #ffd700; text-align: center; line-height: 2.2; margin-bottom: 1.8rem; }
-        .crawl-container .crawl-title { font-size: clamp(1.2rem, 4vw, 2.2rem); margin-bottom: 2.5rem; color: white; text-shadow: 0 0 10px rgba(255,255,255,0.5), 2px 2px 0 #ff4400, 4px 4px 0 #cc0000; }
-        @keyframes crawl { 0%{bottom:-100%} 100%{bottom:220%} }
-        .intro-start-btn { position: fixed; bottom: 8%; left: 50%; transform: translateX(-50%); z-index: 610; }
+        .intro-title { font-size: clamp(1.8rem, 6vw, 3.5rem); color: #ff4444; text-shadow: 3px 3px 0 #880000, 6px 6px 0 #440000; text-align: center; line-height: 1.4; letter-spacing: 0.05em; }
+        .intro-subtitle { font-size: clamp(0.5rem, 1.5vw, 0.7rem); color: #ffcc00; text-align: center; margin-top: 0.5rem; }
+        .intro-story { font-size: clamp(0.4rem, 1.2vw, 0.55rem); color: rgba(255,255,255,0.6); text-align: center; max-width: 500px; line-height: 2.2; margin-top: 1rem; }
+        .intro-keys { font-size: 0.4rem; color: #4488cc; margin-top: 1rem; }
+        .start-btn { margin-top: 1.5rem; padding: 12px 40px; background: #000; border: 2px solid #ffcc00; color: #ffcc00; font-family: 'Press Start 2P', monospace; font-size: 0.6rem; cursor: pointer; transition: all 0.1s steps(1); }
+        .start-btn:hover { background: #ffcc00; color: #000; }
 
         /* ─── Game Over ─── */
-        .screen-overlay { position: fixed; inset: 0; background: rgba(2,0,16,0.95); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.2rem; z-index: 500; transition: opacity 0.5s; }
+        .screen-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.92); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; z-index: 500; transition: opacity 0.5s; }
         .screen-overlay.hidden { opacity: 0; pointer-events: none; }
-        .screen-overlay h1 { font-family: 'Press Start 2P', monospace; font-size: clamp(0.9rem,3.5vw,1.8rem); text-align: center; line-height: 1.8; color: #ffd700; text-shadow: 0 0 30px rgba(255,215,0,0.5); }
-        .screen-overlay .subtitle { font-size: 0.85rem; color: rgba(255,255,255,0.5); text-align: center; max-width: 380px; line-height: 1.6; }
-        .screen-overlay .score-big { font-family: 'Press Start 2P', monospace; font-size: 1.5rem; color: #ffd700; }
-        .start-btn { padding: 1rem 3rem; background: linear-gradient(135deg, #ffd700, #ff8c00); color: #1a1a2e; border: none; border-radius: 50px; font-family: 'Press Start 2P', monospace; font-size: 0.6rem; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 0 20px rgba(255,215,0,0.3); }
-        .start-btn:hover { transform: scale(1.08); box-shadow: 0 0 40px rgba(255,215,0,0.5); }
+        .screen-overlay h1 { font-size: clamp(0.8rem, 3vw, 1.5rem); color: #ff4444; text-shadow: 2px 2px 0 #880000; text-align: center; line-height: 2; }
+        .screen-overlay .score-big { font-size: 1.2rem; color: #ffcc00; }
+        .screen-overlay .subtitle { font-size: 0.5rem; color: rgba(255,255,255,0.5); text-align: center; max-width: 350px; line-height: 2; }
     </style>
 </head>
 <body>
-    <div class="scanlines"></div>
-    <div class="space-bg"></div>
     <div class="starfield" id="starfield"></div>
-    <div class="molar-planet" id="molarPlanet"></div>
 
-    <!-- Mothership -->
-    <div class="mothership" id="mothership" style="display:none;">
-        <div class="mothership-body">
-            <div class="mothership-drip" style="left:15%"></div>
-            <div class="mothership-drip" style="left:35%"></div>
-            <div class="mothership-drip" style="left:55%"></div>
-            <div class="mothership-drip" style="left:75%"></div>
-        </div>
-    </div>
-
-    <!-- Warrior Face -->
-    <div class="warrior-face" id="warriorFace" style="display:none;">
-        <div class="warrior-avatar" id="warriorAvatar">😤</div>
-        <div class="warrior-name">BRUSH ONE</div>
+    <!-- Cockpit -->
+    <div class="cockpit" id="cockpit" style="display:none;">
+        <div class="cockpit-lights"><div class="cockpit-light"></div><div class="cockpit-light"></div><div class="cockpit-light"></div></div>
     </div>
 
     <!-- HUD -->
     <div class="hud" id="hud" style="display:none;">
-        <div class="hud-title">⚔ MOLAR WAR ⚔</div>
-        <div class="hud-stats">
-            <div class="hud-item"><div class="label">SCORE</div><div class="value" id="score">0</div></div>
-            <div class="hud-item"><div class="label">어금니별 HP</div><div class="hp-bar"><div class="hp-fill" id="hpFill" style="width:100%"></div></div></div>
-        </div>
+        <div class="hud-left"><div class="label">1UP</div><div class="value" id="score">0</div></div>
+        <div class="hud-center"><div class="label">MOLAR HP</div><div class="hp-bar-outer"><div class="hp-bar-inner" id="hpFill" style="width:100%"></div></div></div>
+        <div class="hud-right"><div class="label">HIGH SCORE</div><div class="value" id="hiScore">0</div></div>
     </div>
 
+    <!-- Warrior Face -->
+    <div class="warrior-face" id="warriorFace" style="display:none;">
+        <div class="warrior-avatar"><div class="face-sprite face-neutral" id="faceSprite"></div></div>
+        <div class="warrior-name">BRUSH-1</div>
+    </div>
+
+    <!-- Combo / Judge -->
     <div class="combo" id="combo">0 COMBO</div>
     <div class="judge" id="judge"></div>
 
-    <!-- Game Area (4 lanes) -->
+    <!-- Game Area -->
     <div class="game-container" id="gameContainer" style="display:none;">
         <div class="lanes" id="lanes">
             <div class="lane" id="lane0"><div class="hit-zone"></div></div>
@@ -155,79 +193,71 @@
             <div class="lane" id="lane2"><div class="hit-zone"></div></div>
             <div class="lane" id="lane3"><div class="hit-zone"></div></div>
         </div>
-        <div class="key-display">
-            <div class="key-btn space-btn" id="kb0">SPACE</div>
-            <div class="key-btn" id="kb1">←</div>
-            <div class="key-btn" id="kb2">↓</div>
-            <div class="key-btn" id="kb3">→</div>
-        </div>
+    </div>
+    <div class="key-display" id="keyDisplay" style="display:none;">
+        <div class="key-btn space-btn" id="kb0">SPC</div>
+        <div class="key-btn" id="kb1">&lt;</div>
+        <div class="key-btn" id="kb2">v</div>
+        <div class="key-btn" id="kb3">&gt;</div>
     </div>
 
-    <!-- Destruction overlay -->
+    <!-- Destruction -->
     <div class="destruct-overlay" id="destructOverlay">
-        <div class="destruct-boom"></div>
-        <div class="destruct-text">어금니별이<br>함락되었다...</div>
+        <div class="destruct-text">MOLAR PRIME<br>HAS FALLEN...</div>
     </div>
 
-    <!-- Intro Crawl -->
+    <!-- Intro -->
     <div class="intro-overlay" id="introOverlay">
-        <div class="pixel-ship pixel-ship-left"></div>
-        <div class="pixel-ship pixel-ship-right"></div>
-        <div class="crawl-container">
-            <p class="crawl-title">⚔ MOLAR WAR ⚔</p>
-            <p>서기 2847년... 인류가 거주하는 어금니별(Molar Prime)은 은하계에서 가장 평화로운 행성이었다.</p>
-            <p>그러나 어둠의 저편에서 충치 외계인 군단 "카리에스 임페리움"이 깨어났다. 그들의 검은 우주선에서 끊임없이 쏟아지는 부식 광선...</p>
-            <p>어금니별의 마지막 희망, 칫솔 전사 "브러시 원"이 출격을 준비한다. 리듬에 맞춰 적을 격퇴하라. 어금니별의 운명은 당신의 손끝에 달려있다.</p>
-            <p style="color:rgba(255,255,255,0.4);margin-top:1.5rem;">SPACE ← ↓ → 키로 조작</p>
-        </div>
-        <button class="start-btn intro-start-btn" onclick="startGame()">출격하기</button>
+        <div class="intro-title">MOLAR<br>WAR</div>
+        <div class="intro-subtitle">- 어금니별을 지켜라 -</div>
+        <div class="intro-story">서기 2847년, 충치 외계인 군단 "카리에스 임페리움"이 어금니별을 침략했다. 칫솔 전사 브러시 원이여, 리듬에 맞춰 적을 격퇴하라.</div>
+        <div class="intro-keys">[ SPACE ] [ LEFT ] [ DOWN ] [ RIGHT ]</div>
+        <button class="start-btn" onclick="startGame()">PUSH START</button>
     </div>
 
     <!-- Game Over -->
     <div class="screen-overlay hidden" id="gameOverScreen">
-        <h1>⚔ MISSION COMPLETE ⚔</h1>
+        <h1>GAME OVER</h1>
         <div class="score-big" id="finalScore">0</div>
         <p class="subtitle" id="gameOverMsg"></p>
-        <button class="start-btn" onclick="showIntro()">재출격</button>
+        <button class="start-btn" onclick="showIntro()">CONTINUE?</button>
     </div>
 
     <script>
-        const lanes = document.getElementById('lanes');
-        const scoreEl = document.getElementById('score');
-        const hpFill = document.getElementById('hpFill');
-        const comboEl = document.getElementById('combo');
-        const judgeEl = document.getElementById('judge');
-        const hud = document.getElementById('hud');
-        const gameContainer = document.getElementById('gameContainer');
-        const introOverlay = document.getElementById('introOverlay');
-        const gameOverScreen = document.getElementById('gameOverScreen');
-        const mothership = document.getElementById('mothership');
-        const warriorFace = document.getElementById('warriorFace');
-        const warriorAvatar = document.getElementById('warriorAvatar');
-        const molarPlanet = document.getElementById('molarPlanet');
-        const destructOverlay = document.getElementById('destructOverlay');
+        const lanes=document.getElementById('lanes');
+        const scoreEl=document.getElementById('score');
+        const hpFill=document.getElementById('hpFill');
+        const comboEl=document.getElementById('combo');
+        const judgeEl=document.getElementById('judge');
+        const hud=document.getElementById('hud');
+        const gameContainer=document.getElementById('gameContainer');
+        const introOverlay=document.getElementById('introOverlay');
+        const gameOverScreen=document.getElementById('gameOverScreen');
+        const warriorFace=document.getElementById('warriorFace');
+        const faceSprite=document.getElementById('faceSprite');
+        const cockpit=document.getElementById('cockpit');
+        const keyDisplay=document.getElementById('keyDisplay');
+        const destructOverlay=document.getElementById('destructOverlay');
+        const hiScoreEl=document.getElementById('hiScore');
 
-        let score=0, hp=100, combo=0, maxCombo=0;
-        let isPlaying=false, notes=[], noteInterval=null, audio=null;
-        let noteSpeed=2.8;
+        let score=0,hp=100,combo=0,maxCombo=0,hiScore=parseInt(localStorage.getItem('molar_hi')||'0');
+        let isPlaying=false,notes=[],noteInterval=null,audio=null,noteSpeed=2.8;
+        hiScoreEl.textContent=hiScore;
 
         const laneKeys=[' ','ArrowLeft','ArrowDown','ArrowRight'];
-        const aliens=['👾','🦠','🧫','💀','☠️','🪲','🕷️'];
-        const happyFaces=['😎','😤','🔥','💪','⚡'];
-        const sadFaces=['😰','😣','💦','😵'];
+        const alienTypes=['alien-a','alien-b','alien-c','alien-d'];
 
-        // ─── Starfield (pixel style) ────────────────────────
+        // ─── Starfield (colored pixel dots like Galaga) ─────
         function createStarfield(){
             const sf=document.getElementById('starfield');
-            for(let i=0;i<180;i++){
+            const colors=['#fff','#fff','#fff','#ff4444','#44ff44','#4488ff','#ffcc00','#ff88ff'];
+            for(let i=0;i<200;i++){
                 const s=document.createElement('div');s.className='star';
                 s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';
-                const sz=Math.random()<0.7?2:Math.random()<0.9?3:4;
+                const sz=Math.random()<0.8?2:3;
                 s.style.width=sz+'px';s.style.height=sz+'px';
-                s.style.animationDelay=Math.random()*2+'s';s.style.animationDuration=(1+Math.random()*3)+'s';
-                // Some colored stars for retro feel
-                if(Math.random()<0.15) s.style.background='#88ccff';
-                else if(Math.random()<0.1) s.style.background='#ffcc44';
+                s.style.background=colors[Math.floor(Math.random()*colors.length)];
+                s.style.opacity=0.3+Math.random()*0.7;
                 sf.appendChild(s);
             }
         }
@@ -238,126 +268,106 @@
             const laneIndex=Math.floor(Math.random()*4);
             const lane=document.getElementById('lane'+laneIndex);
             const noteEl=document.createElement('div');
-            const h=isLong?100:40;
-            noteEl.className='note note-'+laneIndex+(isLong?' note-long':'');
+            const h=isLong?90:36;
+            noteEl.className='note'+(isLong?' note-long':'');
             noteEl.style.height=h+'px';
-            noteEl.textContent=aliens[Math.floor(Math.random()*aliens.length)];
-            noteEl.style.top='-60px';
-            lane.appendChild(noteEl);
+            noteEl.style.top='-50px';
 
+            // Pixel alien sprite
+            const sprite=document.createElement('div');
+            sprite.className='alien-sprite '+alienTypes[laneIndex];
+            noteEl.appendChild(sprite);
+
+            lane.appendChild(noteEl);
             const noteData={el:noteEl,lane:laneIndex,startTime:Date.now(),hit:false,isLong};
             notes.push(noteData);
 
             const laneHeight=lane.getBoundingClientRect().height||500;
             noteEl.style.transition=`top ${noteSpeed}s linear`;
-            requestAnimationFrame(()=>{noteEl.style.top=(laneHeight+60)+'px';});
-
+            requestAnimationFrame(()=>{noteEl.style.top=(laneHeight+50)+'px';});
             setTimeout(()=>{if(!noteData.hit&&isPlaying)handleMiss(noteData);},noteSpeed*1000+200);
         }
 
         // ─── Input ──────────────────────────────────────────
         function handleKeyDown(e){
             if(!isPlaying)return;
-            const keyIndex=laneKeys.indexOf(e.key);
-            if(keyIndex===-1)return;
+            const ki=laneKeys.indexOf(e.key);
+            if(ki===-1)return;
             e.preventDefault();
-            const kb=document.getElementById('kb'+keyIndex);
-            if(kb)kb.classList.add('active');
-            const hz=document.querySelector(`#lane${keyIndex} .hit-zone`);
+            document.getElementById('kb'+ki).classList.add('active');
+            const hz=document.querySelector(`#lane${ki} .hit-zone`);
             if(hz){hz.classList.remove('flash');void hz.offsetWidth;hz.classList.add('flash');}
 
-            const hitY=lanes.getBoundingClientRect().height-60;
+            const hitY=lanes.getBoundingClientRect().height-50;
             let closest=null,closestDist=Infinity;
-            for(const note of notes){
-                if(note.hit||note.lane!==keyIndex)continue;
-                const rect=note.el.getBoundingClientRect();
-                const lanesRect=lanes.getBoundingClientRect();
-                const noteY=rect.top-lanesRect.top+rect.height/2;
-                const dist=Math.abs(noteY-hitY);
-                if(dist<closestDist){closestDist=dist;closest=note;}
+            for(const n of notes){
+                if(n.hit||n.lane!==ki)continue;
+                const r=n.el.getBoundingClientRect(),lr=lanes.getBoundingClientRect();
+                const ny=r.top-lr.top+r.height/2;
+                const d=Math.abs(ny-hitY);
+                if(d<closestDist){closestDist=d;closest=n;}
             }
-
-            if(closest&&closestDist<90){
+            if(closest&&closestDist<85){
                 closest.hit=true;closest.el.remove();
-                if(closestDist<20){score+=100+combo*5;combo++;showJudge('perfect','PERFECT');spawnExplosion(closest.lane);setWarriorHappy();}
-                else if(closestDist<50){score+=50+combo*2;combo++;showJudge('great','GREAT');setWarriorHappy();}
-                else{score+=20;combo++;showJudge('great','OK');setWarriorHappy();}
+                if(closestDist<18){score+=100+combo*5;combo++;showJudge('perfect','PERFECT');spawnExplosion(closest.lane);setFace('happy');}
+                else if(closestDist<45){score+=50+combo*2;combo++;showJudge('great','GREAT');setFace('happy');}
+                else{score+=20;combo++;showJudge('great','OK');setFace('happy');}
                 if(combo>maxCombo)maxCombo=combo;
                 updateHUD();
             }
         }
-
-        function handleKeyUp(e){
-            const keyIndex=laneKeys.indexOf(e.key);
-            if(keyIndex===-1)return;
-            const kb=document.getElementById('kb'+keyIndex);
-            if(kb)kb.classList.remove('active');
-        }
+        function handleKeyUp(e){const ki=laneKeys.indexOf(e.key);if(ki>=0)document.getElementById('kb'+ki).classList.remove('active');}
 
         function handleMiss(note){
             if(note.hit)return;note.hit=true;note.el.remove();
-            hp-=8;combo=0;showJudge('miss','MISS');showDamageFlash();setWarriorSad();updateHUD();
+            hp-=8;combo=0;showJudge('miss','MISS');showDamageFlash();setFace('sad');updateHUD();
             if(hp<=0){hp=0;endGame(false);}
         }
 
-        // ─── Warrior Face ───────────────────────────────────
-        let warriorTimeout=null;
-        function setWarriorHappy(){
-            warriorAvatar.textContent=happyFaces[Math.floor(Math.random()*happyFaces.length)];
-            warriorAvatar.className='warrior-avatar happy';
-            clearTimeout(warriorTimeout);
-            warriorTimeout=setTimeout(()=>{warriorAvatar.textContent='😤';warriorAvatar.className='warrior-avatar';},800);
-        }
-        function setWarriorSad(){
-            warriorAvatar.textContent=sadFaces[Math.floor(Math.random()*sadFaces.length)];
-            warriorAvatar.className='warrior-avatar sad';
-            clearTimeout(warriorTimeout);
-            warriorTimeout=setTimeout(()=>{warriorAvatar.textContent='😤';warriorAvatar.className='warrior-avatar';},1000);
+        // ─── Face ───────────────────────────────────────────
+        let faceTimeout=null;
+        function setFace(type){
+            faceSprite.className='face-sprite face-'+type;
+            clearTimeout(faceTimeout);
+            faceTimeout=setTimeout(()=>{faceSprite.className='face-sprite face-neutral';},700);
         }
 
         // ─── Effects ────────────────────────────────────────
-        function showJudge(type,text){judgeEl.textContent=text;judgeEl.className='judge';void judgeEl.offsetWidth;judgeEl.className='judge '+type;}
-        function spawnExplosion(laneIndex){
-            const lane=document.getElementById('lane'+laneIndex);
-            const rect=lane.getBoundingClientRect();
+        function showJudge(t,txt){judgeEl.textContent=txt;judgeEl.className='judge';void judgeEl.offsetWidth;judgeEl.className='judge '+t;}
+        function spawnExplosion(li){
+            const lane=document.getElementById('lane'+li),rect=lane.getBoundingClientRect();
             const exp=document.createElement('div');exp.className='explosion';
-            exp.style.left=(rect.left+rect.width/2-40)+'px';exp.style.top=(rect.bottom-100)+'px';
+            exp.style.left=(rect.left+rect.width/2)+'px';exp.style.top=(rect.bottom-60)+'px';
+            const colors=['#ff4444','#ffcc00','#44ff44','#4488ff','#ff88ff','#fff'];
+            for(let i=0;i<8;i++){
+                const px=document.createElement('div');px.className='px';
+                px.style.background=colors[Math.floor(Math.random()*colors.length)];
+                const angle=Math.random()*Math.PI*2,dist=15+Math.random()*25;
+                px.style.setProperty('--tx',Math.cos(angle)*dist+'px');
+                px.style.setProperty('--ty',Math.sin(angle)*dist+'px');
+                px.style.animation=`pxBurst 0.3s ease-out forwards`;
+                px.style.transform=`translate(${Math.cos(angle)*dist}px,${Math.sin(angle)*dist}px)`;
+                exp.appendChild(px);
+            }
             document.body.appendChild(exp);setTimeout(()=>exp.remove(),400);
         }
-        function showDamageFlash(){const f=document.createElement('div');f.className='damage-flash';document.body.appendChild(f);setTimeout(()=>f.remove(),200);}
+        function showDamageFlash(){const f=document.createElement('div');f.className='damage-flash';document.body.appendChild(f);setTimeout(()=>f.remove(),150);}
         function updateHUD(){
-            scoreEl.textContent=score;hpFill.style.width=hp+'%';
-            if(combo>=5){comboEl.textContent=combo+' COMBO';comboEl.classList.add('show');}
-            else comboEl.classList.remove('show');
-        }
-
-        // ─── Destruction Animation ──────────────────────────
-        function showDestruction(callback){
-            molarPlanet.classList.add('destroyed');
-            destructOverlay.classList.add('show');
-            setTimeout(()=>{
-                destructOverlay.classList.remove('show');
-                molarPlanet.classList.remove('destroyed');
-                callback();
-            },3000);
+            scoreEl.textContent=score;
+            hpFill.style.width=hp+'%';
+            if(hp<30)hpFill.classList.add('low');else hpFill.classList.remove('low');
+            if(combo>=5){comboEl.textContent=combo+' COMBO';comboEl.classList.add('show');}else comboEl.classList.remove('show');
         }
 
         // ─── Game Flow ──────────────────────────────────────
-        function showIntro(){
-            gameOverScreen.classList.add('hidden');
-            introOverlay.classList.remove('hidden');
-            const crawl=introOverlay.querySelector('.crawl-container');
-            crawl.style.animation='none';void crawl.offsetWidth;crawl.style.animation='crawl 22s linear forwards';
-        }
+        function showIntro(){gameOverScreen.classList.add('hidden');introOverlay.classList.remove('hidden');}
 
         function startGame(){
             score=0;hp=100;combo=0;maxCombo=0;notes=[];isPlaying=true;noteSpeed=2.8;
-            introOverlay.classList.add('hidden');
-            gameOverScreen.classList.add('hidden');
-            hud.style.display='flex';
-            gameContainer.style.display='flex';
-            mothership.style.display='block';
-            warriorFace.style.display='block';
+            introOverlay.classList.add('hidden');gameOverScreen.classList.add('hidden');
+            hud.style.display='flex';gameContainer.style.display='flex';
+            cockpit.style.display='block';warriorFace.style.display='block';keyDisplay.style.display='flex';
+            faceSprite.className='face-sprite face-neutral';
             updateHUD();
             document.querySelectorAll('.note').forEach(n=>n.remove());
 
@@ -365,37 +375,38 @@
             audio=new Audio('bgm.mp3');audio.volume=0.7;
             audio.play().catch(()=>{});
 
-            const bpm=140,beatInterval=60000/bpm;
-            let beatCount=0;
+            const bpm=140,bi=60000/bpm;
+            let bc=0;
             noteInterval=setInterval(()=>{
                 if(!isPlaying)return;
-                beatCount++;
-                spawnNote(false);
-                if(beatCount>16&&beatCount%8===0)spawnNote(true);
-                if(beatCount>30&&Math.random()<0.3)spawnNote(false);
-                if(beatCount===40)noteSpeed=2.4;
-                if(beatCount===70)noteSpeed=2.0;
-                if(beatCount===100)noteSpeed=1.7;
-            },beatInterval);
-
+                bc++;spawnNote(false);
+                if(bc>16&&bc%8===0)spawnNote(true);
+                if(bc>30&&Math.random()<0.3)spawnNote(false);
+                if(bc===40)noteSpeed=2.4;
+                if(bc===70)noteSpeed=2.0;
+                if(bc===100)noteSpeed=1.7;
+            },bi);
             audio.addEventListener('ended',()=>{if(isPlaying)endGame(true);});
         }
 
         function endGame(survived){
             isPlaying=false;clearInterval(noteInterval);
             if(audio)audio.pause();
+            if(score>hiScore){hiScore=score;localStorage.setItem('molar_hi',hiScore);hiScoreEl.textContent=hiScore;}
             hud.style.display='none';gameContainer.style.display='none';
-            mothership.style.display='none';warriorFace.style.display='none';
+            cockpit.style.display='none';warriorFace.style.display='none';keyDisplay.style.display='none';
 
             if(!survived){
-                showDestruction(()=>{
+                destructOverlay.classList.add('show');
+                setTimeout(()=>{
+                    destructOverlay.classList.remove('show');
                     document.getElementById('finalScore').textContent=score;
-                    document.getElementById('gameOverMsg').textContent=`어금니별이 함락되었습니다... MAX COMBO: ${maxCombo}`;
+                    document.getElementById('gameOverMsg').textContent='MOLAR PRIME DESTROYED  MAX COMBO: '+maxCombo;
                     gameOverScreen.classList.remove('hidden');
-                });
+                },2500);
             } else {
                 document.getElementById('finalScore').textContent=score;
-                document.getElementById('gameOverMsg').textContent=`어금니별을 지켜냈습니다! MAX COMBO: ${maxCombo}`;
+                document.getElementById('gameOverMsg').textContent='MOLAR PRIME DEFENDED!  MAX COMBO: '+maxCombo;
                 gameOverScreen.classList.remove('hidden');
             }
         }
