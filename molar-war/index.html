@@ -587,6 +587,33 @@
         createStarfield();
         document.addEventListener('keydown',handleKeyDown);
         document.addEventListener('keyup',handleKeyUp);
+
+        // ─── Mobile Touch Support ──────────────────────────
+        // Each key button is a touch target for its lane
+        ['kb0','kb1','kb2','kb3'].forEach((id, idx) => {
+            const btn = document.getElementById(id);
+            btn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                handleKeyDown({ key: laneKeys[idx], preventDefault:()=>{} });
+            });
+            btn.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                handleKeyUp({ key: laneKeys[idx] });
+            });
+        });
+
+        // Also allow tapping anywhere in each lane
+        for (let i = 0; i < 4; i++) {
+            const lane = document.getElementById('lane' + i);
+            lane.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                handleKeyDown({ key: laneKeys[i], preventDefault:()=>{} });
+            });
+            lane.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                handleKeyUp({ key: laneKeys[i] });
+            });
+        }
     </script>
 </body>
 </html>
