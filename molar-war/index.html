@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOLAR WAR — 어금니별을 지켜라</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@700;900&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #05050f;
+            color: white;
+            min-height: 100vh;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* ─── Starfield background ─── */
+        .starfield {
+            position: fixed; inset: 0; z-index: 0; overflow: hidden;
+        }
+        .star {
+            position: absolute;
+            width: 2px; height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s ease-in-out infinite alternate;
+        }
+        @keyframes twinkle { 0%{opacity:0.2} 100%{opacity:1} }
+
+        /* ─── Game Area ─── */
+        .game-container {
+            position: fixed; inset: 0; z-index: 10;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: flex-end;
+            padding-bottom: 5vh;
+        }
+
+        /* ─── Lanes (DDR style) ─── */
+        .lanes {
+            position: relative;
+            width: 320px;
+            height: 70vh;
+            display: flex;
+            gap: 4px;
+        }
+
+        .lane {
+            flex: 1;
+            position: relative;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        /* Hit zone at bottom */
+        .hit-zone {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 60px;
+            border-top: 2px solid rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.02);
+        }
+
+        .hit-zone .key-label {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.4);
+        }
+
+        .hit-zone.flash {
+            animation: hitFlash 0.15s ease;
+        }
+
+        @keyframes hitFlash {
+            0% { background: rgba(255,255,255,0.3); }
+            100% { background: rgba(255,255,255,0.02); }
+        }
+
+        /* ─── Notes (cavity aliens falling) ─── */
+        .note {
+            position: absolute;
+            width: 80%;
+            left: 10%;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            animation: noteFall linear forwards;
+            will-change: transform;
+        }
+
+        .note-left { background: linear-gradient(135deg, #9b59b6, #6c3483); }
+        .note-center { background: linear-gradient(135deg, #e74c3c, #922b21); }
+        .note-right { background: linear-gradient(135deg, #f39c12, #d35400); }
+        .note-far-right { background: linear-gradient(135deg, #27ae60, #1e8449); }
+
+        @keyframes noteFall {
+            from { top: -50px; }
+            to { top: calc(100% + 50px); }
+        }
+
+        /* ─── Molar (defender at bottom center) ─── */
+        .molar-container {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 20;
+            text-align: center;
+        }
+
+        .molar {
+            width: 80px; height: 80px;
+            background: radial-gradient(circle at 40% 30%, #fff, #e0e0e0, #bbb);
+            border-radius: 30% 30% 40% 40%;
+            border: 3px solid rgba(255,255,255,0.5);
+            position: relative;
+            margin: 0 auto;
+            box-shadow: 0 0 30px rgba(255,255,255,0.2), 0 0 60px rgba(100,150,255,0.1);
+        }
+
+        .molar::before {
+            content: ''; position: absolute;
+            top: 20%; left: 25%; width: 50%; height: 30%;
+            background: rgba(200,200,200,0.3);
+            border-radius: 50%;
+        }
+
+        .molar-label {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 0.45rem;
+            margin-top: 6px;
+            color: rgba(255,255,255,0.5);
+            letter-spacing: 0.1em;
+        }
+
+        /* ─── HUD ─── */
+        .hud {
+            position: fixed; top: 0; left: 0; right: 0;
+            padding: 1rem 2rem;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 100;
+        }
+
+        .hud-title {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 0.6rem;
+            color: rgba(255,255,255,0.5);
+            letter-spacing: 0.1em;
+        }
+
+        .hud-stats {
+            display: flex; gap: 2rem; align-items: baseline;
+        }
+
+        .hud-item {
+            text-align: center;
+        }
+
+        .hud-item .label {
+            font-size: 0.5rem; font-weight: 700;
+            letter-spacing: 0.15em; text-transform: uppercase;
+            color: rgba(255,255,255,0.35);
+        }
+
+        .hud-item .value {
+            font-size: 1.2rem; font-weight: 900;
+        }
+
+        .hp-bar {
+            width: 120px; height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px; overflow: hidden;
+        }
+
+        .hp-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #e74c3c, #2ecc71);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        /* ─── Combo / feedback ─── */
+        .combo {
+            position: fixed;
+            top: 30%;
+            right: 10%;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 1.5rem;
+            color: #ffd700;
+            text-shadow: 0 0 20px #ffd700, 0 0 40px #ff8c00;
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .combo.show { opacity: 1; }
+
+        .judge {
+            position: fixed;
+            top: 45%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: 900;
+            font-size: 1.5rem;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .judge.perfect { color: #ffd700; text-shadow: 0 0 20px #ffd700; animation: judgePop 0.5s ease forwards; }
+        .judge.great { color: #2ecc71; text-shadow: 0 0 15px #2ecc71; animation: judgePop 0.5s ease forwards; }
+        .judge.miss { color: #e74c3c; text-shadow: 0 0 15px #e74c3c; animation: judgePop 0.6s ease forwards; }
+
+        @keyframes judgePop {
+            0% { opacity: 0; transform: translateX(-50%) scale(0.5); }
+            20% { opacity: 1; transform: translateX(-50%) scale(1.2); }
+            100% { opacity: 0; transform: translateX(-50%) scale(1) translateY(-20px); }
+        }
+
+        /* ─── Explosion effect ─── */
+        .explosion {
+            position: fixed;
+            width: 100px; height: 100px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 50;
+            animation: explode 0.4s ease forwards;
+        }
+
+        @keyframes explode {
+            0% { transform: scale(0); opacity: 1; background: radial-gradient(circle, #fff, #ffd700, transparent); }
+            100% { transform: scale(3); opacity: 0; background: radial-gradient(circle, transparent, #ffd700, transparent); }
+        }
+
+        /* ─── Screens ─── */
+        .screen-overlay {
+            position: fixed; inset: 0;
+            background: rgba(5,5,15,0.97);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 1.2rem; z-index: 500;
+            transition: opacity 0.5s ease;
+        }
+
+        .screen-overlay.hidden { opacity: 0; pointer-events: none; }
+
+        .screen-overlay h1 {
+            font-family: 'Press Start 2P', monospace;
+            font-size: clamp(1rem, 4vw, 2rem);
+            text-align: center;
+            line-height: 1.8;
+            color: #ffd700;
+            text-shadow: 0 0 30px rgba(255,215,0,0.5);
+        }
+
+        .screen-overlay .subtitle {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.6);
+            text-align: center;
+            max-width: 400px;
+            line-height: 1.6;
+        }
+
+        .screen-overlay .story {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 0.55rem;
+            color: rgba(255,255,255,0.4);
+            text-align: center;
+            max-width: 380px;
+            line-height: 2.2;
+            margin-top: 0.5rem;
+        }
+
+        .screen-overlay .score-big {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 1.5rem;
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255,215,0,0.5);
+        }
+
+        .start-btn {
+            margin-top: 1.5rem;
+            padding: 1rem 3rem;
+            background: linear-gradient(135deg, #ffd700, #ff8c00);
+            color: #1a1a2e;
+            border: none;
+            border-radius: 50px;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 0.65rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            letter-spacing: 0.1em;
+            box-shadow: 0 0 20px rgba(255,215,0,0.3);
+        }
+
+        .start-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 40px rgba(255,215,0,0.5);
+        }
+
+        /* ─── Key hints ─── */
+        .key-hints {
+            display: flex; gap: 0.8rem; margin-top: 1rem;
+        }
+
+        .key-hint {
+            width: 40px; height: 40px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 0.6rem;
+            color: rgba(255,255,255,0.6);
+        }
+
+        /* ─── Retro scanlines ─── */
+        .scanlines {
+            position: fixed; inset: 0;
+            pointer-events: none; z-index: 999;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0,0,0,0.03) 2px,
+                rgba(0,0,0,0.03) 4px
+            );
+        }
+
+        /* ─── Cavity damage overlay ─── */
+        .damage-flash {
+            position: fixed; inset: 0;
+            background: rgba(255,0,0,0.15);
+            pointer-events: none; z-index: 90;
+            opacity: 0;
+            animation: dmgFlash 0.2s ease;
+        }
+
+        @keyframes dmgFlash { 0%{opacity:1} 100%{opacity:0} }
+    </style>
+</head>
+<body>
+
+    <!-- Retro scanlines -->
+    <div class="scanlines"></div>
+
+    <!-- Starfield -->
+    <div class="starfield" id="starfield"></div>
+
+    <!-- HUD -->
+    <div class="hud" id="hud" style="display:none;">
+        <div class="hud-title">⚔ MOLAR WAR ⚔</div>
+        <div class="hud-stats">
+            <div class="hud-item">
+                <div class="label">SCORE</div>
+                <div class="value" id="score">0</div>
+            </div>
+            <div class="hud-item">
+                <div class="label">어금니별 HP</div>
+                <div class="hp-bar"><div class="hp-fill" id="hpFill" style="width:100%"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Combo display -->
+    <div class="combo" id="combo">0 COMBO</div>
+
+    <!-- Judge display -->
+    <div class="judge" id="judge"></div>
+
+    <!-- Game Area -->
+    <div class="game-container" id="gameContainer" style="display:none;">
+        <div class="lanes" id="lanes">
+            <div class="lane" id="lane0"><div class="hit-zone"><span class="key-label">←</span></div></div>
+            <div class="lane" id="lane1"><div class="hit-zone"><span class="key-label">↓</span></div></div>
+            <div class="lane" id="lane2"><div class="hit-zone"><span class="key-label">↑</span></div></div>
+            <div class="lane" id="lane3"><div class="hit-zone"><span class="key-label">→</span></div></div>
+        </div>
+        <div class="molar-container">
+            <div class="molar"></div>
+            <div class="molar-label">어금니별</div>
+        </div>
+    </div>
+
+    <!-- Start Screen -->
+    <div class="screen-overlay" id="startScreen">
+        <h1>⚔ MOLAR WAR ⚔<br><span style="font-size:0.6em;color:white;">어금니별을 지켜라</span></h1>
+        <p class="story">
+            서기 2847년...<br>
+            충치 외계인 군단이<br>
+            어금니별을 침략했다.<br><br>
+            칫솔 전사여,<br>
+            리듬에 맞춰 적을 격퇴하라!
+        </p>
+        <p class="subtitle">방향키(←↓↑→)를 타이밍에 맞춰 눌러<br>충치 외계인을 격퇴하세요!</p>
+        <div class="key-hints">
+            <div class="key-hint">←</div>
+            <div class="key-hint">↓</div>
+            <div class="key-hint">↑</div>
+            <div class="key-hint">→</div>
+        </div>
+        <button class="start-btn" onclick="startGame()">출격하기</button>
+    </div>
+
+    <!-- Game Over Screen -->
+    <div class="screen-overlay hidden" id="gameOverScreen">
+        <h1>⚔ MISSION COMPLETE ⚔</h1>
+        <div class="score-big" id="finalScore">0</div>
+        <p class="subtitle" id="gameOverMsg">어금니별을 지켜냈습니다!</p>
+        <button class="start-btn" onclick="startGame()">재출격</button>
+    </div>
+
+    <script>
+        // ─── Elements ───────────────────────────────────────────
+        const hud = document.getElementById('hud');
+        const gameContainer = document.getElementById('gameContainer');
+        const startScreen = document.getElementById('startScreen');
+        const gameOverScreen = document.getElementById('gameOverScreen');
+        const scoreEl = document.getElementById('score');
+        const hpFill = document.getElementById('hpFill');
+        const comboEl = document.getElementById('combo');
+        const judgeEl = document.getElementById('judge');
+        const lanes = document.getElementById('lanes');
+
+        let score = 0, hp = 100, combo = 0, maxCombo = 0;
+        let isPlaying = false;
+        let notes = []; // active notes
+        let noteInterval = null;
+        let gameLoop = null;
+        let audio = null;
+        let noteSpeed = 2.5; // seconds to fall
+
+        const aliens = ['👾', '🦠', '🧫', '💀', '☠️', '🪲'];
+        const laneKeys = ['ArrowLeft', 'ArrowDown', 'ArrowUp', 'ArrowRight'];
+        const laneColors = ['note-left', 'note-center', 'note-right', 'note-far-right'];
+
+        // ─── Starfield ──────────────────────────────────────────
+        function createStarfield() {
+            const sf = document.getElementById('starfield');
+            for (let i = 0; i < 120; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = (1 + Math.random() * 2) + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 2 + 's';
+                star.style.animationDuration = (1 + Math.random() * 2) + 's';
+                sf.appendChild(star);
+            }
+        }
+
+        // ─── Notes ──────────────────────────────────────────────
+        function spawnNote() {
+            if (!isPlaying) return;
+            const laneIndex = Math.floor(Math.random() * 4);
+            const lane = document.getElementById('lane' + laneIndex);
+
+            const noteEl = document.createElement('div');
+            noteEl.className = 'note ' + laneColors[laneIndex];
+            noteEl.textContent = aliens[Math.floor(Math.random() * aliens.length)];
+            noteEl.style.animationDuration = noteSpeed + 's';
+            lane.appendChild(noteEl);
+
+            const noteData = {
+                el: noteEl,
+                lane: laneIndex,
+                startTime: Date.now(),
+                hit: false
+            };
+            notes.push(noteData);
+
+            // Auto-remove missed notes
+            setTimeout(() => {
+                if (!noteData.hit && isPlaying) {
+                    handleMiss(noteData);
+                }
+            }, noteSpeed * 1000 + 200);
+        }
+
+        function getHitZoneY() {
+            // Hit zone is at bottom of lane container
+            return lanes.getBoundingClientRect().height - 60;
+        }
+
+        function getNoteY(note) {
+            const elapsed = Date.now() - note.startTime;
+            const progress = elapsed / (noteSpeed * 1000);
+            const laneHeight = lanes.getBoundingClientRect().height;
+            return progress * (laneHeight + 100) - 50;
+        }
+
+        // ─── Input handling ─────────────────────────────────────
+        function handleKeyPress(e) {
+            if (!isPlaying) return;
+            const keyIndex = laneKeys.indexOf(e.key);
+            if (keyIndex === -1) return;
+
+            e.preventDefault();
+
+            // Flash hit zone
+            const hitZone = document.querySelector(`#lane${keyIndex} .hit-zone`);
+            hitZone.classList.remove('flash');
+            void hitZone.offsetWidth;
+            hitZone.classList.add('flash');
+
+            // Find closest note in this lane
+            const hitY = getHitZoneY();
+            let closest = null;
+            let closestDist = Infinity;
+
+            for (const note of notes) {
+                if (note.hit || note.lane !== keyIndex) continue;
+                const noteY = getNoteY(note);
+                const dist = Math.abs(noteY - hitY);
+                if (dist < closestDist) {
+                    closestDist = dist;
+                    closest = note;
+                }
+            }
+
+            if (closest && closestDist < 80) {
+                closest.hit = true;
+                closest.el.remove();
+
+                if (closestDist < 25) {
+                    // PERFECT
+                    score += 100 + combo * 5;
+                    combo++;
+                    showJudge('perfect', 'PERFECT');
+                    spawnExplosion(closest.lane);
+                } else if (closestDist < 55) {
+                    // GREAT
+                    score += 50 + combo * 2;
+                    combo++;
+                    showJudge('great', 'GREAT');
+                } else {
+                    // OK (still counts but less points)
+                    score += 20;
+                    combo++;
+                    showJudge('great', 'OK');
+                }
+
+                if (combo > maxCombo) maxCombo = combo;
+                updateHUD();
+            }
+        }
+
+        function handleMiss(note) {
+            if (note.hit) return;
+            note.hit = true;
+            note.el.remove();
+
+            hp -= 8;
+            combo = 0;
+            showJudge('miss', 'MISS');
+            showDamageFlash();
+            updateHUD();
+
+            if (hp <= 0) {
+                hp = 0;
+                endGame(false);
+            }
+        }
+
+        // ─── Effects ────────────────────────────────────────────
+        function showJudge(type, text) {
+            judgeEl.textContent = text;
+            judgeEl.className = 'judge';
+            void judgeEl.offsetWidth;
+            judgeEl.className = 'judge ' + type;
+        }
+
+        function spawnExplosion(laneIndex) {
+            const lane = document.getElementById('lane' + laneIndex);
+            const rect = lane.getBoundingClientRect();
+            const exp = document.createElement('div');
+            exp.className = 'explosion';
+            exp.style.left = (rect.left + rect.width / 2 - 50) + 'px';
+            exp.style.top = (rect.bottom - 80) + 'px';
+            document.body.appendChild(exp);
+            setTimeout(() => exp.remove(), 400);
+        }
+
+        function showDamageFlash() {
+            const flash = document.createElement('div');
+            flash.className = 'damage-flash';
+            document.body.appendChild(flash);
+            setTimeout(() => flash.remove(), 200);
+        }
+
+        function updateHUD() {
+            scoreEl.textContent = score;
+            hpFill.style.width = hp + '%';
+            if (combo >= 5) {
+                comboEl.textContent = combo + ' COMBO';
+                comboEl.classList.add('show');
+            } else {
+                comboEl.classList.remove('show');
+            }
+        }
+
+        // ─── Game Flow ──────────────────────────────────────────
+        function startGame() {
+            score = 0; hp = 100; combo = 0; maxCombo = 0;
+            notes = [];
+            isPlaying = true;
+
+            startScreen.classList.add('hidden');
+            gameOverScreen.classList.add('hidden');
+            hud.style.display = 'flex';
+            gameContainer.style.display = 'flex';
+            updateHUD();
+
+            // Clear any existing notes
+            document.querySelectorAll('.note').forEach(n => n.remove());
+
+            // Start music
+            if (audio) { audio.pause(); audio.currentTime = 0; }
+            audio = new Audio('bgm.mp3');
+            audio.volume = 0.7;
+            audio.play().catch(() => {});
+
+            // Spawn notes - BPM roughly matches the music
+            const bpm = 140;
+            const beatInterval = 60000 / bpm;
+
+            let beatCount = 0;
+            noteInterval = setInterval(() => {
+                if (!isPlaying) return;
+                beatCount++;
+                // Spawn more notes as song progresses
+                spawnNote();
+                if (beatCount > 30 && Math.random() < 0.3) spawnNote(); // double notes after a while
+                if (beatCount > 60 && Math.random() < 0.2) spawnNote(); // triple chaos
+            }, beatInterval);
+
+            // Speed up over time
+            setTimeout(() => { if (isPlaying) noteSpeed = 2.2; }, 15000);
+            setTimeout(() => { if (isPlaying) noteSpeed = 1.9; }, 30000);
+            setTimeout(() => { if (isPlaying) noteSpeed = 1.6; }, 45000);
+
+            // End game when music ends
+            audio.addEventListener('ended', () => {
+                if (isPlaying) endGame(true);
+            });
+        }
+
+        function endGame(survived) {
+            isPlaying = false;
+            clearInterval(noteInterval);
+            if (audio) { audio.pause(); }
+
+            document.getElementById('finalScore').textContent = score;
+            document.getElementById('gameOverMsg').textContent = survived
+                ? `어금니별을 지켜냈습니다! MAX COMBO: ${maxCombo}`
+                : `어금니별이 함락되었습니다... MAX COMBO: ${maxCombo}`;
+
+            hud.style.display = 'none';
+            gameContainer.style.display = 'none';
+            gameOverScreen.classList.remove('hidden');
+        }
+
+        // ─── Init ───────────────────────────────────────────────
+        createStarfield();
+        document.addEventListener('keydown', handleKeyPress);
+
+        // Mobile touch support
+        document.addEventListener('touchstart', (e) => {
+            const touch = e.touches[0];
+            const x = touch.clientX / window.innerWidth;
+            let key;
+            if (x < 0.25) key = 'ArrowLeft';
+            else if (x < 0.5) key = 'ArrowDown';
+            else if (x < 0.75) key = 'ArrowUp';
+            else key = 'ArrowRight';
+            handleKeyPress({ key, preventDefault: () => {} });
+        });
+    </script>
+</body>
+</html>
