@@ -148,9 +148,22 @@
 <body>
     <div class="starfield" id="starfield"></div>
 
-    <!-- Planet at bottom (visible on both intro & game) -->
-    <div style="position:fixed;bottom:0;left:0;right:0;height:40vh;z-index:1;pointer-events:none;overflow:hidden;">
-        <img src="planet.jpg" alt="Molar Prime Planet" style="width:100%;height:100%;object-fit:cover;object-position:center bottom;image-rendering:pixelated;opacity:0.7;">
+    <!-- Planet at bottom (sized to cockpit width, molars cover edges) -->
+    <div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:380px;height:200px;z-index:1;pointer-events:none;overflow:hidden;">
+        <img src="planet.jpg" alt="Molar Prime Planet" style="width:100%;height:auto;object-fit:cover;image-rendering:pixelated;opacity:0.8;">
+    </div>
+
+    <!-- Molars covering planet edges (left cluster) -->
+    <div style="position:fixed;bottom:30px;left:calc(50% - 200px);z-index:2;pointer-events:none;display:flex;flex-direction:column;gap:0;align-items:flex-end;">
+        <img src="molar.png" style="width:38px;image-rendering:pixelated;opacity:0.9;margin-right:5px;">
+        <img src="molar.png" style="width:42px;image-rendering:pixelated;opacity:0.8;">
+        <img src="molar.png" style="width:36px;image-rendering:pixelated;opacity:0.7;margin-right:8px;">
+    </div>
+    <!-- Molars covering planet edges (right cluster) -->
+    <div style="position:fixed;bottom:30px;left:calc(50% + 155px);z-index:2;pointer-events:none;display:flex;flex-direction:column;gap:0;align-items:flex-start;">
+        <img src="molar.png" style="width:40px;image-rendering:pixelated;opacity:0.85;margin-left:3px;">
+        <img src="molar.png" style="width:36px;image-rendering:pixelated;opacity:0.75;">
+        <img src="molar.png" style="width:42px;image-rendering:pixelated;opacity:0.9;margin-left:6px;">
     </div>
 
     <!-- Boss alien (top, moves left-right) -->
@@ -161,22 +174,16 @@
         @keyframes bossMove { 0%{transform:translateX(-50%) translateX(-80px)} 100%{transform:translateX(-50%) translateX(80px)} }
     </style>
 
-    <!-- Molar teeth tightly packed along cockpit sides -->
-    <div style="position:fixed;bottom:12px;left:5px;display:flex;gap:2px;align-items:flex-end;z-index:21;pointer-events:none;" id="molarRow">
-        <img src="molar.png" style="width:30px;image-rendering:pixelated;opacity:0.6;">
-        <img src="molar.png" style="width:35px;image-rendering:pixelated;opacity:0.8;">
-        <img src="molar.png" style="width:32px;image-rendering:pixelated;opacity:0.7;">
-        <img src="molar.png" style="width:28px;image-rendering:pixelated;opacity:0.5;">
-        <img src="molar.png" style="width:34px;image-rendering:pixelated;opacity:0.75;">
-        <img src="molar.png" style="width:30px;image-rendering:pixelated;opacity:0.6;">
+    <!-- Molar teeth tightly along cockpit -->
+    <div style="position:fixed;bottom:88px;left:calc(50% - 190px);display:flex;gap:1px;align-items:flex-end;z-index:21;pointer-events:none;" id="molarRow">
+        <img src="molar.png" style="width:28px;image-rendering:pixelated;opacity:0.7;">
+        <img src="molar.png" style="width:32px;image-rendering:pixelated;opacity:0.85;">
+        <img src="molar.png" style="width:26px;image-rendering:pixelated;opacity:0.6;">
     </div>
-    <div style="position:fixed;bottom:12px;right:100px;display:flex;gap:2px;align-items:flex-end;z-index:21;pointer-events:none;">
-        <img src="molar.png" style="width:32px;image-rendering:pixelated;opacity:0.7;">
-        <img src="molar.png" style="width:36px;image-rendering:pixelated;opacity:0.85;">
-        <img src="molar.png" style="width:30px;image-rendering:pixelated;opacity:0.6;">
-        <img src="molar.png" style="width:34px;image-rendering:pixelated;opacity:0.75;">
-        <img src="molar.png" style="width:28px;image-rendering:pixelated;opacity:0.55;">
-        <img src="molar.png" style="width:33px;image-rendering:pixelated;opacity:0.7;">
+    <div style="position:fixed;bottom:88px;right:calc(50% - 190px);display:flex;gap:1px;align-items:flex-end;z-index:21;pointer-events:none;">
+        <img src="molar.png" style="width:30px;image-rendering:pixelated;opacity:0.75;">
+        <img src="molar.png" style="width:34px;image-rendering:pixelated;opacity:0.85;">
+        <img src="molar.png" style="width:27px;image-rendering:pixelated;opacity:0.6;">
     </div>
 
     <!-- Cockpit -->
