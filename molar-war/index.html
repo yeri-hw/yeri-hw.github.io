@@ -14,13 +14,19 @@
         .star { position: absolute; }
 
         /* ─── Cockpit HUD frame (bottom) ─── */
-        .cockpit { position: fixed; bottom: 0; left: 0; right: 0; height: 90px; z-index: 20; background: linear-gradient(0deg, #0a1628 0%, #112244 60%, #1a3366 100%); border-top: 3px solid #4488cc; box-shadow: 0 -4px 20px rgba(68,136,204,0.3); }
-        .cockpit::before { content: ''; position: absolute; top: 6px; left: 50%; transform: translateX(-50%); width: 200px; height: 4px; background: #4488cc; border-radius: 2px; opacity: 0.5; }
-        .cockpit-lights { position: absolute; top: 15px; left: 20px; display: flex; gap: 8px; }
-        .cockpit-light { width: 6px; height: 6px; background: #44ff44; animation: blink 1s step-end infinite; }
-        .cockpit-light:nth-child(2) { background: #ff4444; animation-delay: 0.3s; }
-        .cockpit-light:nth-child(3) { background: #ffcc00; animation-delay: 0.6s; }
-        @keyframes blink { 0%,50%{opacity:1}51%,100%{opacity:0.3} }
+        .cockpit { position: fixed; bottom: 0; left: 0; right: 0; height: 95px; z-index: 20; background: linear-gradient(0deg, #060e1a 0%, #0c1e3a 40%, #122e55 80%, #1a4080 100%); border-top: 4px solid #3399ee; box-shadow: 0 -6px 30px rgba(51,153,238,0.25); }
+        .cockpit::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 100%; background: repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(51,153,238,0.06) 60px, rgba(51,153,238,0.06) 62px); }
+        .cockpit::after { content: ''; position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 180px; height: 3px; background: linear-gradient(90deg, transparent, #3399ee, transparent); border-radius: 2px; }
+        .cockpit-panel { position: absolute; top: 20px; display: flex; gap: 4px; }
+        .cockpit-panel.left { left: 15px; }
+        .cockpit-panel.right { right: 15px; }
+        .cockpit-indicator { width: 8px; height: 8px; border: 1px solid #3399ee; animation: blink 1s step-end infinite; }
+        .cockpit-indicator:nth-child(1) { background: #44ff44; }
+        .cockpit-indicator:nth-child(2) { background: #ff4444; animation-delay: 0.4s; }
+        .cockpit-indicator:nth-child(3) { background: #ffcc00; animation-delay: 0.7s; }
+        .cockpit-molar { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); }
+        .cockpit-molar img { width: 50px; height: 50px; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(0 0 6px rgba(255,255,255,0.3)); }
+        @keyframes blink { 0%,50%{opacity:1}51%,100%{opacity:0.2} }
 
         /* ─── HUD top (Galaga style) ─── */
         .hud { position: fixed; top: 0; left: 0; right: 0; padding: 12px 20px; display: flex; justify-content: space-between; align-items: flex-start; z-index: 200; }
@@ -94,34 +100,12 @@
 
         /* ─── Warrior pixel face (bottom right, larger) ─── */
         .warrior-face { position: fixed; bottom: 100px; right: 12px; z-index: 200; text-align: center; }
-        .warrior-avatar { width: 72px; height: 72px; background: #0a1628; border: 3px solid #4488cc; display: flex; align-items: center; justify-content: center; image-rendering: pixelated; box-shadow: 0 0 10px rgba(68,136,204,0.2); }
+        .warrior-avatar { width: 90px; height: 90px; background: #0a1020; border: 3px solid #4488cc; border-radius: 8px; overflow: hidden; box-shadow: 0 0 12px rgba(68,136,204,0.3), inset 0 0 20px rgba(0,0,0,0.5); }
+        .warrior-avatar img { width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; filter: brightness(1.1); }
+        .warrior-avatar.happy { border-color: #44ff44; box-shadow: 0 0 15px rgba(68,255,68,0.4); }
+        .warrior-avatar.sad { border-color: #ff4444; box-shadow: 0 0 15px rgba(255,68,68,0.4); }
         .warrior-name { font-size: 0.35rem; color: #4488cc; margin-top: 4px; }
-        /* Pixel face via box-shadow (scaled up) */
-        .face-sprite { width: 4px; height: 4px; background: transparent; }
-        .face-happy { box-shadow:
-            8px 8px 0 #ffcc88, 12px 8px 0 #ffcc88, 16px 8px 0 #ffcc88, 20px 8px 0 #ffcc88, 24px 8px 0 #ffcc88,
-            4px 12px 0 #ffcc88, 8px 12px 0 #ffcc88, 12px 12px 0 #ffcc88, 16px 12px 0 #ffcc88, 20px 12px 0 #ffcc88, 24px 12px 0 #ffcc88, 28px 12px 0 #ffcc88,
-            8px 16px 0 #222, 12px 16px 0 #ffcc88, 16px 16px 0 #ffcc88, 20px 16px 0 #222, 24px 16px 0 #ffcc88,
-            8px 20px 0 #ffcc88, 12px 20px 0 #ffcc88, 16px 20px 0 #ffcc88, 20px 20px 0 #ffcc88, 24px 20px 0 #ffcc88,
-            8px 24px 0 #ffcc88, 12px 24px 0 #ff4444, 16px 24px 0 #ff4444, 20px 24px 0 #ff4444, 24px 24px 0 #ffcc88,
-            12px 28px 0 #ffcc88, 16px 28px 0 #ffcc88, 20px 28px 0 #ffcc88;
-        }
-        .face-sad { box-shadow:
-            8px 8px 0 #ffcc88, 12px 8px 0 #ffcc88, 16px 8px 0 #ffcc88, 20px 8px 0 #ffcc88, 24px 8px 0 #ffcc88,
-            4px 12px 0 #ffcc88, 8px 12px 0 #ffcc88, 12px 12px 0 #ffcc88, 16px 12px 0 #ffcc88, 20px 12px 0 #ffcc88, 24px 12px 0 #ffcc88, 28px 12px 0 #ffcc88,
-            8px 16px 0 #222, 12px 16px 0 #ffcc88, 16px 16px 0 #ffcc88, 20px 16px 0 #222, 24px 16px 0 #ffcc88,
-            8px 20px 0 #4444ff, 12px 20px 0 #ffcc88, 16px 20px 0 #ffcc88, 20px 20px 0 #4444ff, 24px 20px 0 #ffcc88,
-            12px 24px 0 #ffcc88, 16px 24px 0 #ffcc88, 20px 24px 0 #ffcc88,
-            8px 28px 0 #ffcc88, 12px 28px 0 #ff4444, 16px 28px 0 #ff4444, 20px 28px 0 #ff4444, 24px 28px 0 #ffcc88;
-        }
-        .face-neutral { box-shadow:
-            8px 8px 0 #ffcc88, 12px 8px 0 #ffcc88, 16px 8px 0 #ffcc88, 20px 8px 0 #ffcc88, 24px 8px 0 #ffcc88,
-            4px 12px 0 #ffcc88, 8px 12px 0 #ffcc88, 12px 12px 0 #ffcc88, 16px 12px 0 #ffcc88, 20px 12px 0 #ffcc88, 24px 12px 0 #ffcc88, 28px 12px 0 #ffcc88,
-            8px 16px 0 #222, 12px 16px 0 #ffcc88, 16px 16px 0 #ffcc88, 20px 16px 0 #222, 24px 16px 0 #ffcc88,
-            8px 20px 0 #ffcc88, 12px 20px 0 #ffcc88, 16px 20px 0 #ffcc88, 20px 20px 0 #ffcc88, 24px 20px 0 #ffcc88,
-            12px 24px 0 #ff8866, 16px 24px 0 #ff8866, 20px 24px 0 #ff8866,
-            12px 28px 0 #ffcc88, 16px 28px 0 #ffcc88, 20px 28px 0 #ffcc88;
-        }
+        /* face states handled by border color */
 
         /* ─── Combo / Judge ─── */
         .combo { position: fixed; top: 20%; right: 5%; font-size: 0.7rem; color: #ffcc00; z-index: 100; opacity: 0; transition: opacity 0.3s; text-shadow: 2px 2px 0 #884400; }
@@ -166,9 +150,16 @@
 <body>
     <div class="starfield" id="starfield"></div>
 
+    <!-- Molar Planet background -->
+    <div style="position:fixed;bottom:-40px;left:50%;transform:translateX(-50%);width:300px;height:300px;z-index:2;opacity:0.35;" id="molarPlanet">
+        <img src="molar.jpg" alt="Molar Prime" style="width:100%;height:100%;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 0 40px rgba(255,255,255,0.2)) brightness(1.2);">
+    </div>
+
     <!-- Cockpit -->
     <div class="cockpit" id="cockpit" style="display:none;">
-        <div class="cockpit-lights"><div class="cockpit-light"></div><div class="cockpit-light"></div><div class="cockpit-light"></div></div>
+        <div class="cockpit-panel left"><div class="cockpit-indicator"></div><div class="cockpit-indicator"></div><div class="cockpit-indicator"></div></div>
+        <div class="cockpit-panel right"><div class="cockpit-indicator"></div><div class="cockpit-indicator"></div><div class="cockpit-indicator"></div></div>
+        <div class="cockpit-molar"><img src="molar.jpg" alt="Molar Prime"></div>
     </div>
 
     <!-- HUD -->
@@ -180,7 +171,7 @@
 
     <!-- Warrior Face -->
     <div class="warrior-face" id="warriorFace" style="display:none;">
-        <div class="warrior-avatar"><div class="face-sprite face-neutral" id="faceSprite"></div></div>
+        <div class="warrior-avatar" id="warriorAvatar"><img src="warrior.gif" alt="Brush One"></div>
         <div class="warrior-name">BRUSH-1</div>
     </div>
 
@@ -237,7 +228,6 @@
         const introOverlay=document.getElementById('introOverlay');
         const gameOverScreen=document.getElementById('gameOverScreen');
         const warriorFace=document.getElementById('warriorFace');
-        const faceSprite=document.getElementById('faceSprite');
         const cockpit=document.getElementById('cockpit');
         const keyDisplay=document.getElementById('keyDisplay');
         const destructOverlay=document.getElementById('destructOverlay');
@@ -330,9 +320,10 @@
         // ─── Face ───────────────────────────────────────────
         let faceTimeout=null;
         function setFace(type){
-            faceSprite.className='face-sprite face-'+type;
+            const avatar=document.getElementById('warriorAvatar');
+            avatar.className='warrior-avatar'+(type==='happy'?' happy':type==='sad'?' sad':'');
             clearTimeout(faceTimeout);
-            faceTimeout=setTimeout(()=>{faceSprite.className='face-sprite face-neutral';},700);
+            faceTimeout=setTimeout(()=>{avatar.className='warrior-avatar';},700);
         }
 
         // ─── Effects ────────────────────────────────────────
@@ -370,7 +361,6 @@
             introOverlay.classList.add('hidden');gameOverScreen.classList.add('hidden');
             hud.style.display='flex';gameContainer.style.display='flex';
             cockpit.style.display='block';warriorFace.style.display='block';keyDisplay.style.display='flex';
-            faceSprite.className='face-sprite face-neutral';
             updateHUD();
             document.querySelectorAll('.note').forEach(n=>n.remove());
 
