@@ -9,23 +9,28 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: #020010; color: white; min-height: 100vh; overflow: hidden; user-select: none; }
 
-        /* ─── Space BG ─── */
-        .space-bg { position: fixed; inset: 0; z-index: 0; background: radial-gradient(ellipse at 50% 80%, #0a0030 0%, #020010 50%, #000 100%); }
-        .space-bg::before { content:''; position: absolute; inset: 0; background: radial-gradient(circle at 30% 20%, rgba(100,50,200,0.08) 0%, transparent 40%), radial-gradient(circle at 70% 60%, rgba(50,100,200,0.06) 0%, transparent 30%); }
+        /* ─── Space BG (retro pixel style) ─── */
+        .space-bg { position: fixed; inset: 0; z-index: 0; background: #000; }
         .starfield { position: fixed; inset: 0; z-index: 1; }
-        .star { position: absolute; width: 2px; height: 2px; background: white; border-radius: 50%; animation: twinkle 2s ease-in-out infinite alternate; }
+        .star { position: absolute; background: white; animation: twinkle 2s ease-in-out infinite alternate; image-rendering: pixelated; }
         @keyframes twinkle { 0%{opacity:0.1} 100%{opacity:0.9} }
 
-        /* ─── Molar Planet ─── */
-        .molar-planet { position: fixed; bottom: -80px; left: 50%; transform: translateX(-50%); width: 550px; height: 550px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ffffff, #e8e8f0, #b0b0c0, #808098); box-shadow: 0 0 80px rgba(200,200,255,0.15), inset -30px -30px 60px rgba(0,0,0,0.3); z-index: 2; opacity: 0.5; transition: all 1.5s; }
-        .molar-planet.destroyed { opacity: 0.2; box-shadow: 0 0 120px rgba(255,50,0,0.4); background: radial-gradient(circle at 35% 30%, #aaa, #666, #333, #111); }
+        /* ─── Molar Planet (pixel style) ─── */
+        .molar-planet { position: fixed; bottom: -60px; left: 50%; transform: translateX(-50%); width: 450px; height: 450px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ffffff, #d0d0e0, #9090a8); box-shadow: 0 0 60px rgba(200,200,255,0.2), 0 0 120px rgba(150,150,200,0.1), inset -20px -20px 40px rgba(0,0,0,0.4); z-index: 2; opacity: 0.5; transition: all 1.5s; image-rendering: pixelated; }
+        .molar-planet.destroyed { opacity: 0.2; box-shadow: 0 0 120px rgba(255,50,0,0.5); background: radial-gradient(circle at 35% 30%, #aa4400, #662200, #331100); }
 
-        /* ─── Mothership ─── */
-        .mothership { position: fixed; top: -20px; left: 50%; transform: translateX(-50%); width: 300px; height: 80px; z-index: 3; }
-        .mothership-body { width: 100%; height: 100%; background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 50%, #2a0a2a 100%); border-radius: 50% 50% 30% 30%; border: 2px solid rgba(100,0,100,0.4); box-shadow: 0 10px 40px rgba(100,0,150,0.3); position: relative; overflow: hidden; }
-        .mothership-body::before { content:''; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(50,0,80,0.3) 20px, rgba(50,0,80,0.3) 22px); }
-        .mothership-drip { position: absolute; bottom: -15px; width: 12px; height: 20px; background: #1a0a1a; border-radius: 0 0 50% 50%; animation: drip 1.5s ease-in-out infinite; }
-        @keyframes drip { 0%,100%{height:15px;opacity:0.8} 50%{height:25px;opacity:1} }
+        /* ─── Pixel decorations on intro ─── */
+        .pixel-ship { position: absolute; z-index: 5; image-rendering: pixelated; }
+        .pixel-ship-left { left: 8%; top: 25%; width: 60px; height: 40px; background: linear-gradient(135deg, #4488ff, #88ccff); clip-path: polygon(0% 50%, 40% 0%, 100% 20%, 100% 80%, 40% 100%); box-shadow: 3px 0 0 #ffd700, 6px 0 0 #ff8800; }
+        .pixel-ship-right { right: 10%; top: 40%; width: 50px; height: 35px; background: linear-gradient(135deg, #44ff88, #88ffcc); clip-path: polygon(100% 50%, 60% 0%, 0% 20%, 0% 80%, 60% 100%); box-shadow: -3px 0 0 #ffd700, -6px 0 0 #ff8800; }
+
+        /* ─── Mothership (pixel alien) ─── */
+        .mothership { position: fixed; top: -10px; left: 50%; transform: translateX(-50%); width: 280px; height: 70px; z-index: 3; image-rendering: pixelated; }
+        .mothership-body { width: 100%; height: 100%; background: #111; border-radius: 40% 40% 20% 20%; border: 3px solid #440066; box-shadow: 0 8px 30px rgba(100,0,150,0.4), 0 0 15px rgba(0,255,0,0.08); position: relative; overflow: hidden; }
+        .mothership-body::before { content:''; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent, transparent 18px, rgba(80,0,120,0.3) 18px, rgba(80,0,120,0.3) 20px); }
+        .mothership-body::after { content:'👁️'; position: absolute; top: 30%; left: 50%; transform: translateX(-50%); font-size: 1.5rem; }
+        .mothership-drip { position: absolute; bottom: -12px; width: 10px; height: 16px; background: #220033; border-radius: 0 0 50% 50%; animation: drip 1.2s ease-in-out infinite; }
+        @keyframes drip { 0%,100%{height:12px;opacity:0.7} 50%{height:22px;opacity:1} }
 
         /* ─── Game Container & Lanes (4 lanes) ─── */
         .game-container { position: fixed; inset: 0; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 3vh; }
@@ -41,13 +46,13 @@
         .key-btn.active { background: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.7); transform: scale(0.9); box-shadow: 0 0 20px rgba(255,255,255,0.3); }
         .key-btn.space-btn { width: 80px; font-size: 0.55rem; font-weight: 900; letter-spacing: 0.08em; }
 
-        /* ─── Notes with neon glow ─── */
-        .note { position: absolute; width: 80%; left: 10%; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; will-change: top; border: 1px solid rgba(255,255,255,0.5); }
+        /* ─── Notes with neon glow (pixel style) ─── */
+        .note { position: absolute; width: 80%; left: 10%; height: 40px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; will-change: top; border: 2px solid rgba(255,255,255,0.7); image-rendering: pixelated; }
         .note-long { min-height: 100px; }
-        .note-0 { background: linear-gradient(135deg, #3498db, #1a5276); box-shadow: 0 0 12px #3498db, 0 0 25px rgba(52,152,219,0.4), inset 0 0 8px rgba(255,255,255,0.1); }
-        .note-1 { background: linear-gradient(135deg, #9b59b6, #6c3483); box-shadow: 0 0 12px #9b59b6, 0 0 25px rgba(155,89,182,0.4), inset 0 0 8px rgba(255,255,255,0.1); }
-        .note-2 { background: linear-gradient(135deg, #e74c3c, #922b21); box-shadow: 0 0 12px #e74c3c, 0 0 25px rgba(231,76,60,0.4), inset 0 0 8px rgba(255,255,255,0.1); }
-        .note-3 { background: linear-gradient(135deg, #f39c12, #d35400); box-shadow: 0 0 12px #f39c12, 0 0 25px rgba(243,156,18,0.4), inset 0 0 8px rgba(255,255,255,0.1); }
+        .note-0 { background: #2266dd; box-shadow: 0 0 8px #44aaff, 0 0 20px rgba(68,170,255,0.5), 0 0 40px rgba(68,170,255,0.2); border-color: #66ccff; }
+        .note-1 { background: #8822bb; box-shadow: 0 0 8px #bb55ff, 0 0 20px rgba(187,85,255,0.5), 0 0 40px rgba(187,85,255,0.2); border-color: #cc88ff; }
+        .note-2 { background: #cc2222; box-shadow: 0 0 8px #ff4444, 0 0 20px rgba(255,68,68,0.5), 0 0 40px rgba(255,68,68,0.2); border-color: #ff6666; }
+        .note-3 { background: #cc8800; box-shadow: 0 0 8px #ffaa00, 0 0 20px rgba(255,170,0,0.5), 0 0 40px rgba(255,170,0,0.2); border-color: #ffcc44; }
 
         /* ─── Warrior Face (bottom right) ─── */
         .warrior-face { position: fixed; bottom: 20px; right: 20px; z-index: 200; text-align: center; }
@@ -92,12 +97,11 @@
         /* ─── Intro Crawl ─── */
         .intro-overlay { position: fixed; inset: 0; z-index: 600; background: #000; display: flex; align-items: center; justify-content: flex-end; flex-direction: column; perspective: 400px; overflow: hidden; transition: opacity 1s; }
         .intro-overlay.hidden { opacity: 0; pointer-events: none; }
-        .crawl-container { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%) rotateX(25deg); transform-origin: bottom center; width: 80%; max-width: 600px; animation: crawl 22s linear forwards; }
-        .crawl-container p { font-family: 'Press Start 2P', monospace; font-size: clamp(0.5rem, 1.4vw, 0.7rem); color: #ffd700; text-align: center; line-height: 2.5; margin-bottom: 1.5rem; }
-        .crawl-container .crawl-title { font-size: clamp(1rem, 3vw, 1.8rem); margin-bottom: 2rem; color: white; }
-        @keyframes crawl { 0%{bottom:-120%} 100%{bottom:250%} }
-        .intro-start-btn { position: fixed; bottom: 10%; left: 50%; transform: translateX(-50%); z-index: 610; opacity: 0; animation: fadeInBtn 1s ease forwards 10s; }
-        @keyframes fadeInBtn { to{opacity:1} }
+        .crawl-container { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%) rotateX(25deg); transform-origin: bottom center; width: 85%; max-width: 650px; animation: crawl 22s linear forwards; }
+        .crawl-container p { font-family: 'Press Start 2P', monospace; font-size: clamp(0.6rem, 1.6vw, 0.85rem); color: #ffd700; text-align: center; line-height: 2.2; margin-bottom: 1.8rem; }
+        .crawl-container .crawl-title { font-size: clamp(1.2rem, 4vw, 2.2rem); margin-bottom: 2.5rem; color: white; text-shadow: 0 0 10px rgba(255,255,255,0.5), 2px 2px 0 #ff4400, 4px 4px 0 #cc0000; }
+        @keyframes crawl { 0%{bottom:-100%} 100%{bottom:220%} }
+        .intro-start-btn { position: fixed; bottom: 8%; left: 50%; transform: translateX(-50%); z-index: 610; }
 
         /* ─── Game Over ─── */
         .screen-overlay { position: fixed; inset: 0; background: rgba(2,0,16,0.95); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.2rem; z-index: 500; transition: opacity 0.5s; }
@@ -167,15 +171,14 @@
 
     <!-- Intro Crawl -->
     <div class="intro-overlay" id="introOverlay">
+        <div class="pixel-ship pixel-ship-left"></div>
+        <div class="pixel-ship pixel-ship-right"></div>
         <div class="crawl-container">
             <p class="crawl-title">⚔ MOLAR WAR ⚔</p>
-            <p>서기 2847년...</p>
-            <p>인류가 거주하는<br>어금니별(Molar Prime)은<br>은하계에서 가장 평화로운 행성이었다.</p>
-            <p>그러나 어둠의 저편에서<br>충치 외계인 군단<br>"카리에스 임페리움"이 깨어났다.</p>
-            <p>그들의 검은 우주선에서<br>끊임없이 쏟아지는 부식 광선...</p>
-            <p>어금니별의 마지막 희망,<br>칫솔 전사 "브러시 원"이<br>출격을 준비한다.</p>
-            <p>리듬에 맞춰 적을 격퇴하라.<br>어금니별의 운명은<br>당신의 손끝에 달려있다.</p>
-            <p style="color:rgba(255,255,255,0.3);font-size:0.45rem;margin-top:2rem;">SPACE ← ↓ → 키로 조작</p>
+            <p>서기 2847년... 인류가 거주하는 어금니별(Molar Prime)은 은하계에서 가장 평화로운 행성이었다.</p>
+            <p>그러나 어둠의 저편에서 충치 외계인 군단 "카리에스 임페리움"이 깨어났다. 그들의 검은 우주선에서 끊임없이 쏟아지는 부식 광선...</p>
+            <p>어금니별의 마지막 희망, 칫솔 전사 "브러시 원"이 출격을 준비한다. 리듬에 맞춰 적을 격퇴하라. 어금니별의 운명은 당신의 손끝에 달려있다.</p>
+            <p style="color:rgba(255,255,255,0.4);margin-top:1.5rem;">SPACE ← ↓ → 키로 조작</p>
         </div>
         <button class="start-btn intro-start-btn" onclick="startGame()">출격하기</button>
     </div>
@@ -213,14 +216,18 @@
         const happyFaces=['😎','😤','🔥','💪','⚡'];
         const sadFaces=['😰','😣','💦','😵'];
 
-        // ─── Starfield ──────────────────────────────────────
+        // ─── Starfield (pixel style) ────────────────────────
         function createStarfield(){
             const sf=document.getElementById('starfield');
-            for(let i=0;i<150;i++){
+            for(let i=0;i<180;i++){
                 const s=document.createElement('div');s.className='star';
                 s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';
-                const sz=1+Math.random()*2;s.style.width=sz+'px';s.style.height=sz+'px';
+                const sz=Math.random()<0.7?2:Math.random()<0.9?3:4;
+                s.style.width=sz+'px';s.style.height=sz+'px';
                 s.style.animationDelay=Math.random()*2+'s';s.style.animationDuration=(1+Math.random()*3)+'s';
+                // Some colored stars for retro feel
+                if(Math.random()<0.15) s.style.background='#88ccff';
+                else if(Math.random()<0.1) s.style.background='#ffcc44';
                 sf.appendChild(s);
             }
         }
@@ -341,8 +348,6 @@
             introOverlay.classList.remove('hidden');
             const crawl=introOverlay.querySelector('.crawl-container');
             crawl.style.animation='none';void crawl.offsetWidth;crawl.style.animation='crawl 22s linear forwards';
-            const btn=introOverlay.querySelector('.intro-start-btn');
-            btn.style.animation='none';void btn.offsetWidth;btn.style.animation='fadeInBtn 1s ease forwards 10s';
         }
 
         function startGame(){
