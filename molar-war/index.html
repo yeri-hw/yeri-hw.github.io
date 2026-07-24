@@ -97,8 +97,8 @@
         }
 
         /* ─── Warrior pixel face (bottom right, larger) ─── */
-        .warrior-face { position: fixed; bottom: 100px; right: 12px; z-index: 200; text-align: center; }
-        .warrior-avatar { width: 90px; height: 90px; background: #0a1020; border: 3px solid #4488cc; border-radius: 8px; overflow: hidden; box-shadow: 0 0 12px rgba(68,136,204,0.3), inset 0 0 20px rgba(0,0,0,0.5); }
+        .warrior-face { position: fixed; bottom: 100px; right: 10px; z-index: 200; text-align: center; }
+        .warrior-avatar { width: 110px; height: 110px; background: #0a1020; border: 3px solid #4488cc; border-radius: 8px; overflow: hidden; box-shadow: 0 0 12px rgba(68,136,204,0.3), inset 0 0 20px rgba(0,0,0,0.5); }
         .warrior-avatar img { width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; filter: brightness(1.1); }
         .warrior-avatar.happy { border-color: #44ff44; box-shadow: 0 0 15px rgba(68,255,68,0.4); }
         .warrior-avatar.sad { border-color: #ff4444; box-shadow: 0 0 15px rgba(255,68,68,0.4); }
@@ -137,6 +137,12 @@
         .start-btn { margin-top: 1.5rem; padding: 12px 40px; background: #000; border: 2px solid #ffcc00; color: #ffcc00; font-family: 'Press Start 2P', monospace; font-size: 0.6rem; cursor: pointer; transition: all 0.1s steps(1); }
         .start-btn:hover { background: #ffcc00; color: #000; }
 
+        /* ─── Retro Grid Floor ─── */
+        .retro-grid { position: absolute; bottom: 0; left: 0; right: 0; height: 35%; perspective: 300px; overflow: hidden; pointer-events: none; z-index: 0; }
+        .retro-grid-inner { position: absolute; inset: 0; transform: rotateX(55deg); transform-origin: center bottom; background: repeating-linear-gradient(0deg, rgba(255,255,255,0.12) 0px, rgba(255,255,255,0.12) 1px, transparent 1px, transparent 40px), repeating-linear-gradient(90deg, rgba(255,255,255,0.12) 0px, rgba(255,255,255,0.12) 1px, transparent 1px, transparent 40px); background-size: 40px 40px; animation: gridScroll 4s linear infinite; }
+        .retro-grid::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(30,20,80,0.4) 0%, transparent 60%); }
+        @keyframes gridScroll { from{background-position:0 0} to{background-position:0 40px} }
+
         /* ─── Game Over ─── */
         .screen-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.92); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; z-index: 500; transition: opacity 0.5s; }
         .screen-overlay.hidden { opacity: 0; pointer-events: none; }
@@ -173,23 +179,31 @@
     </div>
 
     <!-- Boss alien (top, moves left-right) -->
-    <div id="bossContainer" style="position:fixed;top:5px;left:50%;transform:translateX(-50%);width:160px;height:120px;z-index:3;pointer-events:none;animation:bossMove 3s ease-in-out infinite alternate;">
+    <div id="bossContainer" style="position:fixed;top:0px;left:50%;transform:translateX(-50%);width:240px;height:170px;z-index:3;pointer-events:none;animation:bossMove 3s ease-in-out infinite alternate;">
         <img src="boss.png" alt="Cavity Boss" style="width:100%;height:100%;object-fit:contain;image-rendering:pixelated;">
     </div>
     <style>
         @keyframes bossMove { 0%{transform:translateX(-50%) translateX(-80px)} 100%{transform:translateX(-50%) translateX(80px)} }
     </style>
 
-    <!-- Molar teeth tightly along cockpit -->
-    <div style="position:fixed;bottom:88px;left:calc(50% - 190px);display:flex;gap:1px;align-items:flex-end;z-index:21;pointer-events:none;" id="molarRow">
-        <img src="molar.png" style="width:28px;image-rendering:pixelated;opacity:0.7;">
+    <!-- Molar teeth tightly along cockpit (extended wider) -->
+    <div style="position:fixed;bottom:88px;left:calc(50% - 250px);display:flex;gap:1px;align-items:flex-end;z-index:21;pointer-events:none;" id="molarRow">
+        <img src="molar.png" style="width:24px;image-rendering:pixelated;opacity:0.4;">
+        <img src="molar.png" style="width:26px;image-rendering:pixelated;opacity:0.5;">
+        <img src="molar.png" style="width:28px;image-rendering:pixelated;opacity:0.6;">
+        <img src="molar.png" style="width:30px;image-rendering:pixelated;opacity:0.7;">
         <img src="molar.png" style="width:32px;image-rendering:pixelated;opacity:0.85;">
-        <img src="molar.png" style="width:26px;image-rendering:pixelated;opacity:0.6;">
+        <img src="molar.png" style="width:28px;image-rendering:pixelated;opacity:0.6;">
+        <img src="molar.png" style="width:24px;image-rendering:pixelated;opacity:0.45;">
     </div>
-    <div style="position:fixed;bottom:88px;right:calc(50% - 190px);display:flex;gap:1px;align-items:flex-end;z-index:21;pointer-events:none;">
-        <img src="molar.png" style="width:30px;image-rendering:pixelated;opacity:0.75;">
-        <img src="molar.png" style="width:34px;image-rendering:pixelated;opacity:0.85;">
-        <img src="molar.png" style="width:27px;image-rendering:pixelated;opacity:0.6;">
+    <div style="position:fixed;bottom:88px;right:calc(50% - 250px);display:flex;gap:1px;align-items:flex-end;z-index:21;pointer-events:none;">
+        <img src="molar.png" style="width:24px;image-rendering:pixelated;opacity:0.45;">
+        <img src="molar.png" style="width:28px;image-rendering:pixelated;opacity:0.6;">
+        <img src="molar.png" style="width:32px;image-rendering:pixelated;opacity:0.85;">
+        <img src="molar.png" style="width:34px;image-rendering:pixelated;opacity:0.9;">
+        <img src="molar.png" style="width:30px;image-rendering:pixelated;opacity:0.7;">
+        <img src="molar.png" style="width:26px;image-rendering:pixelated;opacity:0.5;">
+        <img src="molar.png" style="width:22px;image-rendering:pixelated;opacity:0.4;">
     </div>
 
     <!-- Cockpit -->
@@ -238,6 +252,8 @@
 
     <!-- Intro -->
     <div class="intro-overlay" id="introOverlay">
+        <!-- Retro grid floor -->
+        <div class="retro-grid"><div class="retro-grid-inner"></div></div>
         <!-- Molar decorations on intro -->
         <div style="position:absolute;bottom:10%;left:8%;opacity:0.6;pointer-events:none;"><img src="molar.png" style="width:60px;image-rendering:pixelated;"></div>
         <div style="position:absolute;bottom:15%;right:10%;opacity:0.5;pointer-events:none;"><img src="molar.png" style="width:50px;image-rendering:pixelated;"></div>
