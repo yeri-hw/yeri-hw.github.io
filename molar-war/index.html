@@ -102,7 +102,7 @@
         .warrior-avatar img { width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; filter: brightness(1.1); }
         .warrior-avatar.happy { border-color: #44ff44; box-shadow: 0 0 15px rgba(68,255,68,0.4); }
         .warrior-avatar.sad { border-color: #ff4444; box-shadow: 0 0 15px rgba(255,68,68,0.4); }
-        .warrior-name { font-size: 0.35rem; color: #4488cc; margin-top: 4px; }
+        .warrior-name { font-size: 0.5rem; color: #4488cc; margin-top: 4px; }
         /* face states handled by border color */
 
         /* ─── Combo / Judge ─── */
@@ -143,15 +143,15 @@
         .intro-overlay.hidden { opacity: 0; pointer-events: none; }
         .intro-title { font-size: clamp(1.8rem, 6vw, 3.5rem); color: #ff4444; text-shadow: 3px 3px 0 #880000, 6px 6px 0 #440000; text-align: center; line-height: 1.4; letter-spacing: 0.05em; }
         .intro-subtitle { font-size: clamp(0.5rem, 1.5vw, 0.7rem); color: #ffcc00; text-align: center; margin-top: 0.5rem; }
-        .intro-story { font-size: clamp(0.55rem, 1.6vw, 0.75rem); color: rgba(255,255,255,0.7); text-align: center; max-width: 550px; line-height: 2.5; margin-top: 1.5rem; }
+        .intro-story { font-size: clamp(0.65rem, 1.8vw, 0.85rem); color: rgba(255,255,255,0.8); text-align: center; max-width: 550px; line-height: 2.5; margin-top: 1.5rem; }
         .intro-keys { font-size: 0.4rem; color: #4488cc; margin-top: 1rem; }
         .start-btn { margin-top: 1.5rem; padding: 12px 40px; background: #000; border: 2px solid #ffcc00; color: #ffcc00; font-family: 'Press Start 2P', monospace; font-size: 0.6rem; cursor: pointer; transition: all 0.1s steps(1); }
         .start-btn:hover { background: #ffcc00; color: #000; }
 
         /* ─── Retro Grid Floor ─── */
         .retro-grid { position: absolute; bottom: 0; left: 0; right: 0; height: 35%; perspective: 300px; overflow: hidden; pointer-events: none; z-index: 0; }
-        .retro-grid-inner { position: absolute; inset: 0; transform: rotateX(55deg); transform-origin: center bottom; background: repeating-linear-gradient(0deg, rgba(255,255,255,0.12) 0px, rgba(255,255,255,0.12) 1px, transparent 1px, transparent 40px), repeating-linear-gradient(90deg, rgba(255,255,255,0.12) 0px, rgba(255,255,255,0.12) 1px, transparent 1px, transparent 40px); background-size: 40px 40px; animation: gridScroll 4s linear infinite; }
-        .retro-grid::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(30,20,80,0.4) 0%, transparent 60%); }
+        .retro-grid-inner { position: absolute; inset: 0; transform: rotateX(55deg); transform-origin: center bottom; background: repeating-linear-gradient(0deg, rgba(100,150,255,0.35) 0px, rgba(100,150,255,0.35) 1px, transparent 1px, transparent 40px), repeating-linear-gradient(90deg, rgba(100,150,255,0.35) 0px, rgba(100,150,255,0.35) 1px, transparent 1px, transparent 40px); background-size: 40px 40px; animation: gridScroll 4s linear infinite; }
+        .retro-grid::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(20,30,120,0.6) 0%, rgba(10,15,60,0.3) 40%, transparent 70%); }
         @keyframes gridScroll { from{background-position:0 0} to{background-position:0 40px} }
 
         /* ─── Game Over ─── */
@@ -159,7 +159,7 @@
         .screen-overlay.hidden { opacity: 0; pointer-events: none; }
         .screen-overlay h1 { font-size: clamp(1.2rem, 4vw, 2rem); color: #ff4444; text-shadow: 2px 2px 0 #880000; text-align: center; line-height: 2; }
         .screen-overlay .score-big { font-size: 1.8rem; color: #ffcc00; }
-        .screen-overlay .subtitle { font-size: 0.65rem; color: rgba(255,255,255,0.5); text-align: center; max-width: 350px; line-height: 2; }
+        .screen-overlay .subtitle { font-size: 0.8rem; color: rgba(255,255,255,0.6); text-align: center; max-width: 400px; line-height: 2; }
     </style>
 </head>
 <body>
@@ -233,7 +233,7 @@
     <!-- Warrior Face -->
     <div class="warrior-face" id="warriorFace" style="display:none;">
         <div class="warrior-avatar" id="warriorAvatar"><img src="warrior.gif" alt="Brush One"></div>
-        <div class="warrior-name">BRUSH-1</div>
+        <div class="warrior-name">브러쉬 원</div>
     </div>
 
     <!-- Combo / Judge -->
