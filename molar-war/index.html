@@ -389,27 +389,89 @@
             updateHUD();
             document.querySelectorAll('.note').forEach(n=>n.remove());
 
-            if(audio){audio.pause();audio.currentTime=0;}
-            audio=new Audio('bgm.mp3');audio.volume=0.7;
-            audio.play().catch(()=>{});
+            // Web Audio API for beat detection
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const audioEl = new Audio('bgm.mp3');
+            audioEl.volume = 0.7;
+            audioEl.crossOrigin = 'anonymous';
+            audio = audioEl;
 
-            const bpm=140,bi=60000/bpm;
-            let bc=0;
-            noteInterval=setInterval(()=>{
-                if(!isPlaying)return;
-                bc++;spawnNote(false);
-                if(bc>16&&bc%8===0)spawnNote(true);
-                if(bc>30&&Math.random()<0.3)spawnNote(false);
-                if(bc===40)noteSpeed=2.4;
-                if(bc===70)noteSpeed=2.0;
-                if(bc===100)noteSpeed=1.7;
-            },bi);
-            audio.addEventListener('ended',()=>{if(isPlaying)endGame(true);});
+            const source = audioCtx.createMediaElementSource(audioEl);
+            const analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 512;
+            source.connect(analyser);
+            analyser.connect(audioCtx.destination);
+
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+
+            let lastBeatTime = 0;
+            let lastSubBeatTime = 0;
+            let beatCount = 0;
+            const minBeatGap = 300; // minimum ms between beats
+            const minSubGap = 180;
+            let energyHistory = [];
+
+            audioEl.play().catch(()=>{});
+
+            function detectBeats() {
+                if (!isPlaying) return;
+                analyser.getByteFrequencyData(dataArray);
+
+                // Low frequency energy (bass/kick) - bins 0-8 (~0-700Hz)
+                let bassEnergy = 0;
+                for (let i = 0; i < 8; i++) bassEnergy += dataArray[i];
+                bassEnergy /= 8;
+
+                // Mid frequency energy (snare/hi-hat) - bins 8-32
+                let midEnergy = 0;
+                for (let i = 8; i < 32; i++) midEnergy += dataArray[i];
+                midEnergy /= 24;
+
+                // Track energy history for adaptive threshold
+                energyHistory.push(bassEnergy);
+                if (energyHistory.length > 40) energyHistory.shift();
+                const avgEnergy = energyHistory.reduce((a,b) => a+b, 0) / energyHistory.length;
+
+                const now = Date.now();
+
+                // Bass kick detection → spawn note
+                if (bassEnergy > avgEnergy * 1.4 && bassEnergy > 120 && (now - lastBeatTime) > minBeatGap) {
+                    lastBeatTime = now;
+                    beatCount++;
+                    spawnNote(false);
+
+                    // Long note every ~12 beats
+                    if (beatCount % 12 === 0) spawnNote(true);
+
+                    // Speed up over time
+                    if (beatCount === 30) noteSpeed = 2.4;
+                    if (beatCount === 60) noteSpeed = 2.0;
+                    if (beatCount === 90) noteSpeed = 1.7;
+                }
+
+                // Mid energy (snare) → occasional double note
+                if (midEnergy > avgEnergy * 1.6 && midEnergy > 130 && (now - lastSubBeatTime) > minSubGap && (now - lastBeatTime) > 150) {
+                    lastSubBeatTime = now;
+                    if (beatCount > 20 && Math.random() < 0.4) {
+                        spawnNote(false);
+                    }
+                }
+
+                requestAnimationFrame(detectBeats);
+            }
+
+            // Start detection after a brief delay for audio to load
+            audioEl.addEventListener('playing', () => {
+                requestAnimationFrame(detectBeats);
+            });
+
+            audioEl.addEventListener('ended', () => { if (isPlaying) endGame(true); });
         }
 
         function endGame(survived){
-            isPlaying=false;clearInterval(noteInterval);
-            if(audio)audio.pause();
+            isPlaying=false;
+            if(audio){audio.pause();audio.currentTime=0;}
             if(score>hiScore){hiScore=score;localStorage.setItem('molar_hi',hiScore);hiScoreEl.textContent=hiScore;}
             hud.style.display='none';gameContainer.style.display='none';
             cockpit.style.display='none';warriorFace.style.display='none';keyDisplay.style.display='none';
