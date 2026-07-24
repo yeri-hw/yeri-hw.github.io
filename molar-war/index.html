@@ -6,686 +6,353 @@
     <title>MOLAR WAR — 어금니별을 지켜라</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@700;900&display=swap');
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #020010; color: white; min-height: 100vh; overflow: hidden; user-select: none; }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #05050f;
-            color: white;
-            min-height: 100vh;
-            overflow: hidden;
-            user-select: none;
-        }
+        /* ─── 3D Space Background ─── */
+        .space-bg { position: fixed; inset: 0; z-index: 0; background: radial-gradient(ellipse at 50% 80%, #0a0030 0%, #020010 50%, #000 100%); }
+        .space-bg::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 30% 20%, rgba(100,50,200,0.08) 0%, transparent 40%), radial-gradient(circle at 70% 60%, rgba(50,100,200,0.06) 0%, transparent 30%); }
 
-        /* ─── Starfield background ─── */
-        .starfield {
-            position: fixed; inset: 0; z-index: 0; overflow: hidden;
-        }
-        .star {
-            position: absolute;
-            width: 2px; height: 2px;
-            background: white;
-            border-radius: 50%;
-            animation: twinkle 2s ease-in-out infinite alternate;
-        }
-        @keyframes twinkle { 0%{opacity:0.2} 100%{opacity:1} }
+        .starfield { position: fixed; inset: 0; z-index: 1; }
+        .star { position: absolute; width: 2px; height: 2px; background: white; border-radius: 50%; animation: twinkle 2s ease-in-out infinite alternate; }
+        @keyframes twinkle { 0%{opacity:0.1} 100%{opacity:0.9} }
 
-        /* ─── Game Area ─── */
-        .game-container {
-            position: fixed; inset: 0; z-index: 10;
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: flex-end;
-            padding-bottom: 5vh;
-        }
+        /* ─── Molar Planet (3D-ish) ─── */
+        .molar-planet { position: fixed; bottom: -60px; left: 50%; transform: translateX(-50%); width: 500px; height: 500px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ffffff, #e8e8f0, #b0b0c0, #808098); box-shadow: 0 0 80px rgba(200,200,255,0.15), inset -30px -30px 60px rgba(0,0,0,0.3); z-index: 2; opacity: 0.6; }
+        .molar-planet::after { content: ''; position: absolute; top: 20%; left: 20%; width: 25%; height: 15%; background: rgba(255,255,255,0.15); border-radius: 50%; filter: blur(8px); }
 
-        /* ─── Lanes (DDR style) ─── */
-        .lanes {
-            position: relative;
-            width: 320px;
-            height: 70vh;
-            display: flex;
-            gap: 4px;
-        }
+        /* ─── Alien Mothership ─── */
+        .mothership { position: fixed; top: -20px; left: 50%; transform: translateX(-50%); width: 280px; height: 80px; z-index: 3; }
+        .mothership-body { width: 100%; height: 100%; background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 50%, #2a0a2a 100%); border-radius: 50% 50% 30% 30%; border: 2px solid rgba(100,0,100,0.4); box-shadow: 0 10px 40px rgba(100,0,150,0.3), 0 0 20px rgba(0,255,0,0.05); position: relative; overflow: hidden; }
+        .mothership-body::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(50,0,80,0.3) 20px, rgba(50,0,80,0.3) 22px); }
+        .mothership-drip { position: absolute; bottom: -15px; width: 12px; height: 20px; background: #1a0a1a; border-radius: 0 0 50% 50%; animation: drip 1.5s ease-in-out infinite; }
+        @keyframes drip { 0%,100%{height:15px;opacity:0.8} 50%{height:25px;opacity:1} }
 
-        .lane {
-            flex: 1;
-            position: relative;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 8px;
-            overflow: hidden;
-        }
+        /* ─── Lanes ─── */
+        .game-container { position: fixed; inset: 0; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 3vh; }
+        .lanes { position: relative; width: 380px; height: 65vh; display: flex; gap: 4px; }
+        .lane { flex: 1; position: relative; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 6px; overflow: hidden; }
 
-        /* Hit zone at bottom */
-        .hit-zone {
-            position: absolute;
-            bottom: 0; left: 0; right: 0;
-            height: 60px;
-            border-top: 2px solid rgba(255,255,255,0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255,255,255,0.02);
-        }
+        /* ─── Key Display at bottom ─── */
+        .key-display { display: flex; gap: 6px; margin-top: 10px; z-index: 20; }
+        .key-btn { width: 60px; height: 60px; border-radius: 12px; border: 2px solid rgba(255,255,255,0.25); background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; transition: all 0.1s; }
+        .key-btn.active { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.6); transform: scale(0.92); box-shadow: 0 0 15px rgba(255,255,255,0.2); }
+        .key-btn.space-btn { width: 130px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; }
 
-        .hit-zone .key-label {
-            font-family: 'Press Start 2P', monospace;
-            font-size: 0.7rem;
-            color: rgba(255,255,255,0.4);
-        }
+        /* ─── Hit zone ─── */
+        .hit-zone { position: absolute; bottom: 0; left: 0; right: 0; height: 60px; border-top: 2px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; }
+        .hit-zone.flash { animation: hitFlash 0.12s ease; }
+        @keyframes hitFlash { 0%{background:rgba(255,255,255,0.25)} 100%{background:transparent} }
 
-        .hit-zone.flash {
-            animation: hitFlash 0.15s ease;
-        }
-
-        @keyframes hitFlash {
-            0% { background: rgba(255,255,255,0.3); }
-            100% { background: rgba(255,255,255,0.02); }
-        }
-
-        /* ─── Notes (cavity aliens falling) ─── */
-        .note {
-            position: absolute;
-            width: 80%;
-            left: 10%;
-            height: 40px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.4rem;
-            animation: noteFall linear forwards;
-            will-change: transform;
-        }
-
-        .note-left { background: linear-gradient(135deg, #9b59b6, #6c3483); }
-        .note-center { background: linear-gradient(135deg, #e74c3c, #922b21); }
-        .note-right { background: linear-gradient(135deg, #f39c12, #d35400); }
-        .note-far-right { background: linear-gradient(135deg, #27ae60, #1e8449); }
-
-        @keyframes noteFall {
-            from { top: -50px; }
-            to { top: calc(100% + 50px); }
-        }
-
-        /* ─── Molar (defender at bottom center) ─── */
-        .molar-container {
-            position: absolute;
-            bottom: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 20;
-            text-align: center;
-        }
-
-        .molar {
-            width: 80px; height: 80px;
-            background: radial-gradient(circle at 40% 30%, #fff, #e0e0e0, #bbb);
-            border-radius: 30% 30% 40% 40%;
-            border: 3px solid rgba(255,255,255,0.5);
-            position: relative;
-            margin: 0 auto;
-            box-shadow: 0 0 30px rgba(255,255,255,0.2), 0 0 60px rgba(100,150,255,0.1);
-        }
-
-        .molar::before {
-            content: ''; position: absolute;
-            top: 20%; left: 25%; width: 50%; height: 30%;
-            background: rgba(200,200,200,0.3);
-            border-radius: 50%;
-        }
-
-        .molar-label {
-            font-family: 'Press Start 2P', monospace;
-            font-size: 0.45rem;
-            margin-top: 6px;
-            color: rgba(255,255,255,0.5);
-            letter-spacing: 0.1em;
-        }
+        /* ─── Notes ─── */
+        .note { position: absolute; width: 80%; left: 10%; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; will-change: top; }
+        .note-long { border-radius: 8px; height: auto; min-height: 40px; }
+        .note-long .note-tail { width: 60%; margin: 0 auto; background: inherit; opacity: 0.5; border-radius: 4px; }
+        .note-0 { background: linear-gradient(135deg, #9b59b6, #6c3483); box-shadow: 0 0 10px rgba(155,89,182,0.4); }
+        .note-1 { background: linear-gradient(135deg, #e74c3c, #922b21); box-shadow: 0 0 10px rgba(231,76,60,0.4); }
+        .note-2 { background: linear-gradient(135deg, #f39c12, #d35400); box-shadow: 0 0 10px rgba(243,156,18,0.4); }
+        .note-3 { background: linear-gradient(135deg, #27ae60, #1e8449); box-shadow: 0 0 10px rgba(39,174,96,0.4); }
+        .note-4 { background: linear-gradient(135deg, #3498db, #1a5276); box-shadow: 0 0 10px rgba(52,152,219,0.4); }
 
         /* ─── HUD ─── */
-        .hud {
-            position: fixed; top: 0; left: 0; right: 0;
-            padding: 1rem 2rem;
-            display: flex; justify-content: space-between; align-items: center;
-            z-index: 100;
-        }
+        .hud { position: fixed; top: 0; left: 0; right: 0; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; z-index: 200; }
+        .hud-title { font-family: 'Press Start 2P', monospace; font-size: 0.5rem; color: rgba(255,255,255,0.4); }
+        .hud-stats { display: flex; gap: 2rem; align-items: baseline; }
+        .hud-item .label { font-size: 0.5rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.3); }
+        .hud-item .value { font-size: 1.2rem; font-weight: 900; }
+        .hp-bar { width: 120px; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
+        .hp-fill { height: 100%; background: linear-gradient(90deg, #e74c3c, #2ecc71); border-radius: 4px; transition: width 0.3s; }
 
-        .hud-title {
-            font-family: 'Press Start 2P', monospace;
-            font-size: 0.6rem;
-            color: rgba(255,255,255,0.5);
-            letter-spacing: 0.1em;
-        }
-
-        .hud-stats {
-            display: flex; gap: 2rem; align-items: baseline;
-        }
-
-        .hud-item {
-            text-align: center;
-        }
-
-        .hud-item .label {
-            font-size: 0.5rem; font-weight: 700;
-            letter-spacing: 0.15em; text-transform: uppercase;
-            color: rgba(255,255,255,0.35);
-        }
-
-        .hud-item .value {
-            font-size: 1.2rem; font-weight: 900;
-        }
-
-        .hp-bar {
-            width: 120px; height: 8px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 4px; overflow: hidden;
-        }
-
-        .hp-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #e74c3c, #2ecc71);
-            border-radius: 4px;
-            transition: width 0.3s ease;
-        }
-
-        /* ─── Combo / feedback ─── */
-        .combo {
-            position: fixed;
-            top: 30%;
-            right: 10%;
-            font-family: 'Press Start 2P', monospace;
-            font-size: 1.5rem;
-            color: #ffd700;
-            text-shadow: 0 0 20px #ffd700, 0 0 40px #ff8c00;
-            z-index: 100;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
+        /* ─── Combo / Judge ─── */
+        .combo { position: fixed; top: 25%; right: 8%; font-family: 'Press Start 2P', monospace; font-size: 1.2rem; color: #ffd700; text-shadow: 0 0 20px #ffd700; z-index: 100; opacity: 0; transition: opacity 0.3s; }
         .combo.show { opacity: 1; }
-
-        .judge {
-            position: fixed;
-            top: 45%;
-            left: 50%;
-            transform: translateX(-50%);
-            font-weight: 900;
-            font-size: 1.5rem;
-            z-index: 100;
-            opacity: 0;
-            pointer-events: none;
-        }
-
+        .judge { position: fixed; top: 40%; left: 50%; transform: translateX(-50%); font-weight: 900; font-size: 1.5rem; z-index: 100; opacity: 0; pointer-events: none; }
         .judge.perfect { color: #ffd700; text-shadow: 0 0 20px #ffd700; animation: judgePop 0.5s ease forwards; }
         .judge.great { color: #2ecc71; text-shadow: 0 0 15px #2ecc71; animation: judgePop 0.5s ease forwards; }
         .judge.miss { color: #e74c3c; text-shadow: 0 0 15px #e74c3c; animation: judgePop 0.6s ease forwards; }
+        @keyframes judgePop { 0%{opacity:0;transform:translateX(-50%) scale(0.5)} 20%{opacity:1;transform:translateX(-50%) scale(1.2)} 100%{opacity:0;transform:translateX(-50%) translateY(-20px) scale(1)} }
 
-        @keyframes judgePop {
-            0% { opacity: 0; transform: translateX(-50%) scale(0.5); }
-            20% { opacity: 1; transform: translateX(-50%) scale(1.2); }
-            100% { opacity: 0; transform: translateX(-50%) scale(1) translateY(-20px); }
-        }
-
-        /* ─── Explosion effect ─── */
-        .explosion {
-            position: fixed;
-            width: 100px; height: 100px;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 50;
-            animation: explode 0.4s ease forwards;
-        }
-
-        @keyframes explode {
-            0% { transform: scale(0); opacity: 1; background: radial-gradient(circle, #fff, #ffd700, transparent); }
-            100% { transform: scale(3); opacity: 0; background: radial-gradient(circle, transparent, #ffd700, transparent); }
-        }
-
-        /* ─── Screens ─── */
-        .screen-overlay {
-            position: fixed; inset: 0;
-            background: rgba(5,5,15,0.97);
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            gap: 1.2rem; z-index: 500;
-            transition: opacity 0.5s ease;
-        }
-
-        .screen-overlay.hidden { opacity: 0; pointer-events: none; }
-
-        .screen-overlay h1 {
-            font-family: 'Press Start 2P', monospace;
-            font-size: clamp(1rem, 4vw, 2rem);
-            text-align: center;
-            line-height: 1.8;
-            color: #ffd700;
-            text-shadow: 0 0 30px rgba(255,215,0,0.5);
-        }
-
-        .screen-overlay .subtitle {
-            font-size: 0.9rem;
-            color: rgba(255,255,255,0.6);
-            text-align: center;
-            max-width: 400px;
-            line-height: 1.6;
-        }
-
-        .screen-overlay .story {
-            font-family: 'Press Start 2P', monospace;
-            font-size: 0.55rem;
-            color: rgba(255,255,255,0.4);
-            text-align: center;
-            max-width: 380px;
-            line-height: 2.2;
-            margin-top: 0.5rem;
-        }
-
-        .screen-overlay .score-big {
-            font-family: 'Press Start 2P', monospace;
-            font-size: 1.5rem;
-            color: #ffd700;
-            text-shadow: 0 0 20px rgba(255,215,0,0.5);
-        }
-
-        .start-btn {
-            margin-top: 1.5rem;
-            padding: 1rem 3rem;
-            background: linear-gradient(135deg, #ffd700, #ff8c00);
-            color: #1a1a2e;
-            border: none;
-            border-radius: 50px;
-            font-family: 'Press Start 2P', monospace;
-            font-size: 0.65rem;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            letter-spacing: 0.1em;
-            box-shadow: 0 0 20px rgba(255,215,0,0.3);
-        }
-
-        .start-btn:hover {
-            transform: scale(1.08);
-            box-shadow: 0 0 40px rgba(255,215,0,0.5);
-        }
-
-        /* ─── Key hints ─── */
-        .key-hints {
-            display: flex; gap: 0.8rem; margin-top: 1rem;
-        }
-
-        .key-hint {
-            width: 40px; height: 40px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            font-family: 'Press Start 2P', monospace;
-            font-size: 0.6rem;
-            color: rgba(255,255,255,0.6);
-        }
-
-        /* ─── Retro scanlines ─── */
-        .scanlines {
-            position: fixed; inset: 0;
-            pointer-events: none; z-index: 999;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 2px,
-                rgba(0,0,0,0.03) 2px,
-                rgba(0,0,0,0.03) 4px
-            );
-        }
-
-        /* ─── Cavity damage overlay ─── */
-        .damage-flash {
-            position: fixed; inset: 0;
-            background: rgba(255,0,0,0.15);
-            pointer-events: none; z-index: 90;
-            opacity: 0;
-            animation: dmgFlash 0.2s ease;
-        }
-
+        /* ─── Effects ─── */
+        .explosion { position: fixed; width: 80px; height: 80px; border-radius: 50%; pointer-events: none; z-index: 50; animation: explode 0.4s ease forwards; }
+        @keyframes explode { 0%{transform:scale(0);opacity:1;background:radial-gradient(circle,#fff,#ffd700,transparent)} 100%{transform:scale(3);opacity:0;background:radial-gradient(circle,transparent,#ffd700,transparent)} }
+        .damage-flash { position: fixed; inset: 0; background: rgba(255,0,0,0.12); pointer-events: none; z-index: 90; animation: dmgFlash 0.2s ease forwards; }
         @keyframes dmgFlash { 0%{opacity:1} 100%{opacity:0} }
+        .scanlines { position: fixed; inset: 0; pointer-events: none; z-index: 999; background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.02) 3px, rgba(0,0,0,0.02) 6px); }
+
+        /* ─── Intro Crawl (Star Wars style) ─── */
+        .intro-overlay { position: fixed; inset: 0; z-index: 600; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; perspective: 400px; overflow: hidden; transition: opacity 1s; }
+        .intro-overlay.hidden { opacity: 0; pointer-events: none; }
+        .crawl-container { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%) rotateX(25deg); transform-origin: bottom center; width: 80%; max-width: 600px; animation: crawl 20s linear forwards; }
+        .crawl-container p { font-family: 'Press Start 2P', monospace; font-size: clamp(0.55rem, 1.5vw, 0.75rem); color: #ffd700; text-align: center; line-height: 2.5; margin-bottom: 1.5rem; }
+        .crawl-container .crawl-title { font-size: clamp(1rem, 3vw, 1.8rem); margin-bottom: 2rem; color: white; }
+        @keyframes crawl { 0%{bottom:-100%} 100%{bottom:200%} }
+        .intro-start-btn { position: fixed; bottom: 10%; left: 50%; transform: translateX(-50%); z-index: 610; opacity: 0; animation: fadeInBtn 1s ease forwards 12s; }
+        @keyframes fadeInBtn { to{opacity:1} }
+
+        /* ─── Game Over ─── */
+        .screen-overlay { position: fixed; inset: 0; background: rgba(2,0,16,0.95); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.2rem; z-index: 500; transition: opacity 0.5s; }
+        .screen-overlay.hidden { opacity: 0; pointer-events: none; }
+        .screen-overlay h1 { font-family: 'Press Start 2P', monospace; font-size: clamp(1rem,4vw,2rem); text-align: center; line-height: 1.8; color: #ffd700; text-shadow: 0 0 30px rgba(255,215,0,0.5); }
+        .screen-overlay .subtitle { font-size: 0.85rem; color: rgba(255,255,255,0.5); text-align: center; max-width: 380px; line-height: 1.6; }
+        .screen-overlay .score-big { font-family: 'Press Start 2P', monospace; font-size: 1.5rem; color: #ffd700; text-shadow: 0 0 20px rgba(255,215,0,0.5); }
+        .start-btn { padding: 1rem 3rem; background: linear-gradient(135deg, #ffd700, #ff8c00); color: #1a1a2e; border: none; border-radius: 50px; font-family: 'Press Start 2P', monospace; font-size: 0.6rem; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; letter-spacing: 0.1em; box-shadow: 0 0 20px rgba(255,215,0,0.3); }
+        .start-btn:hover { transform: scale(1.08); box-shadow: 0 0 40px rgba(255,215,0,0.5); }
     </style>
 </head>
 <body>
-
-    <!-- Retro scanlines -->
     <div class="scanlines"></div>
-
-    <!-- Starfield -->
+    <div class="space-bg"></div>
     <div class="starfield" id="starfield"></div>
+    <div class="molar-planet"></div>
+
+    <!-- Mothership -->
+    <div class="mothership" id="mothership" style="display:none;">
+        <div class="mothership-body">
+            <div class="mothership-drip" style="left:20%"></div>
+            <div class="mothership-drip" style="left:40%"></div>
+            <div class="mothership-drip" style="left:60%"></div>
+            <div class="mothership-drip" style="left:80%"></div>
+        </div>
+    </div>
 
     <!-- HUD -->
     <div class="hud" id="hud" style="display:none;">
         <div class="hud-title">⚔ MOLAR WAR ⚔</div>
         <div class="hud-stats">
-            <div class="hud-item">
-                <div class="label">SCORE</div>
-                <div class="value" id="score">0</div>
-            </div>
-            <div class="hud-item">
-                <div class="label">어금니별 HP</div>
-                <div class="hp-bar"><div class="hp-fill" id="hpFill" style="width:100%"></div></div>
-            </div>
+            <div class="hud-item"><div class="label">SCORE</div><div class="value" id="score">0</div></div>
+            <div class="hud-item"><div class="label">어금니별 HP</div><div class="hp-bar"><div class="hp-fill" id="hpFill" style="width:100%"></div></div></div>
         </div>
     </div>
 
-    <!-- Combo display -->
     <div class="combo" id="combo">0 COMBO</div>
-
-    <!-- Judge display -->
     <div class="judge" id="judge"></div>
 
     <!-- Game Area -->
     <div class="game-container" id="gameContainer" style="display:none;">
         <div class="lanes" id="lanes">
-            <div class="lane" id="lane0"><div class="hit-zone"><span class="key-label">←</span></div></div>
-            <div class="lane" id="lane1"><div class="hit-zone"><span class="key-label">↓</span></div></div>
-            <div class="lane" id="lane2"><div class="hit-zone"><span class="key-label">↑</span></div></div>
-            <div class="lane" id="lane3"><div class="hit-zone"><span class="key-label">→</span></div></div>
+            <div class="lane" id="lane0"><div class="hit-zone"></div></div>
+            <div class="lane" id="lane1"><div class="hit-zone"></div></div>
+            <div class="lane" id="lane2"><div class="hit-zone"></div></div>
+            <div class="lane" id="lane3"><div class="hit-zone"></div></div>
+            <div class="lane" id="lane4"><div class="hit-zone"></div></div>
         </div>
-        <div class="molar-container">
-            <div class="molar"></div>
-            <div class="molar-label">어금니별</div>
+        <div class="key-display" id="keyDisplay">
+            <div class="key-btn" id="kb0">←</div>
+            <div class="key-btn" id="kb1">↓</div>
+            <div class="key-btn space-btn" id="kb4">SPACE</div>
+            <div class="key-btn" id="kb2">↑</div>
+            <div class="key-btn" id="kb3">→</div>
         </div>
     </div>
 
-    <!-- Start Screen -->
-    <div class="screen-overlay" id="startScreen">
-        <h1>⚔ MOLAR WAR ⚔<br><span style="font-size:0.6em;color:white;">어금니별을 지켜라</span></h1>
-        <p class="story">
-            서기 2847년...<br>
-            충치 외계인 군단이<br>
-            어금니별을 침략했다.<br><br>
-            칫솔 전사여,<br>
-            리듬에 맞춰 적을 격퇴하라!
-        </p>
-        <p class="subtitle">방향키(←↓↑→)를 타이밍에 맞춰 눌러<br>충치 외계인을 격퇴하세요!</p>
-        <div class="key-hints">
-            <div class="key-hint">←</div>
-            <div class="key-hint">↓</div>
-            <div class="key-hint">↑</div>
-            <div class="key-hint">→</div>
+    <!-- Intro Crawl -->
+    <div class="intro-overlay" id="introOverlay">
+        <div class="crawl-container">
+            <p class="crawl-title">⚔ MOLAR WAR ⚔</p>
+            <p>서기 2847년...</p>
+            <p>인류가 거주하는<br>어금니별(Molar Prime)은<br>은하계에서 가장 평화로운 행성이었다.</p>
+            <p>그러나 어둠의 저편에서<br>충치 외계인 군단<br>"카리에스 임페리움"이 깨어났다.</p>
+            <p>그들의 검은 우주선에서<br>끊임없이 쏟아지는 부식 광선...</p>
+            <p>어금니별의 마지막 희망,<br>칫솔 전사 "브러시 원"이<br>출격을 준비한다.</p>
+            <p>리듬에 맞춰 적을 격퇴하라.<br>어금니별의 운명은<br>당신의 손끝에 달려있다.</p>
+            <p style="color:rgba(255,255,255,0.3);font-size:0.5rem;margin-top:2rem;">← ↓ SPACE ↑ → 키로 조작</p>
         </div>
-        <button class="start-btn" onclick="startGame()">출격하기</button>
+        <button class="start-btn intro-start-btn" onclick="startGame()">출격하기</button>
     </div>
 
-    <!-- Game Over Screen -->
+    <!-- Game Over -->
     <div class="screen-overlay hidden" id="gameOverScreen">
         <h1>⚔ MISSION COMPLETE ⚔</h1>
         <div class="score-big" id="finalScore">0</div>
-        <p class="subtitle" id="gameOverMsg">어금니별을 지켜냈습니다!</p>
-        <button class="start-btn" onclick="startGame()">재출격</button>
+        <p class="subtitle" id="gameOverMsg"></p>
+        <button class="start-btn" onclick="showIntro()">재출격</button>
     </div>
 
     <script>
-        // ─── Elements ───────────────────────────────────────────
-        const hud = document.getElementById('hud');
-        const gameContainer = document.getElementById('gameContainer');
-        const startScreen = document.getElementById('startScreen');
-        const gameOverScreen = document.getElementById('gameOverScreen');
+        const field = document.getElementById('lanes');
         const scoreEl = document.getElementById('score');
         const hpFill = document.getElementById('hpFill');
         const comboEl = document.getElementById('combo');
         const judgeEl = document.getElementById('judge');
-        const lanes = document.getElementById('lanes');
+        const hud = document.getElementById('hud');
+        const gameContainer = document.getElementById('gameContainer');
+        const introOverlay = document.getElementById('introOverlay');
+        const gameOverScreen = document.getElementById('gameOverScreen');
+        const mothership = document.getElementById('mothership');
 
-        let score = 0, hp = 100, combo = 0, maxCombo = 0;
-        let isPlaying = false;
-        let notes = []; // active notes
-        let noteInterval = null;
-        let gameLoop = null;
-        let audio = null;
-        let noteSpeed = 2.5; // seconds to fall
+        let score=0, hp=100, combo=0, maxCombo=0;
+        let isPlaying=false, notes=[], noteInterval=null, audio=null;
+        let noteSpeed=2.8;
+        let gameStartTime=0;
 
-        const aliens = ['👾', '🦠', '🧫', '💀', '☠️', '🪲'];
-        const laneKeys = ['ArrowLeft', 'ArrowDown', 'ArrowUp', 'ArrowRight'];
-        const laneColors = ['note-left', 'note-center', 'note-right', 'note-far-right'];
+        const laneKeys=['ArrowLeft','ArrowDown',' ','ArrowUp','ArrowRight'];
+        const aliens=['👾','🦠','🧫','💀','☠️','🪲','🕷️'];
 
-        // ─── Starfield ──────────────────────────────────────────
-        function createStarfield() {
-            const sf = document.getElementById('starfield');
-            for (let i = 0; i < 120; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                star.style.width = (1 + Math.random() * 2) + 'px';
-                star.style.height = star.style.width;
-                star.style.animationDelay = Math.random() * 2 + 's';
-                star.style.animationDuration = (1 + Math.random() * 2) + 's';
-                sf.appendChild(star);
+        // ─── Starfield ──────────────────────────────────────
+        function createStarfield(){
+            const sf=document.getElementById('starfield');
+            for(let i=0;i<150;i++){
+                const s=document.createElement('div'); s.className='star';
+                s.style.left=Math.random()*100+'%'; s.style.top=Math.random()*100+'%';
+                const size=1+Math.random()*2; s.style.width=size+'px'; s.style.height=size+'px';
+                s.style.animationDelay=Math.random()*2+'s'; s.style.animationDuration=(1+Math.random()*3)+'s';
+                sf.appendChild(s);
             }
         }
 
-        // ─── Notes ──────────────────────────────────────────────
-        function spawnNote() {
-            if (!isPlaying) return;
-            const laneIndex = Math.floor(Math.random() * 4);
-            const lane = document.getElementById('lane' + laneIndex);
-
-            const noteEl = document.createElement('div');
-            noteEl.className = 'note ' + laneColors[laneIndex];
-            noteEl.textContent = aliens[Math.floor(Math.random() * aliens.length)];
-            noteEl.style.animationDuration = noteSpeed + 's';
+        // ─── Notes ──────────────────────────────────────────
+        function spawnNote(isLong=false){
+            if(!isPlaying) return;
+            const laneIndex=Math.floor(Math.random()*5);
+            const lane=document.getElementById('lane'+laneIndex);
+            const noteEl=document.createElement('div');
+            const h = isLong ? 100 : 40;
+            noteEl.className='note note-'+laneIndex+(isLong?' note-long':'');
+            noteEl.style.height=h+'px';
+            noteEl.textContent=aliens[Math.floor(Math.random()*aliens.length)];
+            noteEl.style.top='-50px';
             lane.appendChild(noteEl);
 
-            const noteData = {
-                el: noteEl,
-                lane: laneIndex,
-                startTime: Date.now(),
-                hit: false
-            };
+            const noteData={el:noteEl,lane:laneIndex,startTime:Date.now(),hit:false,isLong,holdTime:isLong?800:0};
             notes.push(noteData);
 
-            // Auto-remove missed notes
-            setTimeout(() => {
-                if (!noteData.hit && isPlaying) {
-                    handleMiss(noteData);
-                }
-            }, noteSpeed * 1000 + 200);
+            // Animate falling
+            const laneHeight=lane.getBoundingClientRect().height||500;
+            noteEl.style.transition=`top ${noteSpeed}s linear`;
+            requestAnimationFrame(()=>{ noteEl.style.top=(laneHeight+50)+'px'; });
+
+            setTimeout(()=>{
+                if(!noteData.hit&&isPlaying) handleMiss(noteData);
+            }, noteSpeed*1000+200);
         }
 
-        function getHitZoneY() {
-            // Hit zone is at bottom of lane container
-            return lanes.getBoundingClientRect().height - 60;
-        }
-
-        function getNoteY(note) {
-            const elapsed = Date.now() - note.startTime;
-            const progress = elapsed / (noteSpeed * 1000);
-            const laneHeight = lanes.getBoundingClientRect().height;
-            return progress * (laneHeight + 100) - 50;
-        }
-
-        // ─── Input handling ─────────────────────────────────────
-        function handleKeyPress(e) {
-            if (!isPlaying) return;
-            const keyIndex = laneKeys.indexOf(e.key);
-            if (keyIndex === -1) return;
-
+        // ─── Input ──────────────────────────────────────────
+        function handleKeyDown(e){
+            if(!isPlaying) return;
+            const keyIndex=laneKeys.indexOf(e.key);
+            if(keyIndex===-1) return;
             e.preventDefault();
 
+            // Visual feedback on key button
+            const kb=document.getElementById('kb'+keyIndex);
+            if(kb) kb.classList.add('active');
+
             // Flash hit zone
-            const hitZone = document.querySelector(`#lane${keyIndex} .hit-zone`);
-            hitZone.classList.remove('flash');
-            void hitZone.offsetWidth;
-            hitZone.classList.add('flash');
+            const hz=document.querySelector(`#lane${keyIndex} .hit-zone`);
+            if(hz){hz.classList.remove('flash');void hz.offsetWidth;hz.classList.add('flash');}
 
-            // Find closest note in this lane
-            const hitY = getHitZoneY();
-            let closest = null;
-            let closestDist = Infinity;
-
-            for (const note of notes) {
-                if (note.hit || note.lane !== keyIndex) continue;
-                const noteY = getNoteY(note);
-                const dist = Math.abs(noteY - hitY);
-                if (dist < closestDist) {
-                    closestDist = dist;
-                    closest = note;
-                }
+            // Find closest note in lane
+            const hitY=field.getBoundingClientRect().height-60;
+            let closest=null, closestDist=Infinity;
+            for(const note of notes){
+                if(note.hit||note.lane!==keyIndex) continue;
+                const rect=note.el.getBoundingClientRect();
+                const lanesRect=field.getBoundingClientRect();
+                const noteY=rect.top-lanesRect.top+rect.height/2;
+                const dist=Math.abs(noteY-hitY);
+                if(dist<closestDist){closestDist=dist;closest=note;}
             }
 
-            if (closest && closestDist < 80) {
-                closest.hit = true;
-                closest.el.remove();
-
-                if (closestDist < 25) {
-                    // PERFECT
-                    score += 100 + combo * 5;
-                    combo++;
-                    showJudge('perfect', 'PERFECT');
-                    spawnExplosion(closest.lane);
-                } else if (closestDist < 55) {
-                    // GREAT
-                    score += 50 + combo * 2;
-                    combo++;
-                    showJudge('great', 'GREAT');
-                } else {
-                    // OK (still counts but less points)
-                    score += 20;
-                    combo++;
-                    showJudge('great', 'OK');
-                }
-
-                if (combo > maxCombo) maxCombo = combo;
+            if(closest&&closestDist<90){
+                closest.hit=true; closest.el.remove();
+                if(closestDist<20){score+=100+combo*5;combo++;showJudge('perfect','PERFECT');spawnExplosion(closest.lane);}
+                else if(closestDist<50){score+=50+combo*2;combo++;showJudge('great','GREAT');}
+                else{score+=20;combo++;showJudge('great','OK');}
+                if(combo>maxCombo)maxCombo=combo;
                 updateHUD();
             }
         }
 
-        function handleMiss(note) {
-            if (note.hit) return;
-            note.hit = true;
-            note.el.remove();
-
-            hp -= 8;
-            combo = 0;
-            showJudge('miss', 'MISS');
-            showDamageFlash();
-            updateHUD();
-
-            if (hp <= 0) {
-                hp = 0;
-                endGame(false);
-            }
+        function handleKeyUp(e){
+            const keyIndex=laneKeys.indexOf(e.key);
+            if(keyIndex===-1) return;
+            const kb=document.getElementById('kb'+keyIndex);
+            if(kb) kb.classList.remove('active');
         }
 
-        // ─── Effects ────────────────────────────────────────────
-        function showJudge(type, text) {
-            judgeEl.textContent = text;
-            judgeEl.className = 'judge';
-            void judgeEl.offsetWidth;
-            judgeEl.className = 'judge ' + type;
+        function handleMiss(note){
+            if(note.hit) return; note.hit=true; note.el.remove();
+            hp-=8; combo=0; showJudge('miss','MISS'); showDamageFlash(); updateHUD();
+            if(hp<=0){hp=0;endGame(false);}
         }
 
-        function spawnExplosion(laneIndex) {
-            const lane = document.getElementById('lane' + laneIndex);
-            const rect = lane.getBoundingClientRect();
-            const exp = document.createElement('div');
-            exp.className = 'explosion';
-            exp.style.left = (rect.left + rect.width / 2 - 50) + 'px';
-            exp.style.top = (rect.bottom - 80) + 'px';
-            document.body.appendChild(exp);
-            setTimeout(() => exp.remove(), 400);
+        // ─── Effects ────────────────────────────────────────
+        function showJudge(type,text){judgeEl.textContent=text;judgeEl.className='judge';void judgeEl.offsetWidth;judgeEl.className='judge '+type;}
+        function spawnExplosion(laneIndex){
+            const lane=document.getElementById('lane'+laneIndex);
+            const rect=lane.getBoundingClientRect();
+            const exp=document.createElement('div');exp.className='explosion';
+            exp.style.left=(rect.left+rect.width/2-40)+'px';exp.style.top=(rect.bottom-100)+'px';
+            document.body.appendChild(exp);setTimeout(()=>exp.remove(),400);
+        }
+        function showDamageFlash(){const f=document.createElement('div');f.className='damage-flash';document.body.appendChild(f);setTimeout(()=>f.remove(),200);}
+        function updateHUD(){
+            scoreEl.textContent=score; hpFill.style.width=hp+'%';
+            if(combo>=5){comboEl.textContent=combo+' COMBO';comboEl.classList.add('show');}
+            else comboEl.classList.remove('show');
         }
 
-        function showDamageFlash() {
-            const flash = document.createElement('div');
-            flash.className = 'damage-flash';
-            document.body.appendChild(flash);
-            setTimeout(() => flash.remove(), 200);
-        }
-
-        function updateHUD() {
-            scoreEl.textContent = score;
-            hpFill.style.width = hp + '%';
-            if (combo >= 5) {
-                comboEl.textContent = combo + ' COMBO';
-                comboEl.classList.add('show');
-            } else {
-                comboEl.classList.remove('show');
-            }
-        }
-
-        // ─── Game Flow ──────────────────────────────────────────
-        function startGame() {
-            score = 0; hp = 100; combo = 0; maxCombo = 0;
-            notes = [];
-            isPlaying = true;
-
-            startScreen.classList.add('hidden');
+        // ─── Game Flow ──────────────────────────────────────
+        function showIntro(){
             gameOverScreen.classList.add('hidden');
-            hud.style.display = 'flex';
-            gameContainer.style.display = 'flex';
-            updateHUD();
+            introOverlay.classList.remove('hidden');
+            // Reset crawl animation
+            const crawl=introOverlay.querySelector('.crawl-container');
+            crawl.style.animation='none';void crawl.offsetWidth;crawl.style.animation='crawl 20s linear forwards';
+            const btn=introOverlay.querySelector('.intro-start-btn');
+            btn.style.animation='none';void btn.offsetWidth;btn.style.animation='fadeInBtn 1s ease forwards 8s';
+        }
 
-            // Clear any existing notes
-            document.querySelectorAll('.note').forEach(n => n.remove());
+        function startGame(){
+            score=0;hp=100;combo=0;maxCombo=0;notes=[];isPlaying=true;noteSpeed=2.8;
+            introOverlay.classList.add('hidden');
+            gameOverScreen.classList.add('hidden');
+            hud.style.display='flex';
+            gameContainer.style.display='flex';
+            mothership.style.display='block';
+            updateHUD();
+            document.querySelectorAll('.note').forEach(n=>n.remove());
 
             // Start music
-            if (audio) { audio.pause(); audio.currentTime = 0; }
-            audio = new Audio('bgm.mp3');
-            audio.volume = 0.7;
-            audio.play().catch(() => {});
+            if(audio){audio.pause();audio.currentTime=0;}
+            audio=new Audio('bgm.mp3');audio.volume=0.7;
+            audio.play().catch(()=>{});
 
-            // Spawn notes - BPM roughly matches the music
-            const bpm = 140;
-            const beatInterval = 60000 / bpm;
-
-            let beatCount = 0;
-            noteInterval = setInterval(() => {
-                if (!isPlaying) return;
+            gameStartTime=Date.now();
+            const bpm=140, beatInterval=60000/bpm;
+            let beatCount=0;
+            noteInterval=setInterval(()=>{
+                if(!isPlaying)return;
                 beatCount++;
-                // Spawn more notes as song progresses
-                spawnNote();
-                if (beatCount > 30 && Math.random() < 0.3) spawnNote(); // double notes after a while
-                if (beatCount > 60 && Math.random() < 0.2) spawnNote(); // triple chaos
-            }, beatInterval);
+                spawnNote(false);
+                // Long notes every 8 beats after beat 16
+                if(beatCount>16&&beatCount%8===0) spawnNote(true);
+                // Double notes after 30 beats
+                if(beatCount>30&&Math.random()<0.3) spawnNote(false);
+                // Speed up
+                if(beatCount===40) noteSpeed=2.4;
+                if(beatCount===70) noteSpeed=2.0;
+                if(beatCount===100) noteSpeed=1.7;
+            },beatInterval);
 
-            // Speed up over time
-            setTimeout(() => { if (isPlaying) noteSpeed = 2.2; }, 15000);
-            setTimeout(() => { if (isPlaying) noteSpeed = 1.9; }, 30000);
-            setTimeout(() => { if (isPlaying) noteSpeed = 1.6; }, 45000);
-
-            // End game when music ends
-            audio.addEventListener('ended', () => {
-                if (isPlaying) endGame(true);
-            });
+            audio.addEventListener('ended',()=>{if(isPlaying)endGame(true);});
         }
 
-        function endGame(survived) {
-            isPlaying = false;
-            clearInterval(noteInterval);
-            if (audio) { audio.pause(); }
-
-            document.getElementById('finalScore').textContent = score;
-            document.getElementById('gameOverMsg').textContent = survived
-                ? `어금니별을 지켜냈습니다! MAX COMBO: ${maxCombo}`
-                : `어금니별이 함락되었습니다... MAX COMBO: ${maxCombo}`;
-
-            hud.style.display = 'none';
-            gameContainer.style.display = 'none';
+        function endGame(survived){
+            isPlaying=false;clearInterval(noteInterval);
+            if(audio)audio.pause();
+            hud.style.display='none';gameContainer.style.display='none';mothership.style.display='none';
+            document.getElementById('finalScore').textContent=score;
+            document.getElementById('gameOverMsg').textContent=survived
+                ?`어금니별을 지켜냈습니다! MAX COMBO: ${maxCombo}`
+                :`어금니별이 함락되었습니다... MAX COMBO: ${maxCombo}`;
             gameOverScreen.classList.remove('hidden');
         }
 
-        // ─── Init ───────────────────────────────────────────────
+        // ─── Init ───────────────────────────────────────────
         createStarfield();
-        document.addEventListener('keydown', handleKeyPress);
-
-        // Mobile touch support
-        document.addEventListener('touchstart', (e) => {
-            const touch = e.touches[0];
-            const x = touch.clientX / window.innerWidth;
-            let key;
-            if (x < 0.25) key = 'ArrowLeft';
-            else if (x < 0.5) key = 'ArrowDown';
-            else if (x < 0.75) key = 'ArrowUp';
-            else key = 'ArrowRight';
-            handleKeyPress({ key, preventDefault: () => {} });
-        });
+        document.addEventListener('keydown',handleKeyDown);
+        document.addEventListener('keyup',handleKeyUp);
     </script>
 </body>
 </html>
