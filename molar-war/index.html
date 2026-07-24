@@ -34,9 +34,10 @@
         .hud-right .value { font-size: 1rem; color: #fff; margin-top: 4px; }
         .hud-center { text-align: center; }
         .hud-center .label { font-size: 0.6rem; color: #4488cc; }
-        .hp-bar-outer { width: 100px; height: 8px; background: #111; border: 1px solid #4488cc; margin-top: 4px; }
+        .hp-bar-outer { width: 160px; height: 14px; background: #111; border: 2px solid #4488cc; margin-top: 4px; box-shadow: 0 0 6px rgba(68,136,204,0.3); }
         .hp-bar-inner { height: 100%; background: #44ff44; transition: width 0.3s, background 0.3s; }
-        .hp-bar-inner.low { background: #ff4444; }
+        .hp-bar-inner.low { background: #ff4444; animation: hpPulse 0.5s ease-in-out infinite; }
+        @keyframes hpPulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
 
         /* ─── Game lanes ─── */
         .game-container { position: fixed; inset: 0; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 95px; }
@@ -102,7 +103,7 @@
         .warrior-avatar img { width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; filter: brightness(1.1); }
         .warrior-avatar.happy { border-color: #44ff44; box-shadow: 0 0 15px rgba(68,255,68,0.4); }
         .warrior-avatar.sad { border-color: #ff4444; box-shadow: 0 0 15px rgba(255,68,68,0.4); }
-        .warrior-name { font-size: 0.5rem; color: #4488cc; margin-top: 4px; }
+        .warrior-name { font-size: 0.7rem; color: #4488cc; margin-top: 6px; letter-spacing: 0.05em; }
         /* face states handled by border color */
 
         /* ─── Combo / Judge ─── */
@@ -149,10 +150,10 @@
         .start-btn:hover { background: #ffcc00; color: #000; }
 
         /* ─── Retro Grid Floor ─── */
-        .retro-grid { position: absolute; bottom: 0; left: 0; right: 0; height: 35%; perspective: 300px; overflow: hidden; pointer-events: none; z-index: 0; }
-        .retro-grid-inner { position: absolute; inset: 0; transform: rotateX(55deg); transform-origin: center bottom; background: repeating-linear-gradient(0deg, rgba(100,150,255,0.35) 0px, rgba(100,150,255,0.35) 1px, transparent 1px, transparent 40px), repeating-linear-gradient(90deg, rgba(100,150,255,0.35) 0px, rgba(100,150,255,0.35) 1px, transparent 1px, transparent 40px); background-size: 40px 40px; animation: gridScroll 4s linear infinite; }
-        .retro-grid::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(20,30,120,0.6) 0%, rgba(10,15,60,0.3) 40%, transparent 70%); }
-        @keyframes gridScroll { from{background-position:0 0} to{background-position:0 40px} }
+        .retro-grid { position: absolute; bottom: 0; left: 0; right: 0; height: 40%; perspective: 250px; overflow: hidden; pointer-events: none; z-index: 0; }
+        .retro-grid-inner { position: absolute; inset: 0; transform: rotateX(50deg); transform-origin: center bottom; background: repeating-linear-gradient(0deg, rgba(100,150,255,0.4) 0px, rgba(100,150,255,0.4) 1.5px, transparent 1.5px, transparent 60px), repeating-linear-gradient(90deg, rgba(100,150,255,0.4) 0px, rgba(100,150,255,0.4) 1.5px, transparent 1.5px, transparent 60px); background-size: 60px 60px; animation: gridScroll 3s linear infinite; }
+        .retro-grid::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(20,30,120,0.7) 0%, rgba(10,15,60,0.4) 40%, transparent 70%); }
+        @keyframes gridScroll { from{background-position:0 0} to{background-position:0 60px} }
 
         /* ─── Game Over ─── */
         .screen-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.92); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; z-index: 500; transition: opacity 0.5s; }
@@ -198,7 +199,9 @@
     </style>
 
     <!-- Molar teeth tightly along cockpit (extended wider) -->
-    <div style="position:fixed;bottom:88px;left:calc(50% - 250px);display:flex;gap:1px;align-items:flex-end;z-index:21;pointer-events:none;" id="molarRow">
+    <div style="position:fixed;bottom:88px;left:calc(50% - 320px);display:flex;gap:1px;align-items:flex-end;z-index:21;pointer-events:none;" id="molarRow">
+        <img src="molar.png" style="width:20px;image-rendering:pixelated;opacity:0.3;">
+        <img src="molar.png" style="width:22px;image-rendering:pixelated;opacity:0.35;">
         <img src="molar.png" style="width:24px;image-rendering:pixelated;opacity:0.4;">
         <img src="molar.png" style="width:26px;image-rendering:pixelated;opacity:0.5;">
         <img src="molar.png" style="width:28px;image-rendering:pixelated;opacity:0.6;">
@@ -206,15 +209,19 @@
         <img src="molar.png" style="width:32px;image-rendering:pixelated;opacity:0.85;">
         <img src="molar.png" style="width:28px;image-rendering:pixelated;opacity:0.6;">
         <img src="molar.png" style="width:24px;image-rendering:pixelated;opacity:0.45;">
+        <img src="molar.png" style="width:20px;image-rendering:pixelated;opacity:0.3;">
     </div>
-    <div style="position:fixed;bottom:88px;right:calc(50% - 250px);display:flex;gap:1px;align-items:flex-end;z-index:21;pointer-events:none;">
+    <div style="position:fixed;bottom:88px;right:calc(50% - 320px);display:flex;gap:1px;align-items:flex-end;z-index:21;pointer-events:none;">
+        <img src="molar.png" style="width:20px;image-rendering:pixelated;opacity:0.3;">
         <img src="molar.png" style="width:24px;image-rendering:pixelated;opacity:0.45;">
         <img src="molar.png" style="width:28px;image-rendering:pixelated;opacity:0.6;">
         <img src="molar.png" style="width:32px;image-rendering:pixelated;opacity:0.85;">
         <img src="molar.png" style="width:34px;image-rendering:pixelated;opacity:0.9;">
         <img src="molar.png" style="width:30px;image-rendering:pixelated;opacity:0.7;">
         <img src="molar.png" style="width:26px;image-rendering:pixelated;opacity:0.5;">
-        <img src="molar.png" style="width:22px;image-rendering:pixelated;opacity:0.4;">
+        <img src="molar.png" style="width:24px;image-rendering:pixelated;opacity:0.4;">
+        <img src="molar.png" style="width:22px;image-rendering:pixelated;opacity:0.35;">
+        <img src="molar.png" style="width:20px;image-rendering:pixelated;opacity:0.3;">
     </div>
 
     <!-- Cockpit -->
@@ -463,20 +470,27 @@
             let energyHistory = [];
             const minBeatGap = 280;
 
-            // Fallback timer: guarantee at least 1 note every 600ms
+            // Fallback timer: guarantee notes + add harder patterns
             let lastNoteTime = Date.now();
             const fallbackInterval = setInterval(() => {
                 if (!isPlaying) { clearInterval(fallbackInterval); return; }
-                if (Date.now() - lastNoteTime > 700) {
+                const elapsed = Date.now() - lastNoteTime;
+                // Guarantee a note every 500ms max
+                if (elapsed > 500) {
                     spawnNote(false);
                     lastNoteTime = Date.now();
                     beatCount++;
+                    // Extra difficulty: double/triple notes
+                    if (beatCount > 10 && Math.random() < 0.4) spawnNote(false);
+                    if (beatCount > 25 && Math.random() < 0.25) spawnNote(false);
+                    // Long notes more often
+                    if (beatCount > 8 && beatCount % 6 === 0) spawnNote(true);
                 }
                 // Speed up
-                if (beatCount === 30) noteSpeed = 2.4;
-                if (beatCount === 60) noteSpeed = 2.0;
-                if (beatCount === 90) noteSpeed = 1.7;
-            }, 100);
+                if (beatCount === 25) noteSpeed = 2.4;
+                if (beatCount === 50) noteSpeed = 2.0;
+                if (beatCount === 75) noteSpeed = 1.6;
+            }, 80);
 
             audioEl.play().catch(()=>{});
 
@@ -504,11 +518,13 @@
                     lastNoteTime = now;
                     beatCount++;
                     spawnNote(false);
-                    if (beatCount % 10 === 0) spawnNote(true);
+                    if (beatCount % 8 === 0) spawnNote(true);
+                    // Extra note for difficulty
+                    if (beatCount > 15 && Math.random() < 0.5) spawnNote(false);
                 }
 
-                // Mid energy → double
-                if (midEnergy > avgEnergy * 1.5 && midEnergy > 100 && (now - lastBeatTime) > 150 && beatCount > 15 && Math.random() < 0.35) {
+                // Mid energy → double/triple
+                if (midEnergy > avgEnergy * 1.4 && midEnergy > 90 && (now - lastBeatTime) > 120 && beatCount > 10 && Math.random() < 0.45) {
                     spawnNote(false);
                     lastNoteTime = now;
                 }
